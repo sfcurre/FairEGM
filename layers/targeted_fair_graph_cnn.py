@@ -1,16 +1,7 @@
 import tensorflow as tf
 
-class FairTargetedAdditionGraphCNN(tf.keras.layers.Layer):
-    def __init__(self, output_dim,
-                 activation=None,
-                 use_bias=True,
-                 kernel_initializer='glorot_uniform',
-                 bias_initializer='zeros',
-                 kernel_regularizer=None,
-                 bias_regularizer=None,
-                 activity_regularizer=None,
-                 kernel_constraint=None,
-                 bias_constraint=None,
+class FairTargetedAdditionGraphConv(tf.keras.layers.Layer):
+    def __init__(self,
                  addition_initializer=None,
                  addition_regularizer=None,
                  addition_constraint=None,
@@ -18,18 +9,8 @@ class FairTargetedAdditionGraphCNN(tf.keras.layers.Layer):
 
         if 'input_shape' not in kwargs and 'input_dim' in kwargs:
             kwargs['input_shape'] = (kwargs.pop('input_dim'),)
-        super(FairTargetedAdditionGraphCNN, self).__init__(**kwargs)
+        super(FairTargetedAdditionGraphConv, self).__init__(**kwargs)
 
-        self.output_dim = output_dim
-        self.activation = tf.keras.activations.get(activation)
-        self.use_bias = use_bias
-        self.kernel_initializer = tf.keras.initializers.get(kernel_initializer)
-        self.bias_initializer = tf.keras.initializers.get(bias_initializer)
-        self.kernel_regularizer = tf.keras.regularizers.get(kernel_regularizer)
-        self.bias_regularizer = tf.keras.regularizers.get(bias_regularizer)
-        self.activity_regularizer = tf.keras.regularizers.get(activity_regularizer)
-        self.kernel_constraint = tf.keras.constraints.get(kernel_constraint)
-        self.bias_constraint = tf.keras.constraints.get(bias_constraint)
         self.addition_initializer = tf.keras.initializers.get(addition_initializer)
         self.addition_regularizer = tf.keras.regularizers.get(addition_regularizer)
         self.addition_constraint = tf.keras.constraints.get(addition_constraint)
@@ -42,25 +23,13 @@ class FairTargetedAdditionGraphCNN(tf.keras.layers.Layer):
         self.num_filters = filter_shape[1]
 
         #initialize all necessary weights and kernels
-        self.kernel = self.add_weight(name = 'kernel',
-                                      shape = (self.num_filters * self.num_features, self.output_dim),
-                                      initializer = self.kernel_initializer,
-                                      regularizer = self.kernel_regularizer,
-                                      constraint = self.kernel_constraint,
-                                      trainable = True)
-        self.bias = self.add_weight(name = 'bias',
-                                    shape = (self.output_dim,),
-                                    initializer = self.bias_initializer,
-                                    regularizer = self.bias_regularizer,
-                                    constraint = self.bias_constraint,
-                                    trainable = True)
         self.addition = self.add_weight(name = 'addition',
                                         shape = (self.num_nodes, self.num_filters * self.num_features),
                                         initializer = self.addition_initializer,
                                         regularizer = self.addition_regularizer,
                                         constraint = self.addition_constraint,
                                         trainable = True)
-        super(FairTargetedAdditionGraphCNN, self).build(input_shape)
+        super(FairTargetedAdditionGraphConv, self).build(input_shape)
 
     def call(self, inputs):
         nodes, filters = inputs
@@ -80,15 +49,4 @@ class FairTargetedAdditionGraphCNN(tf.keras.layers.Layer):
         fair_op = conv_op + self.addition
         #fair_op has shape (batch, nodes, filters * features)
 
-        conv_out = tf.matmul(fair_op, self.kernel)
-        #conv_out is shape (batch, nodes, output_dim)
-
-        if self.use_bias:
-            conv_out = tf.nn.bias_add(conv_out, self.bias)
-
-        return self.activation(conv_out)
-
-    def compute_output_shape(self, input_shape):
-        assert len(input_shape) == 2
-        node_shape, _ = input_shape
-        return node_shape[:2] + (self.output_dim,)
+        return fair_op, filters

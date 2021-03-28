@@ -70,7 +70,7 @@ class GraphCNN(tf.keras.layers.Layer):
         if self.use_bias:
             conv_out = tf.nn.bias_add(conv_out, self.bias)
 
-        return self.activation(conv_out)
+        return self.activation(conv_out), filters
 
     def compute_output_shape(self, input_shape):
         assert len(input_shape) == 2
