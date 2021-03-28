@@ -15,7 +15,7 @@ class FairModel:
         edges = tf.keras.layers.Input((1, self.num_nodes, self.num_nodes))
 
         fair_conv, fair_edges = self.fair_layer([nodes, edges])
-        fair_nodes = self.dense_layer(fair_conv)
+        fair_nodes = tf.keras.layers.TimeDistributed(self.dense_layer)(fair_conv)
 
         output = self.task_model([fair_nodes, fair_edges])
         return tf.keras.models.Model([nodes, edges], output)
