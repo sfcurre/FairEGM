@@ -3,6 +3,7 @@
 ## Basic information
 
 n = 4039, m = 88234
+Downloaded from:	https://snap.stanford.edu/data/egonets-Facebook.html
 
 ## Files
 
