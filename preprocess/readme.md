@@ -25,3 +25,6 @@ Run with the following command:
 `
 
 It will create 3 new files: `fb_adjacency.txt`, `fb_features.txt`, and `fb_featnames.txt`.
+
+
+`preprocess_single-ego.py` is for processing data of a single ego network.
