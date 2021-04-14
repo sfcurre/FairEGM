@@ -1,12 +1,13 @@
 import tensorflow as tf
 
-def fair_link_loss(attributes, links):
-    #links is (batch, filters, nodes, nodes)
+def dp_link_divergence_loss(attributes, edges):
+    #edgess is (batch, filters, nodes, nodes)
     #atrributes is (batch, filters, nodes, attributes)
-    partial = tf.reduce_sum(links, axis = -1)
+    f = tf.matmul(edges, attributes)
     #partial is (batch, filters, nodes)
-    f = tf.squeeze(tf.matmul(tf.transpose(attributes, (0, 1, 3, 2)), partial[..., None]))
-    f = f / tf.reduce_sum(attributes, axis = 2)
+    f = f / tf.reduce_sum(attributes, axis = 2, keepdims=True)
     #f is (batch, filters, attributes)
     e = tf.ones_like(f)
-    return tf.losses.kld(f / tf.norm(f, ord=1), e / tf.norm(e, ord=2))
+    retval = tf.losses.kld(e / tf.norm(e, axis = -1, ord = 1, keepdims=True),
+                           f / tf.norm(f, axis = -1, ord = 1, keepdims=True))
+    return retval
