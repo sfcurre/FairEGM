@@ -19,6 +19,8 @@ class FairModel:
         fair_conv, fair_edges = self.fair_layer([nodes, edges])
         fair_nodes = tf.keras.layers.TimeDistributed(self.dense_layer)(fair_conv)
 
+        self.embedding_model = tf.keras.models.Model([nodes, edges], [fair_nodes, fair_edges])
+
         output = self.task_model([fair_nodes, fair_edges])
         return tf.keras.models.Model([nodes, edges], output)
 
@@ -89,6 +91,9 @@ class FairModel:
 
     def predict(self, *args, **kwargs):
         return self.model.predict(*args, **kwargs)
+
+    def predict_embeddings(self, *args, **kwargs):
+        return self.embedding_model.predict(*args, **kwargs)
 
     def get_fair_modifications(self):
         return self.fair_layer.get_weights()

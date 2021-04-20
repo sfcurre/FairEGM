@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 class LinkPrediction(tf.keras.layers.Layer):
-    def __init__(self, units, filters,
+    def __init__(self, units,
                  activation=None,
                  use_bias=True,
                  kernel_initializer='glorot_uniform',
@@ -18,7 +18,6 @@ class LinkPrediction(tf.keras.layers.Layer):
         super(LinkPrediction, self).__init__(**kwargs)
 
         self.units = units
-        self.filters = filters
         self.activation = tf.keras.activations.get(activation)
         self.use_bias = use_bias
         self.kernel_initializer = tf.keras.initializers.get(kernel_initializer)
@@ -43,28 +42,26 @@ class LinkPrediction(tf.keras.layers.Layer):
     def build(self, input_shape):
         # (batch, nodes, features)
         assert len(input_shape) == 3
-        self.seq_length = input_shape[1]
-        self.input_size = input_shape[2]
         self.node1_kernel = self.add_weight(name = 'node1_kernel',
-                                            shape = (self.filters, input_shape[-1], self.units),
+                                            shape = (input_shape[-1], self.units),
                                             initializer = self.kernel_initializer,
                                             regularizer = self.kernel_regularizer,
                                             constraint = self.kernel_constraint,
                                             trainable = True)
         self.node2_kernel = self.add_weight(name = 'node2_kernel',
-                                            shape = (self.filters, input_shape[-1], self.units),
+                                            shape = (input_shape[-1], self.units),
                                             initializer = self.kernel_initializer,
                                             regularizer = self.kernel_regularizer,
                                             constraint = self.kernel_constraint,
                                             trainable = True)
         self.node1_bias = self.add_weight(name = 'node1_bias',
-                                            shape = (self.filters, self.units),
+                                            shape = (self.units,),
                                             initializer = self.bias_initializer,
                                             regularizer = self.bias_regularizer,
                                             constraint = self.bias_constraint,
                                             trainable = True)
         self.node2_bias = self.add_weight(name = 'node2_bias',
-                                            shape = (self.filters, self.units),
+                                            shape = (self.units,),
                                             initializer = self.bias_initializer,
                                             regularizer = self.bias_regularizer,
                                             constraint = self.bias_constraint,
@@ -73,11 +70,7 @@ class LinkPrediction(tf.keras.layers.Layer):
         super(LinkPrediction, self).build(input_shape)
 
     def call(self, inputs):
-        inputs = inputs[:, None] # add filter dimension
-        node1 = tf.matmul(inputs, self.node1_kernel) + (self.node1_bias[:, None] if self.use_bias else 0)
-        node2 = tf.matmul(inputs, self.node2_kernel) + (self.node1_bias[:, None] if self.use_bias else 0)
-        output = tf.matmul(node1, tf.transpose(node2, (0, 1, 3, 2)))
+        node1 = tf.matmul(inputs, self.node1_kernel) + (self.node1_bias if self.use_bias else 0)
+        node2 = tf.matmul(inputs, self.node2_kernel) + (self.node2_bias if self.use_bias else 0)
+        output = tf.matmul(node1, tf.transpose(node2, (0, 2, 1)))
         return self.activation(output)
-
-    def compute_output_shape(self, input_shape):
-        return input_shape[:-1] + (self.units,)
