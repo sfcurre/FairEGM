@@ -8,6 +8,8 @@ def dp_link_divergence_loss(attributes, edges):
     f = f / tf.reduce_sum(attributes, axis = 1, keepdims=True)
     #f is (batch, attributes)
     e = tf.ones_like(f)
-    retval = tf.losses.kld(e / tf.norm(e, axis = -1, ord = 1, keepdims=True),
-                           f / tf.norm(f, axis = -1, ord = 1, keepdims=True))
+    f = tf.clip_by_value(f, 1e-7, 1)
+    norme = tf.norm(e, axis = -1, ord = 1, keepdims=True)
+    normf = tf.norm(f, axis = -1, ord = 1, keepdims=True)
+    retval = tf.losses.kld(e / norme, f / normf)
     return retval

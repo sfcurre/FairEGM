@@ -24,7 +24,7 @@ class FairModel:
         output = self.task_model([fair_nodes, fair_edges])
         return tf.keras.models.Model([nodes, edges], output)
 
-    def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss, task_metrics, fair_metrics):
+    def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss, task_metrics=[], fair_metrics=[]):
         self.task_optimizer = task_optimizer
         self.fair_optimizer = fair_optimizer
         self.task_loss = task_loss
@@ -73,18 +73,22 @@ class FairModel:
         target = tf.constant(target, dtype = tf.float32)
         sensitive_attributes = tf.constant(sensitive_attributes, dtype = tf.float32)
 
+        print_con = lambda x: ((x+1) % (epochs // 20)) == 0
+
         for i in range(epochs):
-            print(f'Epoch {i+1}/{epochs}:')
+            if print_con(i):
+                print(f'Epoch {i+1}/{epochs}:')
             
             fl, tl = self.train_step(nodes, edges, target, sensitive_attributes)
             
-            for i, val in enumerate(fl):
-                fl[i] = val.numpy()
-            for i, val in enumerate(tl):
-                tl[i] = val.numpy()
+            for j, val in enumerate(fl):
+                fl[j] = val.numpy()
+            for j, val in enumerate(tl):
+                tl[j] = val.numpy()
 
-            print(f'Fairness - {fl}')
-            print(f'Task     - {tl}')
+            if print_con(i):
+                print(f'Fairness - {fl}')
+                print(f'Task     - {tl}')
 
             tf.keras.backend.clear_session()
             gc.collect()

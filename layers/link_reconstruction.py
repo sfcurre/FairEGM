@@ -13,6 +13,7 @@ class LinkReconstruction(tf.keras.layers.Layer):
 
     def call(self, inputs):
         dots = tf.matmul(inputs, tf.transpose(inputs, (0, 2, 1)))
-        dots = dots / tf.norm(inputs, axis = 1, keepdims = True)
-        dots = dots / tf.norm(inputs, axis = 2, keepdims = True)
+        norms = tf.norm(inputs, axis = -1) + 1e-7
+        dots = dots / norms[:, None, :]
+        dots = dots / norms[..., None]
         return dots
