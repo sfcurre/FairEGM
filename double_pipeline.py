@@ -10,8 +10,8 @@ from layers.sparse_fair_graph_cnn import FairReductionGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
-from models.fair_losses import dp_link_divergence_loss
-from models.fair_metrics import dp_link_divergence, accuracy_at_k, dp_at_k
+from models.losses import dp_link_divergence_loss, build_reconstruction_loss
+from models.metrics import dp_link_divergence, accuracy_at_k, dp_at_k
 from preprocess.split_data import split_train_and_test
 
 import tensorflow as tf
@@ -21,8 +21,8 @@ np.random.seed(5429)
 
 EMBEDDING_DIM = 100
 LR = 1e-4
-EPOCHS = 200
-LAMBDA = 20
+EPOCHS = 300
+LAMBDA = 10
 K = 20
 TARGETED_FAIRNESS = FairTargetedAdditionGraphConv()
 COMMUNITY_FAIRNESS = FairCommunityAdditionGraphConv(10)
@@ -53,8 +53,12 @@ def main():
     args = type('Args', (object,), {})
     args.train_prop = 0.8
     train_edges, test_edges = split_train_and_test(args, edges)
+    use_node = np.any((train_edges != 0), axis = -1)
 
-    features, train_edges, test_edges, attributes= nodes[None, ...], train_edges[None, None, ...], test_edges, attributes[None, ...],
+    features, train_edges = nodes[None, use_node, :], train_edges[None, None, use_node][..., use_node]
+    test_edges, attributes = test_edges[use_node][..., use_node], attributes[None, use_node, :]
+
+    pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
 
     print("Initial DP diveregence:")
     print(dp_link_divergence(attributes, train_edges).mean())
@@ -65,40 +69,44 @@ def main():
     results = defaultdict(list)
 
     #base
-    base, base_embedding = base_model(*nodes.shape[-2:])
+    base, base_embedding = base_model(*features.shape[-2:])
     base.summary()
-    base.compile(tf.keras.optimizers.Adam(LR), 'binary_crossentropy', [dp_metric])
+    base.compile(tf.keras.optimizers.Adam(LR), build_reconstruction_loss(pos_weight), [dp_metric])
     base.fit([features, train_edges], train_edges, epochs = EPOCHS)
     #not actually fair for base
     fair_nodes, fair_edges = base_embedding.predict([features, train_edges])
     fair_nodes = fair_nodes[0]
+    results['base'].extend(base.evaluate([features, train_edges], train_edges))
     results['base'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
     results['base'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 
     #targeted
-    targeted = FairModel(*nodes.shape[-2:], TARGETED_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(len(nodes), EMBEDDING_DIM))
-    targeted.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), tf.keras.losses.binary_crossentropy, dp_link_divergence_loss)
-    targeted.fit(features, train_edges, train_edges, attributes, EPOCHS)
+    targeted = FairModel(*features.shape[-2:], TARGETED_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(features.shape[-2], EMBEDDING_DIM))
+    targeted.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
+    fl, tl = targeted.fit(features, train_edges, train_edges, attributes, EPOCHS)
     fair_nodes, fair_edges = targeted.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
+    results['targeted'].extend([*tl, *fl])
     results['targeted'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
     results['targeted'].append(dp_at_k(fair_nodes, attributes[0], k=K))    
 
     #community
-    community = FairModel(*nodes.shape[-2:], COMMUNITY_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(len(nodes), EMBEDDING_DIM))
-    community.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), tf.keras.losses.binary_crossentropy, dp_link_divergence_loss)
-    community.fit(features, train_edges, train_edges, attributes, EPOCHS) 
+    community = FairModel(*features.shape[-2:], COMMUNITY_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(features.shape[-2], EMBEDDING_DIM))
+    community.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
+    fl, tl = community.fit(features, train_edges, train_edges, attributes, EPOCHS) 
     fair_nodes, fair_edges = community.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
+    results['community'].extend([*tl, *fl])
     results['community'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
     results['community'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 
     #reduction
-    sparse = FairModel(*nodes.shape[-2:], SPARSE_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(len(nodes), EMBEDDING_DIM))
-    sparse.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), tf.keras.losses.binary_crossentropy, dp_link_divergence_loss)
-    sparse.fit(features, train_edges, train_edges, attributes, EPOCHS)
+    sparse = FairModel(*features.shape[-2:], SPARSE_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(features.shape[-2], EMBEDDING_DIM))
+    sparse.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
+    fl, tl = sparse.fit(features, train_edges, train_edges, attributes, EPOCHS)
     fair_nodes, fair_edges = sparse.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
+    results['reduction'].extend([*tl, *fl])
     results['reduction'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
     results['reduction'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 

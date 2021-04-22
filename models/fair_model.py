@@ -93,6 +93,8 @@ class FairModel:
             tf.keras.backend.clear_session()
             gc.collect()
 
+        return fl, tl
+
     def predict(self, *args, **kwargs):
         return self.model.predict(*args, **kwargs)
 

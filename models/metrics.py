@@ -15,6 +15,9 @@ def dp_link_divergence(attributes, edges):
     f = np.clip(f, 1e-7, 1)
     retval = entropy(e / e.sum(axis = -1)[...,None],
                      f / f.sum(axis = -1)[...,None], axis = -1)
+    
+    retval += entropy(f / f.sum(axis = -1)[...,None],
+                      e / e.sum(axis = -1)[...,None], axis = -1)
     return retval
 
 def k_nearest(embeddings, k=10):
@@ -39,4 +42,5 @@ def dp_at_k(embeddings, attributes, k=10):
         distro = attributes[indices].sum(axis = 0) / k
         distro = np.clip(distro, 1e-7, 1)
         dp_total += entropy(unif, distro)
+        dp_total += entropy(distro, unif)
     return dp_total / len(embeddings)

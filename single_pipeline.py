@@ -9,8 +9,8 @@ from layers.community_fair_graph_cnn import FairCommunityAdditionGraphConv
 from layers.sparse_fair_graph_cnn import FairReductionGraphConv
 from layers.link_prediction import LinkPrediction
 from models.fair_model import FairModel
-from models.fair_losses import dp_link_divergence_loss
-from models.fair_metrics import dp_link_divergence
+from models.losses import dp_link_divergence_loss
+from models.metrics import dp_link_divergence
 
 import tensorflow as tf
 
