@@ -10,11 +10,13 @@ from layers.sparse_fair_graph_cnn import FairReductionGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
-from models.losses import dp_link_divergence_loss, build_reconstruction_loss
-from models.metrics import dp_link_divergence, accuracy_at_k, dp_at_k
+from models.losses import dp_link_divergence_loss, dp_link_entropy_loss, build_reconstruction_loss
+from models.metrics import dp_link_divergence, accuracy_at_k, dp_at_k_div, dp_at_k_dif
 from preprocess.split_data import split_train_and_test
 
 import tensorflow as tf
+
+dp_at_k = dp_at_k_dif
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 np.random.seed(5429)
@@ -32,8 +34,7 @@ SPARSE_FAIRNESS = FairReductionGraphConv()
 def reconstruction_model(num_nodes, num_features):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((1, num_nodes, num_nodes))
-    conv_nodes, conv_edges = GraphCNN(EMBEDDING_DIM, activation='relu')([nodes, edges])
-    output = LinkReconstruction()(conv_nodes)
+    output = LinkReconstruction()(nodes)
     return tf.keras.models.Model([nodes, edges], output)
 
 def base_model(num_nodes, num_features):
@@ -67,6 +68,12 @@ def main():
         return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
 
     results = defaultdict(list)
+
+    dp_total = 0
+    for indices in train_edges[0, 0, ...]:
+        distro = attributes[0, indices == 1].sum(axis = 0) / attributes[0].sum(axis = 0)
+        dp_total += abs(distro[1] - distro[0])
+    results['observed'].append(dp_total / train_edges.shape[-1])
 
     #base
     base, base_embedding = base_model(*features.shape[-2:])
