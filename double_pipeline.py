@@ -11,7 +11,7 @@ from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
 from models.losses import dp_link_divergence_loss, dp_link_entropy_loss, build_reconstruction_loss
-from models.metrics import dp_link_divergence, accuracy_at_k, dp_at_k_div, dp_at_k_dif
+from models.metrics import dp_link_divergence, recall_at_k, dp_at_k_div, dp_at_k_dif
 from preprocess.split_data import split_train_and_test
 
 import tensorflow as tf
@@ -84,7 +84,7 @@ def main():
     fair_nodes, fair_edges = base_embedding.predict([features, train_edges])
     fair_nodes = fair_nodes[0]
     results['base'].extend(base.evaluate([features, train_edges], train_edges))
-    results['base'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
+    results['base'].append(recall_at_k(fair_nodes, test_edges, k=K))
     results['base'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 
     #targeted
@@ -94,7 +94,7 @@ def main():
     fair_nodes, fair_edges = targeted.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
     results['targeted'].extend([*tl, *fl])
-    results['targeted'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
+    results['targeted'].append(recall_at_k(fair_nodes, test_edges, k=K))
     results['targeted'].append(dp_at_k(fair_nodes, attributes[0], k=K))    
 
     #community
@@ -104,7 +104,7 @@ def main():
     fair_nodes, fair_edges = community.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
     results['community'].extend([*tl, *fl])
-    results['community'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
+    results['community'].append(recall_at_k(fair_nodes, test_edges, k=K))
     results['community'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 
     #reduction
@@ -114,7 +114,7 @@ def main():
     fair_nodes, fair_edges = sparse.predict_embeddings([features, train_edges])
     fair_nodes = fair_nodes[0]
     results['reduction'].extend([*tl, *fl])
-    results['reduction'].append(accuracy_at_k(fair_nodes, test_edges, k=K))
+    results['reduction'].append(recall_at_k(fair_nodes, test_edges, k=K))
     results['reduction'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 
     print(results)

@@ -22,14 +22,14 @@ def k_nearest(embeddings, k=10):
     order = np.argsort(sims, axis =-1)[:, :-1] #exclude self
     return order[:, -k:]
 
-def accuracy_at_k(embeddings, test_edges, k=10):
+def recall_at_k(embeddings, test_edges, k=10):
     k_near = k_nearest(embeddings, k=k)
     edges = np.argwhere(test_edges == 1)
-    acc_count = 0
+    rec_count = 0
     for i, j in edges:
         if j in k_near[i]:
-            acc_count += 1
-    return acc_count / len(edges)
+            rec_count += 1
+    return rec_count / len(edges)
 
 def dp_at_k_dif(embeddings, attributes, k=10):
     k_near = k_nearest(embeddings, k=k)
