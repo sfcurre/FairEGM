@@ -3,6 +3,17 @@ import tensorflow as tf
 def dp_link_divergence_loss(attributes, edges):
     #edges is (batch, nodes, nodes)
     #atrributes is (batch, nodes, attributes)
+    f = tf.matmul(edges, attributes) + 1e-7
+    e = tf.reduce_sum(attributes, axis = 1) + 1e-7
+    norme = tf.reduce_sum(e, axis = -1, keepdims=True)
+    normf = tf.reduce_sum(f, axis = -1, keepdims=True)
+    retval = tf.losses.kld(e / norme, f / normf)
+    return retval
+
+'''
+def dp_link_divergence_loss(attributes, edges):
+    #edges is (batch, nodes, nodes)
+    #atrributes is (batch, nodes, attributes)
     f = tf.matmul(edges, attributes)
     #partial is (batch, nodes)
     f = f / tf.reduce_sum(attributes, axis = 1, keepdims=True)
@@ -13,6 +24,7 @@ def dp_link_divergence_loss(attributes, edges):
     normf = tf.norm(f, axis = -1, ord = 1, keepdims=True)
     retval = tf.losses.kld(e / norme, f / normf)
     return retval
+'''
 
 def dp_link_entropy_loss(attributes, edges):
     #edges is (batch, nodes, nodes)
