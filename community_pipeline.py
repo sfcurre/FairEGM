@@ -21,9 +21,9 @@ np.random.seed(5429)
 
 EMBEDDING_DIM = 100
 LR = 1e-3
-EPOCHS = 200
+EPOCHS = 300
 LAMBDA = 1
-K = 30
+K = 10
 
 def reconstruction_model(num_nodes, num_features):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
@@ -63,17 +63,18 @@ def main():
 
     results = defaultdict(list)
 
-    for n in [1, 2, 4, 8, 16, 32] + list(range(64, 772, 25)):
+    for n in [1, 2, 4, 8, 16] + list(range(30, 360, 10)):
 
         COMMUNITY_FAIRNESS = FairCommunityAdditionGraphConv(n)
 
         #community
         community = FairModel(*features.shape[-2:], COMMUNITY_FAIRNESS, tf.keras.layers.Dense(EMBEDDING_DIM, activation='relu'), reconstruction_model(features.shape[-2], EMBEDDING_DIM))
         community.compile(tf.keras.optimizers.Adam(LR), tf.keras.optimizers.Adam(LR * LAMBDA), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
-        fl, tl = community.fit(features, train_edges, train_edges, attributes, EPOCHS) 
+        history = community.fit(features, train_edges, train_edges, attributes, EPOCHS) 
         fair_nodes, fair_edges = community.predict_embeddings([features, train_edges])
         fair_nodes = fair_nodes[0]
-        results[f'community_{n}'].extend([*tl, *fl])
+        results[f'community_{n}'].append(history['tl'][-1])
+        results[f'community_{n}'].append(history['fl'][-1])
         results[f'community_{n}'].append(recall_at_k(fair_nodes, test_edges, k=K))
         results[f'community_{n}'].append(dp_at_k(fair_nodes, attributes[0], k=K))
 

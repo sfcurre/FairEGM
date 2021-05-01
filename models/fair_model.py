@@ -24,18 +24,15 @@ class FairModel:
         output = self.task_model([fair_nodes, fair_edges])
         return tf.keras.models.Model([nodes, edges], output)
 
-    def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss, task_metrics=[], fair_metrics=[]):
+    def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss):
         self.task_optimizer = task_optimizer
         self.fair_optimizer = fair_optimizer
         self.task_loss = task_loss
         self.fair_loss = fair_loss
-        self.task_metrics = task_metrics
-        self.fair_metrics = fair_metrics
         self.compiled = True
 
     @tf.function
     def train_step(self, nodes, edges, target, sensitive_attributes):
-        fl, tl = [], []
 
         with tf.GradientTape() as fair_tape, tf.GradientTape() as task_tape:
 
@@ -43,9 +40,6 @@ class FairModel:
 
             fair_loss = self.fair_loss(sensitive_attributes, output)
             task_loss = self.task_loss(target, output)
-            fair_metrics = [tf.reduce_mean(metric(sensitive_attributes, output), axis = None) for metric in self.fair_metrics]
-            task_metrics = [tf.reduce_mean(metric(target, output), axis = None) for metric in self.task_metrics]
-
             self.model.trainable = False
             self.fair_layer.trainable = True
 
@@ -58,10 +52,8 @@ class FairModel:
             task_gradients = task_tape.gradient(task_loss, self.model.trainable_variables)
             self.task_optimizer.apply_gradients(zip(task_gradients, self.model.trainable_variables))
 
-            fl.append(tf.reduce_mean(fair_loss, axis = None))
-            fl.extend(fair_metrics)
-            tl.append(tf.reduce_mean(task_loss, axis = None))
-            tl.extend(task_metrics)
+            fl = tf.reduce_mean(fair_loss, axis = None)
+            tl = tf.reduce_mean(task_loss, axis = None)
         
         return fl, tl
             
@@ -75,17 +67,17 @@ class FairModel:
 
         print_con = lambda x: ((x+1) % (epochs // 20)) == 0
 
+        history = {'fl': [], 'tl': []}
+
         for i in range(epochs):
             if print_con(i):
                 print(f'Epoch {i+1}/{epochs}:')
             
             fl, tl = self.train_step(nodes, edges, target, sensitive_attributes)
             
-            for j, val in enumerate(fl):
-                fl[j] = val.numpy()
-            for j, val in enumerate(tl):
-                tl[j] = val.numpy()
-
+            fl = fl.numpy()
+            tl = tl.numpy()
+            
             if print_con(i):
                 print(f'Fairness - {fl}')
                 print(f'Task     - {tl}')
@@ -93,7 +85,10 @@ class FairModel:
             tf.keras.backend.clear_session()
             gc.collect()
 
-        return fl, tl
+            history['fl'].append(fl)
+            history['tl'].append(tl)
+
+        return history
 
     def predict(self, *args, **kwargs):
         return self.model.predict(*args, **kwargs)
