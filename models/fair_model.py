@@ -57,7 +57,7 @@ class FairModel:
         
         return fl, tl
             
-    def fit(self, nodes, edges, target, sensitive_attributes, epochs):
+    def fit(self, nodes, edges, target, sensitive_attributes, epochs, verbose = 1):
         assert self.compiled, "Model must be compiled before use"
 
         nodes = tf.constant(nodes, dtype = tf.float32)
@@ -67,10 +67,10 @@ class FairModel:
 
         print_con = lambda x: ((x+1) % (epochs // 20)) == 0
 
-        history = {'fl': [], 'tl': []}
+        history = {'fair loss': [], 'task loss': []}
 
         for i in range(epochs):
-            if print_con(i):
+            if verbose and print_con(i):
                 print(f'Epoch {i+1}/{epochs}:')
             
             fl, tl = self.train_step(nodes, edges, target, sensitive_attributes)
@@ -78,15 +78,15 @@ class FairModel:
             fl = fl.numpy()
             tl = tl.numpy()
             
-            if print_con(i):
+            if verbose and print_con(i):
                 print(f'Fairness - {fl}')
                 print(f'Task     - {tl}')
 
             tf.keras.backend.clear_session()
             gc.collect()
 
-            history['fl'].append(fl)
-            history['tl'].append(tl)
+            history['fair loss'].append(fl)
+            history['task loss'].append(tl)
 
         return history
 

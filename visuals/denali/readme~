@@ -1,0 +1,10 @@
+run command 'make' to generate executable file:  bulid.out
+
+
+we have two input files for dataset GrQc:
+ ./GrQc_ver_scalar.txt is scalar value file for vertices.
+./GrQc_scalar_graph.txt is the edge file.
+their format is here: http://denali.cse.ohio-state.edu/doc/pages/ctree.html#input-formats
+
+run the follwoing command, you will generate the tree file 'GrQc.tree' :
+./build.out ./GrQc_ver_scalar.txt ./GrQc_scalar_graph.txt ./GrQc.tree 

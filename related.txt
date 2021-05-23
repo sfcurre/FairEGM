@@ -1,0 +1,24 @@
+
+\paragraph{Graph Representation Learning}
+
+various methods for graph representation learning for node embeddings have been proposed, such as Node2Vec (ref), DeepWalk (ref), matrix factorization approaches (ref), and graph convolution neural network (GCN) approaches (ref). Methods such as Node2Vec and DeepWalk construct embeddings using techniques inspired by word embeddings in natural language processing; these methods first generate random walks throughout the graph structure, forming sequences of nodes. These sequences are treated as ``sentences'', with the nodes as ``words'' in the sentence, allowing for the use of traditional word embedding algorithms to learn node embeddings. In contrast, matrix embedding approaches operate on the adjacency matrix of the graph $\bm{A}$, hoping to learn a set of embeddings $\bm{\Phi}$ such that $\bm{\Phi}\bm{\Phi^{\top}} = \bm{A}$.
+
+However, these methods are generally applied to graphs that do not contain node features. GCNs solve this by utilizing both the adjacency matrix $\bm{A}$ and a feature matrix $\bm{F}$ to learn node embeddings. Node embeddings $\bm{\Phi}$ are learned by directly optimizing a weight matrix $\bm{W}$ for the task, such that
+\begin{equation*}
+    \bm{\Phi} = \sigma(\bm{A}\bm{F}\bm{W})
+\end{equation*}
+where $\sigma$ is the sigmoid function (or some other nonlinear activation function). This method has the added benefit of utilizing the feature matrix in the embedding process while retaining knowledge of the edge structure. We will focus on GCNs as the primary embedding method for this paper.
+
+\paragraph{Fairness in Machine Learning}
+
+Recent work in machine learning has demonstrated the capability of ML models to learn implicit biases present in the data, such as systemic racism in criminal recidivism (ref), facial recognition technology (ref), and gender biases in machine translation (ref). As the usage of ML models across domains becomes evermore common, it is critical that researchers consider the fairness of their models.
+
+Several formulations of fairness have been proposed in the ML community. The first and most basic formulation is attribute unaware fairness: if a model cannot use a sensitive attribute in its prediction, the model is fair. However, this formulation is flawed, due to correlations that may exist between the sensitive attributes and other features in the dataset, such as zipcode when determining credit approval; due to systemic racism and historic segregation, some zipcodes are more strongly associated with specific races than others, which leads to zipcode becoming a proxy for race.
+
+This leads to the formulations of demographic parity and equalized odds, which propose specific constraints on the performance of a model. Demographic parity requires that members of different protected classes appear in the positive class at the same rate; the distribution of protected attributes of members in the positive class should match the population distribution. On the other hand, equalized odds is less focused on the model outcome, but rather on model performance; the true positive rates should be equal across protected attributes. This guarantees that a model acheives similar performance across protected attributes. In contrast to the prior definitions of fairness, the individual fairness definition does not depend on sensitive attributes, but rather the similarity of members. Individual fairness dictates that similar individuals should have similar outcomes in the model. 
+
+For the purpose of this paper, we will focus on demographic parity; members of different protected classes should appear in the positive class at the same rate.
+
+\paragraph{Fairness in Graph Embeddings}
+
+The analysis of fairness in graph mining is a growing field. The most closely related work, InFoRM \citep{kang2020inform}, recognizes three approaches to implementing individual fairness constraints: debiasing the input graph, debiasing the mining model, and debiasing the mining result. To debias the input graph, Kang et al. costruct an algorithm to optimize the adjacency matrix of graph data to improve individual fairness. In contrast, Bose et al. (ref) propose an adversarial method to ensure graph embeddings do not contain information that can be used to discern an individual's protected class.

@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.stats import entropy
 from scipy.spatial.distance import pdist, squareform
-from sklearn.metrics.pairwise import cosine_similarity
 
 def dp_link_divergence(attributes, edges):
     f = np.squeeze(np.matmul(edges, attributes) + 1e-7)
@@ -9,9 +8,17 @@ def dp_link_divergence(attributes, edges):
     e = np.repeat(e, f.shape[-2], axis = 0)
     norme = np.sum(e, axis = -1, keepdims=True)
     normf = np.sum(f, axis = -1, keepdims=True)
-    print(e.shape, f.shape)
     retval = entropy(e / norme, f / normf)
-    return retval
+    return np.mean(retval)
+
+def build_reconstruction_metric(pos_weight):
+
+    def reconstruction_metric(true_adj, pred_adj):
+        b_ce = -(true_adj * np.log(pred_adj + 1e-7) + (1 - true_adj) * np.log(1 - pred_adj + 1e-7))
+        weight_vector = true_adj * pos_weight + (1 - true_adj)
+        return np.mean(weight_vector * b_ce)
+
+    return reconstruction_metric
 
 def k_nearest(embeddings, k=10):
     sims = 1 - squareform(pdist(embeddings, metric='cosine'))
