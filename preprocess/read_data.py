@@ -28,6 +28,9 @@ def read_citeseer(k):
         except KeyError:
             continue
 
+    if k == 0:
+        return features, edges, None, attributes
+
     args = type('Args', (object,), {})
     args.fold = k
     train_edges, test_edges = split_train_and_test(args, edges)
@@ -57,6 +60,9 @@ def read_cora(k):
         line = line.strip().split()
         edges[indexes[line[0]], indexes[line[1]]] = 1
 
+    if k == 0:
+        return features, edges, None, attributes
+
     args = type('Args', (object,), {})
     args.fold = k
     train_edges, test_edges = split_train_and_test(args, edges)
@@ -83,6 +89,9 @@ def read_credit(k):
         edges[convert_sci(line[0]), convert_sci(line[1])] = 1
         edges[convert_sci(line[1]), convert_sci(line[0])] = 1
 
+    if k == 0:
+        return features, edges, None, attributes
+
     args = type('Args', (object,), {})
     args.fold = k
     train_edges, test_edges = split_train_and_test(args, edges)
@@ -94,6 +103,9 @@ def read_facebook(k):
     edges = np.loadtxt('./data/facebook/fb_adjacency_1684.txt')
     features = np.concatenate([nodes[:, :147], nodes[:, 149:]], axis = -1)
     attributes = nodes[:, [147, 148]]
+
+    if k == 0:
+        return features, edges, None, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
@@ -139,6 +151,9 @@ def read_pubmed(k):
         line = line.strip().split()
         p1, p2 = line[1].split(':')[1], line[3].split(':')[1]
         edges[indexes[p1], indexes[p2]] = 1
+
+    if k == 0:
+        return features, edges, None, attributes
 
     args = type('Args', (object,), {})
     args.fold = k

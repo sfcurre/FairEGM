@@ -16,11 +16,13 @@ from functools import singledispatch
 
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import average_precision_score
+import sklearn.preprocessing as skpp
 
 from baselines.gae.gae.optimizer import OptimizerAE, OptimizerVAE
 from baselines.gae.gae.model import GCNModelAE, GCNModelVAE
 from baselines.gae.gae.preprocessing import preprocess_graph, construct_feed_dict, sparse_to_tuple
 from baselines.inform.method.debias_graph import DebiasGraph
+from baselines.inform.utils import *
 
 import networkx as nx
 from scipy.stats import entropy
