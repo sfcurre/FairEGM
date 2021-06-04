@@ -264,10 +264,10 @@ def kmeans_inform(all_features, train_folds, test_folds, all_attributes, top_k, 
         embs = model.train(graph)
 
         adj_rec = sims = 1 - squareform(pdist(embs, metric='cosine'))
-        
+        print(adj_rec)
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
-        rdict['link divergence'] = dp_link_divergence(attributes, adj_rec)
+        rdict['link divergence'] = dp_link_divergence(attributes[None,...], adj_rec)
         rdict['recall@k'] = recall_at_k(embs, test_edges, k=top_k)
         rdict['dp@k'] = dp_at_k(embs, attributes, k=top_k)
         print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
