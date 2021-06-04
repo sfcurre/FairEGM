@@ -90,13 +90,13 @@ def read_credit(k):
         edges[convert_sci(line[1]), convert_sci(line[0])] = 1
 
     if k == 0:
-        return features, edges, None, attributes
+        return features.values, edges, None, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     train_edges, test_edges = split_train_and_test(args, edges)
 
-    return features, train_edges, test_edges, attributes
+    return features.values, train_edges, test_edges, attributes
 
 def read_facebook(k):
     nodes = np.loadtxt('./data/facebook/fb_features_ego_1684.txt')
