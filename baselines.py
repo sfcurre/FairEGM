@@ -279,7 +279,7 @@ def kmeans_inform(all_features, train_folds, test_folds, all_attributes, top_k, 
 def main():
     folds = 5
     top_k = 20
-    for dataset in ['cora', 'citeseer', 'facebook']: # + ['credit', 'pubmed']:
+    for dataset in ['cora', 'citeseer', 'facebook', 'credit', 'pubmed']:
         if dataset == 'citeseer':
             data = read_citeseer(folds)
         elif dataset == 'cora':

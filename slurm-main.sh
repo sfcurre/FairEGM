@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=FairGraphs
-#SBATCH --time=11:59:59
+#SBATCH --time=23:59:59
 #SBATCH --output="FairGraphs-%j.out"
 #SBATCH --account=PAS0166
 #SBATCH --nodes=1
@@ -22,7 +22,7 @@ cd ~/FairGraphs
 #python main.py --dataset cora -d 128 -lr 0.001 -e 300 -k 20 -f 5
 #python main.py --dataset facebook -d 128 -lr 0.001 -e 300 -k 20 -f 5
 
-#python main.py --dataset credit -d 128 -lr 0.001 -e 300 -k 20 -f 5
+python main.py --dataset credit -d 128 -lr 0.001 -e 300 -k 20 -f 5
 #python main.py --dataset pubmed -d 128 -lr 0.001 -e 300 -k 20 -f 5
 
 #python cfo.py --dataset citeseer -d 128 -lr 0.001 -e 300 -k 20 -f 5
@@ -36,6 +36,7 @@ cd ~/FairGraphs
 #python gfo.py --dataset cora -d 128 -e 300 -k 20 -f 5
 #python gfo.py --dataset facebook -d 128 -e 300 -k 20 -f 5
 
+python gfo.py --dataset credit -d 128 -e 300 -k 20 -f 5
 #python gfo.py --dataset pubmed -d 128 -e 300 -k 20 -f 5
 
 python baselines.py
