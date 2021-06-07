@@ -1,0 +1,98 @@
+{
+ "gae": [
+  {
+   "reconstruction loss": 0.7436478773035115,
+   "link divergence": 0.0030375345413737598,
+   "recall@k": 0.4117647058823529,
+   "dp@k": 5.775001348870477
+  },
+  {
+   "reconstruction loss": 0.7177098544570942,
+   "link divergence": 0.0009684372620062327,
+   "recall@k": 0.5,
+   "dp@k": 6.32295065079814
+  },
+  {
+   "reconstruction loss": 0.7683139288819671,
+   "link divergence": 0.00442789355717106,
+   "recall@k": 0.4142857142857143,
+   "dp@k": 3.3613055395169917
+  },
+  {
+   "reconstruction loss": 0.7716998224767588,
+   "link divergence": 0.0038375614836265344,
+   "recall@k": 0.30067567567567566,
+   "dp@k": 5.299080508193848
+  },
+  {
+   "reconstruction loss": 0.744726831672527,
+   "link divergence": 0.0028585292723235633,
+   "recall@k": 0.3684210526315789,
+   "dp@k": 6.887804343582093
+  }
+ ],
+ "vgae": [
+  {
+   "reconstruction loss": 0.7298137716262454,
+   "link divergence": 0.0014936934918704265,
+   "recall@k": 0.5036764705882353,
+   "dp@k": 5.142513097147415
+  },
+  {
+   "reconstruction loss": 0.7293601991852083,
+   "link divergence": 0.0010867243417282532,
+   "recall@k": 0.4929078014184397,
+   "dp@k": 5.751409074292035
+  },
+  {
+   "reconstruction loss": 0.7293277875281656,
+   "link divergence": 0.0013458705810576056,
+   "recall@k": 0.5392857142857143,
+   "dp@k": 3.478203421601305
+  },
+  {
+   "reconstruction loss": 0.7278404203778875,
+   "link divergence": 0.0013029236241432138,
+   "recall@k": 0.39864864864864863,
+   "dp@k": 5.164064384158937
+  },
+  {
+   "reconstruction loss": 0.7248435147530212,
+   "link divergence": 0.0009888420133147076,
+   "recall@k": 0.5037593984962406,
+   "dp@k": 5.321365251423279
+  }
+ ],
+ "inform": [
+  {
+   "reconstruction loss": NaN,
+   "link divergence": Infinity,
+   "recall@k": 0.48161764705882354,
+   "dp@k": 5.260813404586595
+  },
+  {
+   "reconstruction loss": NaN,
+   "link divergence": Infinity,
+   "recall@k": 0.4858156028368794,
+   "dp@k": 5.749206937085347
+  },
+  {
+   "reconstruction loss": NaN,
+   "link divergence": Infinity,
+   "recall@k": 0.5035714285714286,
+   "dp@k": 3.2991557144501216
+  },
+  {
+   "reconstruction loss": NaN,
+   "link divergence": Infinity,
+   "recall@k": 0.38175675675675674,
+   "dp@k": 4.944757935019461
+  },
+  {
+   "reconstruction loss": NaN,
+   "link divergence": Infinity,
+   "recall@k": 0.462406015037594,
+   "dp@k": 5.411029802988152
+  }
+ ]
+}
