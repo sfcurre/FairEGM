@@ -23,6 +23,7 @@ from baselines.gae.gae.model import GCNModelAE, GCNModelVAE
 from baselines.gae.gae.preprocessing import preprocess_graph, construct_feed_dict, sparse_to_tuple
 from baselines.inform.method.debias_graph import DebiasGraph
 from baselines.inform.utils import *
+from baselines.FairWalk.main import fairwalk
 
 import networkx as nx
 from scipy.stats import entropy
@@ -275,6 +276,42 @@ def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
     
     return results
 
+def kmeans_fairwalk(all_features, train_folds, test_folds, all_attributes, top_k, attr_id=0):
+    results = []
+    for i in range(len(train_folds)):
+        train_edges = train_folds[i]
+        test_edges = test_folds[i]
+
+        use_node = np.any((train_edges != 0), axis=-1)
+        print(use_node.sum())
+        # features = all_features[use_node]
+        attributes = all_attributes[use_node]
+        train_edges = train_edges[use_node][:, use_node]
+        test_edges = test_edges[use_node][:, use_node]
+        pos_weight = float(train_edges.shape[0] * train_edges.shape[0] - train_edges.sum()) / train_edges.sum()
+
+        embeddings = fairwalk(train_edges, test_edges, attributes, fold_id=i, attr_id=attr_id)
+
+        # Evaluate the embeddings
+        def get_scores(train_edges, test_edges, attributes, emb):
+            def sigmoid(x):
+                return 1 / (1 + np.exp(-x))
+
+            # Predict on test set of edges
+            adj_rec = sigmoid(np.dot(emb, emb.T))
+
+            rdict = {}
+            rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
+            rdict['link divergence'] = dp_link_divergence(attributes[None, ...], adj_rec)
+            rdict['recall@k'] = recall_at_k(emb, test_edges, k=top_k)
+            rdict['dp@k'] = dp_at_k(emb, attributes, k=top_k)
+            print(
+                f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
+
+            return rdict
+        results.append(get_scores(train_edges, test_edges, attributes, embeddings))
+    return results
+
 def main():
     folds = 5
     top_k = 20
@@ -299,11 +336,13 @@ def main():
                 rlist = kmeans_gae(*data, top_k, 'gcn_vae')
             elif model == 'inform':
                 rlist = kmeans_inform(*data, top_k, alpha=0.5)
+            elif model == 'fairwalk':
+                rlist = kmeans_fairwalk(*data, top_k)
 
             results[model] = rlist
 
-        with open(f'./results/{dataset}/baseline_results.json', 'w') as fp:
-            json.dump(results, fp, indent=True, default=to_serializable)
+        # with open(f'./results/{dataset}/baseline_results.json', 'w') as fp:
+        #     json.dump(results, fp, indent=True, default=to_serializable)
 
 if __name__ == '__main__':
     main()
