@@ -42,22 +42,22 @@ def main():
 
     args = parse_args()
     if args.dataset == 'citeseer':
-        data = read_citeseer(args.folds)
+        get_data = lambda: read_citeseer(args.folds)
     elif args.dataset == 'cora':
-        data = read_cora(args.folds)
+        get_data = lambda: read_cora(args.folds)
     elif args.dataset == 'credit':
-        data = read_credit(args.folds)
+        get_data = lambda: read_credit(args.folds)
     elif args.dataset == 'facebook':
-        data = read_facebook(args.folds)
+        get_data = lambda: read_facebook(args.folds)
     elif args.dataset == 'pubmed':
-        data = read_pubmed(args.folds)
+        get_data = lambda: read_pubmed(args.folds)
     else:
         raise ValueError(f"Dataset \"{args.dataset}\" is not recognized.")
-   
+ 
     results = defaultdict(dict)
 
     for l in [0, 0.001, 0.01, 0.1, 1, 10, 100, 1000]:
-
+        data = get_data()
         print(f'Model gfo_lambda{l}: START')
         args.lambda_param = l
         results[f'gfo_lambda{l}']= kfold_fair_model(*data, FairTargetedAdditionGraphConv, args)

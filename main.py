@@ -49,29 +49,28 @@ def parse_args():
 def reconstruction_model(num_nodes, num_features):
     # num_features == embedding_dim
     nodes = tf.keras.layers.Input((num_nodes, num_features))
-    edges = tf.keras.layers.Input((1, num_nodes, num_nodes))
-    conv_nodes, conv_edges = GraphCNN(num_features, activation='relu')([nodes, edges])
+    edges = tf.keras.layers.Input((num_nodes, num_nodes))
+    conv_nodes, conv_edges = GraphCNN(num_features, activation='linear')([nodes, edges])
     output = LinkReconstruction()(conv_nodes)
     return tf.keras.models.Model([nodes, edges], output)
 
 def base_model(num_nodes, num_features, embedding_dim):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
-    edges = tf.keras.layers.Input((1, num_nodes, num_nodes))
+    edges = tf.keras.layers.Input((num_nodes, num_nodes))
 
     conv_nodes, conv_edges = GraphCNN(embedding_dim, activation='relu')([nodes, edges])
-    output = reconstruction_model(num_nodes, embedding_dim)([conv_nodes, conv_edges])
+    conv_nodes, conv_edges = GraphCNN(embedding_dim, activation='linear')([conv_nodes, conv_edges])
+    output = LinkReconstruction()(conv_nodes)
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [conv_nodes, conv_edges])
 
-def kfold_base_model(all_features, train_folds, test_folds, all_attributes, args):
+def kfold_base_model(all_features, fold_generator, all_attributes, args):
     results = []
-    for i in range(args.folds):
+    for i, (train_edges, test_edges) in enumerate(fold_generator):
         rdict = {}
-        train_edges = train_folds[i]
-        test_edges = test_folds[i]
 
         use_node = np.any((train_edges != 0), axis = -1)
 
-        features, train_edges = all_features[None, use_node, :], train_edges[None, None, use_node][..., use_node]
+        features, train_edges = all_features[None, use_node, :], train_edges[None, use_node][..., use_node]
         test_edges, attributes = test_edges[use_node][..., use_node], all_attributes[None, use_node, :]
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
@@ -81,7 +80,7 @@ def kfold_base_model(all_features, train_folds, test_folds, all_attributes, args
 
         base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim)
         base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
-        history = base.fit([features, train_edges], train_edges, epochs = args.epochs, verbose = 0).history
+        history = base.fit([features, train_edges], train_edges, epochs = args.epochs, verbose = 2).history
         history['task loss'] = history.pop('loss')
         history['fair loss'] = history.pop('dp_metric')
         rdict['history'] = history
@@ -96,16 +95,14 @@ def kfold_base_model(all_features, train_folds, test_folds, all_attributes, args
         results.append(rdict)
     return results
 
-def kfold_fair_model(all_features, train_folds, test_folds, all_attributes, layer_constructor, args):
+def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constructor, args):
     results = []
-    for i in range(args.folds):
+    for i, (train_edges, test_edges) in enumerate(fold_generator):
         rdict = {}
-        train_edges = train_folds[i]
-        test_edges = test_folds[i]
 
         use_node = np.any((train_edges != 0), axis = -1)
 
-        features, train_edges = all_features[None, use_node, :], train_edges[None, None, use_node][..., use_node]
+        features, train_edges = all_features[None, use_node, :], train_edges[None, use_node][..., use_node]
         test_edges, attributes = test_edges[use_node][..., use_node], all_attributes[None, use_node, :]
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
@@ -127,23 +124,28 @@ def kfold_fair_model(all_features, train_folds, test_folds, all_attributes, laye
 def main():
     args = parse_args()
     if args.dataset == 'citeseer':
-        data = read_citeseer(args.folds)
+        get_data = lambda: read_citeseer(args.folds)
     elif args.dataset == 'cora':
-        data = read_cora(args.folds)
+        get_data = lambda: read_cora(args.folds)
     elif args.dataset == 'credit':
-        data = read_credit(args.folds)
+        get_data = lambda: read_credit(args.folds)
     elif args.dataset == 'facebook':
-        data = read_facebook(args.folds)
+        get_data = lambda: read_facebook(args.folds)
     elif args.dataset == 'pubmed':
-        data = read_pubmed(args.folds)
+        get_data = lambda: read_pubmed(args.folds)
     else:
         raise ValueError(f"Dataset \"{args.dataset}\" is not recognized.")
-
+ 
     results = {}
+    data=get_data()
     results['base'] = kfold_base_model(*data, args)
+    data=get_data()
     results['gfo'] = kfold_fair_model(*data, TARGETED_FAIRNESS, args)
+    data=get_data()
     results['cfo_10'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_10, args)
+    data=get_data()
     results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args)
+    data=get_data()
     results['fer'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args)
 
     with open(f'./results/{args.dataset}/results.json', 'w') as fp:

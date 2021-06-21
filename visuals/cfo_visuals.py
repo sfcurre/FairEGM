@@ -22,7 +22,7 @@ def main():
               ('link divergence', 'Link Divergence'),
               ('recall@k', 'Recall@20'),
               ('dp@k', 'DP@20')]
-    fig, axes = plt.subplots(2, 2)
+    fig, axes = plt.subplots(2, 2, figsize=(10,6))
     
 
     for i, (key, label) in enumerate(labels):
@@ -37,6 +37,7 @@ def main():
 
     axes[1, 0].set_xlabel('Number of Introduced Nodes')
     axes[1, 1].set_xlabel('Number of Introduced Nodes')
+    plt.savefig(f'./visuals/images/{args.dataset}_cfo_metrics.png')
     plt.show()
 
 if __name__ == '__main__':

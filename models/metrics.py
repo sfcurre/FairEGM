@@ -2,7 +2,11 @@ import numpy as np
 from scipy.stats import entropy
 from scipy.spatial.distance import pdist, squareform
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
 def dp_link_divergence(attributes, edges):
+    edges = sigmoid(edges)
     f = np.squeeze(np.matmul(edges, attributes) + 1e-7)
     e = np.sum(attributes, axis = 1) + 1e-7
     e = np.repeat(e, f.shape[-2], axis = 0)
@@ -14,6 +18,7 @@ def dp_link_divergence(attributes, edges):
 def build_reconstruction_metric(pos_weight):
 
     def reconstruction_metric(true_adj, pred_adj):
+        pred_adj = sigmoid(pred_adj)
         b_ce = -(true_adj * np.log(pred_adj + 1e-7) + (1 - true_adj) * np.log(1 - pred_adj + 1e-7))
         weight_vector = true_adj * pos_weight + (1 - true_adj)
         return np.mean(weight_vector * b_ce)
@@ -21,7 +26,7 @@ def build_reconstruction_metric(pos_weight):
     return reconstruction_metric
 
 def k_nearest(embeddings, k=10):
-    sims = 1 - squareform(pdist(embeddings, metric='cosine'))
+    sims = sigmoid(embeddings @ embeddings.T)
     order = np.argsort(sims, axis =-1)[:, :-1] #exclude self
     return order[:, -k:]
 

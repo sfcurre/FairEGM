@@ -29,13 +29,13 @@ def read_citeseer(k):
             continue
 
     if k == 0:
-        return features, edges, None, attributes
+        return features, edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
-    train_edges, test_edges = split_train_and_test(args, edges)
+    edge_gen = split_train_and_test(args, edges)
 
-    return features, train_edges, test_edges, attributes
+    return features, edge_gen, attributes
 
 def read_cora(k):
     content = open('./data/cora/cora.content')
@@ -61,13 +61,13 @@ def read_cora(k):
         edges[indexes[line[0]], indexes[line[1]]] = 1
 
     if k == 0:
-        return features, edges, None, attributes
+        return features, edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
-    train_edges, test_edges = split_train_and_test(args, edges)
+    edge_gen = split_train_and_test(args, edges)
 
-    return features, train_edges, test_edges, attributes
+    return features, edge_gen, attributes
 
 def read_credit(k):
     features = pd.read_csv('./data/credit/credit.csv')
@@ -90,13 +90,13 @@ def read_credit(k):
         edges[convert_sci(line[1]), convert_sci(line[0])] = 1
 
     if k == 0:
-        return features.values, edges, None, attributes
+        return features.values, edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
-    train_edges, test_edges = split_train_and_test(args, edges)
+    edge_gen = split_train_and_test(args, edges)
 
-    return features.values, train_edges, test_edges, attributes
+    return features.values, edge_gen, attributes
 
 def read_facebook(k):
     nodes = np.loadtxt('./data/facebook/fb_features_ego_1684.txt')
@@ -105,13 +105,13 @@ def read_facebook(k):
     attributes = nodes[:, [147, 148]]
 
     if k == 0:
-        return features, edges, None, attributes
+        return features, edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
-    train_edges, test_edges = split_train_and_test(args, edges)
+    edge_gen = split_train_and_test(args, edges)
 
-    return features, train_edges, test_edges, attributes
+    return features, edge_gen, attributes
 
 def read_pubmed(k):
     content = open('./data/pubmed/Pubmed-Diabetes.NODE.paper.tab')
@@ -153,10 +153,10 @@ def read_pubmed(k):
         edges[indexes[p1], indexes[p2]] = 1
 
     if k == 0:
-        return features, edges, None, attributes
+        return features, edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
-    train_edges, test_edges = split_train_and_test(args, edges)
+    edge_gen = split_train_and_test(args, edges)
 
-    return features, train_edges, test_edges, attributes
+    return features, edge_gen, attributes

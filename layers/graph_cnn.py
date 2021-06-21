@@ -30,14 +30,13 @@ class GraphCNN(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         assert len(input_shape) == 2
-        node_shape, filter_shape = input_shape
+        node_shape, adj_shape = input_shape
         self.num_nodes = node_shape[1]
         self.num_features = node_shape[2]
-        self.num_filters = filter_shape[1]
 
         #initialize all necessary weights and kernels
         self.kernel = self.add_weight(name = 'kernel',
-                                      shape = (self.num_filters * self.num_features, self.output_dim),
+                                      shape = (self.num_features, self.output_dim),
                                       initializer = self.kernel_initializer,
                                       regularizer = self.kernel_regularizer,
                                       constraint = self.kernel_constraint,
@@ -51,18 +50,13 @@ class GraphCNN(tf.keras.layers.Layer):
         super(GraphCNN, self).build(input_shape)
 
     def call(self, inputs):
-        nodes, filters = inputs
+        nodes, adj = inputs
         #nodes has shape (batch, nodes, features)
-        #filters has shape (batch, filters, nodes, nodes)
-
-        #expand inputs along filter axis
-        nodes = tf.expand_dims(nodes, axis = 1)    
-        #nodes has shape (batch, 1, nodes, features)
+        #adj has shape (batch, nodes, nodes)
 
         #perform convolution
-        conv_op = tf.matmul(filters, nodes)
-        conv_op = tf.reshape(tf.transpose(conv_op, (0, 2, 1, 3)), (-1, self.num_nodes, self.num_filters * self.num_features))
-        #conv_op has shape (batch, nodes, filters * features)
+        conv_op = tf.matmul(adj, nodes)
+        #conv_op has shape (batch, nodes, features)
 
         conv_out = tf.matmul(conv_op, self.kernel)
         #conv_out is shape (batch, nodes, output_dim)
@@ -70,7 +64,7 @@ class GraphCNN(tf.keras.layers.Layer):
         if self.use_bias:
             conv_out = tf.nn.bias_add(conv_out, self.bias)
 
-        return self.activation(conv_out), filters
+        return self.activation(conv_out), adj
 
     def compute_output_shape(self, input_shape):
         assert len(input_shape) == 2

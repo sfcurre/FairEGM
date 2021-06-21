@@ -24,10 +24,9 @@ class FairCommunityAdditionGraphConv(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         assert len(input_shape) == 2
-        node_shape, filter_shape = input_shape
+        node_shape, adj_shape = input_shape
         self.num_nodes = node_shape[1]
         self.num_features = node_shape[2]
-        self.num_filters = filter_shape[1]
 
         #initialize all necessary weights and kernels
         self.addition = self.add_weight(name = 'addition',
@@ -37,7 +36,7 @@ class FairCommunityAdditionGraphConv(tf.keras.layers.Layer):
                                         constraint = self.addition_constraint,
                                         trainable = True)
         self.connection = self.add_weight(name = 'connection',
-                                          shape = (self.num_filters, self.num_nodes, self.num_additions),
+                                          shape = (self.num_nodes, self.num_additions),
                                           initializer = self.connection_initializer,
                                           regularizer = self.connection_regularizer,
                                           constraint = self.connection_constraint,
@@ -45,26 +44,20 @@ class FairCommunityAdditionGraphConv(tf.keras.layers.Layer):
         super(FairCommunityAdditionGraphConv, self).build(input_shape)
 
     def call(self, inputs):
-        nodes, filters = inputs
+        nodes, adj = inputs
         #nodes has shape (batch, nodes, features)
-        #filters has shape (batch, filters, nodes, nodes)
-
-        #expand inputs along filter axis
-        nodes = tf.expand_dims(nodes, axis = 1)       
-        #nodes has shape (batch, filters, nodes, features)
+        #adj has shape (batch, nodes, nodes)
 
         #perform convolution
-        conv_op = tf.matmul(filters, nodes)
-        conv_op = tf.reshape(tf.transpose(conv_op, (0, 2, 1, 3)), (-1, self.num_nodes, self.num_filters * self.num_features))
-        #conv_op has shape (batch, nodes, filters * features)
+        conv_op = tf.matmul(adj, nodes)
+        #conv_op has shape (batch, nodes, features)
 
         #perform convolution for fairness additions
         fair_conv_op = tf.matmul(self.connection, self.addition)
-        fair_conv_op = tf.reshape(tf.transpose(fair_conv_op, (1, 0, 2)), (self.num_nodes, self.num_filters * self.num_features))
-        #fair_conv_op has shape (nodes, filters * features)
+        #fair_conv_op has shape (nodes, features)
 
         #apply fairness addition
         fair_op = conv_op + fair_conv_op
-        #fair_op has shape (batch, nodes, filters * features)
+        #fair_op has shape (batch, nodes, features)
 
-        return fair_op, filters
+        return fair_op, adj

@@ -43,15 +43,15 @@ def main():
 
     args = parse_args()
     if args.dataset == 'citeseer':
-        data = read_citeseer(args.folds)
+        get_data = lambda: read_citeseer(args.folds)
     elif args.dataset == 'cora':
-        data = read_cora(args.folds)
+        get_data = lambda: read_cora(args.folds)
     elif args.dataset == 'credit':
-        data = read_credit(args.folds)
+        get_data = lambda: read_credit(args.folds)
     elif args.dataset == 'facebook':
-        data = read_facebook(args.folds)
+        get_data = lambda: read_facebook(args.folds)
     elif args.dataset == 'pubmed':
-        data = read_pubmed(args.folds)
+        get_data = lambda: read_pubmed(args.folds)
     else:
         raise ValueError(f"Dataset \"{args.dataset}\" is not recognized.")
  
@@ -59,6 +59,7 @@ def main():
 
     for n in [1, 2, 4, 8, 16] + list(range(30, 360, 10)):
 
+        data = get_data()
         COMMUNITY_FAIRNESS = lambda: FairCommunityAdditionGraphConv(n)
 
         print(f'Model cfo_{n}: START')

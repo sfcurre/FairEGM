@@ -17,14 +17,13 @@ class FairTargetedAdditionGraphConv(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         assert len(input_shape) == 2
-        node_shape, filter_shape = input_shape
+        node_shape, adj_shape = input_shape
         self.num_nodes = node_shape[1]
         self.num_features = node_shape[2]
-        self.num_filters = filter_shape[1]
 
         #initialize all necessary weights and kernels
         self.addition = self.add_weight(name = 'addition',
-                                        shape = (self.num_nodes, self.num_filters * self.num_features),
+                                        shape = (self.num_nodes, self.num_features),
                                         initializer = self.addition_initializer,
                                         regularizer = self.addition_regularizer,
                                         constraint = self.addition_constraint,
@@ -32,21 +31,16 @@ class FairTargetedAdditionGraphConv(tf.keras.layers.Layer):
         super(FairTargetedAdditionGraphConv, self).build(input_shape)
 
     def call(self, inputs):
-        nodes, filters = inputs
+        nodes, adj = inputs
         #nodes has shape (batch, nodes, features)
-        #filters has shape (batch, filters, nodes, nodes)
-
-        #expand inputs along filter axis
-        nodes = tf.expand_dims(nodes, axis = 1)     
-        #nodes has shape (batch, 1, nodes, features)
+        #adj has shape (batch, nodes, nodes)
 
         #perform convolution
-        conv_op = tf.matmul(filters, nodes)
-        conv_op = tf.reshape(tf.transpose(conv_op, (0, 2, 1, 3)), (-1, self.num_nodes, self.num_filters * self.num_features))
-        #conv_op has shape (batch, nodes, filters * features)
+        conv_op = tf.matmul(adj, nodes)
+        #conv_op has shape (batch, nodes, features)
 
         #apply fairness addition
         fair_op = conv_op + self.addition
-        #fair_op has shape (batch, nodes, filters * features)
+        #fair_op has shape (batch, nodes, features)
 
-        return fair_op, filters
+        return fair_op, adj

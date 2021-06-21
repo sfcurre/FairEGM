@@ -22,7 +22,7 @@ def main():
               ('link divergence', 'Link Divergence'),
               ('recall@k', 'Recall@20'),
               ('dp@k', 'DP@20')]
-    fig, axes = plt.subplots(2, 2)
+    fig, axes = plt.subplots(2, 2, figsize=(10,6))
     
 
     for i, (key, label) in enumerate(labels):
@@ -37,6 +37,8 @@ def main():
 
     axes[1, 0].set_xlabel('Lambda')
     axes[1, 1].set_xlabel('Lambda')
+
+    plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_metrics.png')
     plt.show()
 
     tl, fl = [],[]
@@ -47,7 +49,7 @@ def main():
     task_loss = pd.DataFrame(tl, index = x, columns = 1 + np.arange(300)).transpose()
     fair_loss = pd.DataFrame(fl, index = x, columns = 1 + np.arange(300)).transpose()
 
-    fig, axes = plt.subplots(1, 2)
+    fig, axes = plt.subplots(1, 2, figsize=(10,5))
 
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
     g.set_xlabel('Epoch')
@@ -59,6 +61,8 @@ def main():
     g.set_xlabel('Epoch')
     g.set_ylabel('Link Divergence')
     g.set_xlim(1, 300)
+
+    plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_training.png')
     plt.show()
 
 if __name__ == '__main__':

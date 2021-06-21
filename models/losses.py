@@ -3,6 +3,7 @@ import tensorflow as tf
 def dp_link_divergence_loss(attributes, edges):
     #edges is (batch, nodes, nodes)
     #atrributes is (batch, nodes, attributes)
+    edges = tf.nn.sigmoid(edges)
     f = tf.matmul(edges, attributes) + 1e-7
     e = tf.reduce_sum(attributes, axis = 1) + 1e-7
     norme = tf.reduce_sum(e, axis = -1, keepdims=True)
@@ -26,8 +27,10 @@ def build_reconstruction_loss(pos_weight):
 
     def reconstruction_loss(true_adj, pred_adj):
         true_adj = tf.cast(true_adj, tf.float32)
-        b_ce = tf.keras.losses.binary_crossentropy(true_adj, pred_adj)
-        weight_vector = true_adj * pos_weight + (1 - true_adj)
-        return tf.reduce_mean(weight_vector * b_ce)
+        return tf.nn.weighted_cross_entropy_with_logits(true_adj, pred_adj, pos_weight)
+        
+        # b_ce = tf.keras.losses.binary_crossentropy(true_adj, pred_adj)
+        # weight_vector = true_adj * pos_weight + (1 - true_adj)
+        # return tf.reduce_mean(weight_vector * b_ce)
 
     return reconstruction_loss

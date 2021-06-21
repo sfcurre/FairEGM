@@ -20,7 +20,8 @@ def is_in_train(train, node):
 
 
 def split_train_and_test(args, data):
-    print(np.sum(data))
+    np.random.seed(5429)
+    #print(np.sum(data))
     # preprocess
     data[np.tril_indices_from(
         data)] = 0  # remove all edges (u, v) such that u >= v, including self-loops and duplicate edges
@@ -30,16 +31,15 @@ def split_train_and_test(args, data):
 
     # randomly select (1-args.train_prop) positive test edges
     permu = np.random.permutation(edge_num)
-    train_matrices, test_matrices = list(), list()
     for itr in range(args.fold):
         test_st, test_ed = int(float(edge_num) / args.fold * itr), int(float(edge_num) / args.fold * (itr + 1))
-        print("Iteration: %d / %d, [test_st, test_ed] = [%d, %d]"%(itr, args.fold, test_st, test_ed))
+        #print("Iteration: %d / %d, [test_st, test_ed] = [%d, %d]"%(itr, args.fold, test_st, test_ed))
 
         # initial split
         test_mtx = np.zeros_like(data, dtype=np.int32)
         test_mtx[idx_i[permu[test_st:test_ed]], idx_j[permu[test_st:test_ed]]] = 1
         train_mtx = data - test_mtx
-        print(np.sum(train_mtx) * 2, np.sum(test_mtx) * 2, np.sum(train_mtx + test_mtx) * 2)
+        #print(np.sum(train_mtx) * 2, np.sum(test_mtx) * 2, np.sum(train_mtx + test_mtx) * 2)
 
         # find the largest (weakly) connected component of the training set
         train_nx = nx.convert_matrix.from_numpy_array(train_mtx)
@@ -49,7 +49,7 @@ def split_train_and_test(args, data):
                 train_mtx[i, :] = 0
                 train_mtx[:, i] = 0
         train_mtx += train_mtx.T
-        print(np.sum(train_mtx))
+        #print(np.sum(train_mtx))
 
         # remove test nodes not in the training set
         idx_i_test, idx_j_test = np.where(test_mtx > 0)
@@ -66,21 +66,19 @@ def split_train_and_test(args, data):
                 test_mtx[:, j] = 0
         test_mtx += test_mtx.T  # symmetric
 
-        print(np.sum(train_mtx), np.sum(test_mtx), np.sum(train_mtx + test_mtx))
-        train_matrices.append(train_mtx)
-        test_matrices.append(test_mtx)
-    return train_matrices, test_matrices
+        #print(np.sum(train_mtx), np.sum(test_mtx), np.sum(train_mtx + test_mtx))
+        yield train_mtx, test_mtx
 
 
 if __name__ == "__main__":
     args = parse_args()
 
     data = np.loadtxt(args.data)
-    train_matrices, test_matrices = split_train_and_test(args, data)
+    matrix_gen = split_train_and_test(args, data)
 
     folder_name = "%d-fold data" % args.fold
     os.makedirs(folder_name, exist_ok=True)
 
-    for i in range(args.fold):
-        np.savetxt("%s/train_mtx-%d.txt" % (folder_name, i), train_matrices[i], fmt='%1d')
-        np.savetxt("%s/test_mtx-%d.txt" % (folder_name, i), test_matrices[i], fmt='%1d')
+    for i, (train_matrix, test_matrix) in enumerate(matrix_gen):
+        np.savetxt("%s/train_mtx-%d.txt" % (folder_name, i), train_matrix, fmt='%1d')
+        np.savetxt("%s/test_mtx-%d.txt" % (folder_name, i), test_matrix, fmt='%1d')

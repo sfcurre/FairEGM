@@ -26,7 +26,6 @@ from baselines.inform.utils import *
 
 import networkx as nx
 from scipy.stats import entropy
-from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics.pairwise import cosine_similarity
 
 from models.metrics import *
@@ -117,7 +116,7 @@ def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
     # Settings
     flags = type('FLAGS', (object,), {})
     flags.learning_rate = 0.01
-    flags.epochs = 1000
+    flags.epochs = 500
     flags.hidden1 = 128
     flags.hidden2 = 128
     flags.weight_decay = 0
@@ -227,11 +226,9 @@ def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
     results = get_scores(train_adj, test_adj, attributes)
     return results
 
-def kmeans_gae(all_features, train_folds, test_folds, all_attributes, top_k, model_str):
+def kmeans_gae(all_features, fold_gen, all_attributes, top_k, model_str):
     results = []
-    for i in range(len(train_folds)):
-        train_edges = train_folds[i]
-        test_edges = test_folds[i]
+    for train_edges, test_edges in fold_gen:
 
         use_node = np.any((train_edges != 0), axis = -1)
         features = all_features[use_node]
@@ -242,12 +239,14 @@ def kmeans_gae(all_features, train_folds, test_folds, all_attributes, top_k, mod
         results.append(run_gae(features, train_edges, test_edges, attributes, top_k, model_str))
     return results
 
-def kmeans_inform(all_features, train_folds, test_folds, all_attributes, top_k, alpha = 0.5):
+def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
+
+    def sigmoid(x):
+        return 1 / (1 + np.exp(-x))
+
     results = []
-    for i in range(len(train_folds)):
+    for train_edges, test_edges in fold_gen:
         rdict = {}
-        train_edges = train_folds[i]
-        test_edges = test_folds[i]
 
         use_node = np.any((train_edges != 0), axis = -1)
 
@@ -263,7 +262,7 @@ def kmeans_inform(all_features, train_folds, test_folds, all_attributes, top_k, 
         model = LINE(ratio=3200, seed=0)
         embs = model.train(graph)
 
-        adj_rec = sims = 1 - squareform(pdist(embs, metric='cosine'))
+        adj_rec = sigmoid(embs @ embs.T)
         print(adj_rec)
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
@@ -281,18 +280,19 @@ def main():
     top_k = 20
     for dataset in ['cora', 'citeseer', 'facebook', 'pubmed']:
         if dataset == 'citeseer':
-            data = read_citeseer(folds)
+            get_data = lambda: read_citeseer(folds)
         elif dataset == 'cora':
-            data = read_cora(folds)
+            get_data = lambda: read_cora(folds)
         elif dataset == 'credit':
-            data = read_credit(folds)
+            get_data = lambda: read_credit(folds)
         elif dataset == 'facebook':
-            data = read_facebook(folds)
+            get_data = lambda: read_facebook(folds)
         elif dataset == 'pubmed':
-            data = read_pubmed(folds)
+            get_data = lambda: read_pubmed(folds)
 
         results = {}
         for model in ['gae', 'vgae', 'inform']: # + ['graphsage']:
+            data = get_data()
             if model == 'gae':
                 rlist = kmeans_gae(*data, top_k, 'gcn_ae')
             elif model == 'vgae':

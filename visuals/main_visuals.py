@@ -36,7 +36,7 @@ def main():
     with open(f'results/{args.dataset}/results.json') as fp:
         results = json.load(fp)
 
-    fig, axes = plt.subplots(1, 2)
+    fig, axes = plt.subplots(1, 2, figsize=(10,5))
 
     tl = []
     tl.append(np.array([fold['history']['task loss'] for fold in results['base']]).mean(axis = 0))
@@ -64,6 +64,8 @@ def main():
     g.set_xlabel('Epoch')
     g.set_ylabel('Link Divergence')
     g.set_xlim(1, 300)
+
+    plt.savefig(f'./visuals/images/{args.dataset}_main_training.png')
     plt.show()
 
 if __name__ == '__main__':
