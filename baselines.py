@@ -116,7 +116,7 @@ def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
 
     # Settings
     flags = type('FLAGS', (object,), {})
-    flags.learning_rate = 0.01
+    flags.learning_rate = 0.001
     flags.epochs = 500
     flags.hidden1 = 128
     flags.hidden2 = 128
@@ -258,7 +258,7 @@ def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
         sims = 1 - squareform(pdist(features, metric='cosine'))
 
         FairGraph = DebiasGraph()
-        adj = FairGraph.line(sp.csc_matrix(train_edges),sp.csc_matrix(sims), alpha=alpha, maxiter=100, lr=0.001, tol=1e-6)
+        adj = FairGraph.line(sp.csc_matrix(train_edges),sp.csc_matrix(sims), alpha=alpha, maxiter=500, lr=0.001, tol=1e-6)
         graph = nx.from_scipy_sparse_matrix(adj, create_using=nx.Graph(), edge_attribute='weight')
         model = LINE(ratio=3200, seed=0)
         embs = model.train(graph)
@@ -276,11 +276,9 @@ def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
     
     return results
 
-def kmeans_fairwalk(all_features, train_folds, test_folds, all_attributes, top_k, attr_id=0):
+def kmeans_fairwalk(all_features, fold_gen, all_attributes, top_k, attr_id=0):
     results = []
-    for i in range(len(train_folds)):
-        train_edges = train_folds[i]
-        test_edges = test_folds[i]
+    for i, (train_edges, test_edges) in enumerate(fold_gen):
 
         use_node = np.any((train_edges != 0), axis=-1)
         print(use_node.sum())
@@ -328,7 +326,7 @@ def main():
             get_data = lambda: read_pubmed(folds)
 
         results = {}
-        for model in ['gae', 'vgae', 'inform']: # + ['graphsage']:
+        for model in ['gae', 'vgae', 'inform', 'fairwalk']: # + ['graphsage']:
             data = get_data()
             if model == 'gae':
                 rlist = kmeans_gae(*data, top_k, 'gcn_ae')
@@ -341,8 +339,8 @@ def main():
 
             results[model] = rlist
 
-        # with open(f'./results/{dataset}/baseline_results.json', 'w') as fp:
-        #     json.dump(results, fp, indent=True, default=to_serializable)
+        with open(f'./results/{dataset}/baseline_results.json', 'w') as fp:
+            json.dump(results, fp, indent=True, default=to_serializable)
 
 if __name__ == '__main__':
     main()
