@@ -20,8 +20,8 @@ def main():
     x = [1, 2, 4, 8, 16] + list(range(30, 360, 10))
     labels = [('reconstruction loss', 'Reconstruction Loss'),
               ('link divergence', 'Link Divergence'),
-              ('recall@k', 'Recall@20'),
-              ('dp@k', 'DP@20')]
+              ('recall@20', 'Recall@20'),
+              ('dp@20', 'DP@20')]
     fig, axes = plt.subplots(2, 2, figsize=(10,6))
     
 

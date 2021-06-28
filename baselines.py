@@ -1,7 +1,7 @@
 from __future__ import division
 from __future__ import print_function
 
-import time
+import time, argparse
 import os, json
 
 # Train on CPU (hide GPU) due to memory constraints
@@ -39,6 +39,17 @@ def to_serializable(val):
 @to_serializable.register(np.float32)
 def ts_float32(val):
     return np.float64(val)
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [cora, citeseer, facebook].')
+    parser.add_argument('-d', '--embedding-dim', type=int, default=100, help="The graph embedding dimension.")
+    parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, help="Learning rate for the embedding model.")
+    parser.add_argument('-e', '--epochs', type=int, default=300, help='Number of epochs for the embedding model.')
+    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', help='Number for K for Recall@K and DP@K metrics.')
+    parser.add_argument('-f', '--folds', type=int, default=5, help='Number of folds for k-fold cross validation.')
+    parser.add_argument('--lambda-param', type=float, default=1, help='The learning rate multiplier for the fair loss.')
+    return parser.parse_args()
 
 class LINE:
     def __init__(self, dimension=128, ratio=3200, negative=5, batch_size=1000, init_lr=0.025, seed=None):
@@ -112,12 +123,12 @@ class LINE:
                 )
             self.emb_vertex[u] += vec_error
 
-def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
+def run_gae(features, train_adj, test_adj, attributes, args, model_str):
 
     # Settings
     flags = type('FLAGS', (object,), {})
-    flags.learning_rate = 0.001
-    flags.epochs = 500
+    flags.learning_rate = args.learning_rate
+    flags.epochs = args.epochs
     flags.hidden1 = 128
     flags.hidden2 = 128
     flags.weight_decay = 0
@@ -195,9 +206,10 @@ def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
         rdict['link divergence'] = dp_link_divergence(attributes[None, ...], adj_rec)
-        rdict['recall@k'] = recall_at_k(emb, test_edges, k=top_k)
-        rdict['dp@k'] = dp_at_k(emb, attributes, k=top_k)
-        print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
+        for k in args.top_k:
+            rdict[f'recall@{k}'] = recall_at_k(emb, test_edges, k=k)
+            rdict[f'dp@{k}'] = dp_at_k(emb, attributes, k=k)
+        print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
         
         return rdict
 
@@ -227,7 +239,7 @@ def run_gae(features, train_adj, test_adj, attributes, top_k, model_str):
     results = get_scores(train_adj, test_adj, attributes)
     return results
 
-def kmeans_gae(all_features, fold_gen, all_attributes, top_k, model_str):
+def kmeans_gae(all_features, fold_gen, all_attributes, args, model_str):
     results = []
     for train_edges, test_edges in fold_gen:
 
@@ -237,10 +249,10 @@ def kmeans_gae(all_features, fold_gen, all_attributes, top_k, model_str):
         train_edges = train_edges[use_node][:, use_node]
         test_edges = test_edges[use_node][:, use_node]
 
-        results.append(run_gae(features, train_edges, test_edges, attributes, top_k, model_str))
+        results.append(run_gae(features, train_edges, test_edges, attributes, args, model_str))
     return results
 
-def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
+def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
 
     def sigmoid(x):
         return 1 / (1 + np.exp(-x))
@@ -258,7 +270,7 @@ def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
         sims = 1 - squareform(pdist(features, metric='cosine'))
 
         FairGraph = DebiasGraph()
-        adj = FairGraph.line(sp.csc_matrix(train_edges),sp.csc_matrix(sims), alpha=alpha, maxiter=500, lr=0.001, tol=1e-6)
+        adj = FairGraph.line(sp.csc_matrix(train_edges),sp.csc_matrix(sims), alpha=alpha, maxiter=args.epochs, lr=args.learning_rate, tol=1e-6)
         graph = nx.from_scipy_sparse_matrix(adj, create_using=nx.Graph(), edge_attribute='weight')
         model = LINE(ratio=3200, seed=0)
         embs = model.train(graph)
@@ -268,15 +280,15 @@ def kmeans_inform(all_features, fold_gen, all_attributes, top_k, alpha = 0.5):
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
         rdict['link divergence'] = dp_link_divergence(attributes[None,...], adj_rec)
-        rdict['recall@k'] = recall_at_k(embs, test_edges, k=top_k)
-        rdict['dp@k'] = dp_at_k(embs, attributes, k=top_k)
-        print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
-        
+        for k in args.top_k:
+            rdict[f'recall@{k}'] = recall_at_k(embs, test_edges, k=k)
+            rdict[f'dp@{k}'] = dp_at_k(embs, attributes, k=k)
+        print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
         results.append(rdict)
     
     return results
 
-def kmeans_fairwalk(all_features, fold_gen, all_attributes, top_k, attr_id=0):
+def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_gen):
 
@@ -301,46 +313,35 @@ def kmeans_fairwalk(all_features, fold_gen, all_attributes, top_k, attr_id=0):
             rdict = {}
             rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
             rdict['link divergence'] = dp_link_divergence(attributes[None, ...], adj_rec)
-            rdict['recall@k'] = recall_at_k(emb, test_edges, k=top_k)
-            rdict['dp@k'] = dp_at_k(emb, attributes, k=top_k)
-            print(
-                f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
+            for k in args.top_k:
+                rdict[f'recall@{k}'] = recall_at_k(emb, test_edges, k=k)
+                rdict[f'dp@{k}'] = dp_at_k(emb, attributes, k=k)
+            print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
 
             return rdict
         results.append(get_scores(train_edges, test_edges, attributes, embeddings))
     return results
 
 def main():
-    folds = 5
-    top_k = 20
-    for dataset in ['cora', 'citeseer', 'facebook', 'pubmed']:
-        if dataset == 'citeseer':
-            get_data = lambda: read_citeseer(folds)
-        elif dataset == 'cora':
-            get_data = lambda: read_cora(folds)
-        elif dataset == 'credit':
-            get_data = lambda: read_credit(folds)
-        elif dataset == 'facebook':
-            get_data = lambda: read_facebook(folds)
-        elif dataset == 'pubmed':
-            get_data = lambda: read_pubmed(folds)
+    args = parse_args()
+    get_data = read_data(args.dataset, args.folds)
 
-        results = {}
-        for model in ['gae', 'vgae', 'inform', 'fairwalk']: # + ['graphsage']:
-            data = get_data()
-            if model == 'gae':
-                rlist = kmeans_gae(*data, top_k, 'gcn_ae')
-            elif model == 'vgae':
-                rlist = kmeans_gae(*data, top_k, 'gcn_vae')
-            elif model == 'inform':
-                rlist = kmeans_inform(*data, top_k, alpha=0.5)
-            elif model == 'fairwalk':
-                rlist = kmeans_fairwalk(*data, top_k)
+    results = {}
+    for model in ['gae', 'vgae', 'inform', 'fairwalk']:
+        data = get_data()
+        if model == 'gae':
+            rlist = kmeans_gae(*data, args, 'gcn_ae')
+        elif model == 'vgae':
+            rlist = kmeans_gae(*data, args, 'gcn_vae')
+        elif model == 'inform':
+            rlist = kmeans_inform(*data, args, alpha=0.5)
+        elif model == 'fairwalk':
+            rlist = kmeans_fairwalk(*data, args)
 
-            results[model] = rlist
+        results[model] = rlist
 
-        with open(f'./results/{dataset}/baseline_results.json', 'w') as fp:
-            json.dump(results, fp, indent=True, default=to_serializable)
+    with open(f'./results/{args.dataset}/baseline_results.json', 'w') as fp:
+        json.dump(results, fp, indent=True, default=to_serializable)
 
 if __name__ == '__main__':
     main()

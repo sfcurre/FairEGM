@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import umap.umap_ as umap
 
-from layers.targeted_fair_graph_cnn import FairTargetedAdditionGraphConv
+from layers.gfo_graph_conv import GFOGraphConv
 from models.losses import build_reconstruction_loss, dp_link_divergence_loss
 from models.fair_model import FairModel
 from preprocess.read_data import *
@@ -80,7 +80,7 @@ def main():
     base_nodes = base_nodes[0]
 
     #Fair Model
-    model = FairModel(*features.shape[-2:], FairTargetedAdditionGraphConv(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim))
+    model = FairModel(*features.shape[-2:], GFOGraphConv(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim))
     model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
     model.fit(features, train_edges, train_edges, attributes, args.epochs)
     fair_nodes, fair_edges = model.predict_embeddings([features, train_edges])

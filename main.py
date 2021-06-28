@@ -6,15 +6,15 @@ from functools import singledispatch
 import argparse
 
 from layers.graph_cnn import GraphCNN
-from layers.targeted_fair_graph_cnn import FairTargetedAdditionGraphConv
-from layers.community_fair_graph_cnn import FairCommunityAdditionGraphConv
-from layers.sparse_fair_graph_cnn import FairReductionGraphConv
+from layers.gfo_graph_conv import GFOGraphConv
+from layers.cfo_graph_conv import CFOGraphConv
+from layers.fw_graph_conv import FWGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
 from models.losses import dp_link_divergence_loss, dp_link_entropy_loss, build_reconstruction_loss
 from models.metrics import dp_link_divergence, recall_at_k, dp_at_k
-from preprocess.read_data import *
+from preprocess.read_data import read_data
 
 import tensorflow as tf
 
@@ -22,10 +22,10 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 np.random.seed(5429)
 tf.random.set_seed(5429)
 
-TARGETED_FAIRNESS = lambda: FairTargetedAdditionGraphConv()
-COMMUNITY_FAIRNESS_10 = lambda: FairCommunityAdditionGraphConv(10)
-COMMUNITY_FAIRNESS_100 = lambda: FairCommunityAdditionGraphConv(100)
-SPARSE_FAIRNESS = lambda: FairReductionGraphConv()
+TARGETED_FAIRNESS = lambda: GFOGraphConv()
+COMMUNITY_FAIRNESS_10 = lambda: CFOGraphConv(10)
+COMMUNITY_FAIRNESS_100 = lambda: CFOGraphConv(100)
+SPARSE_FAIRNESS = lambda: FWGraphConv()
 
 @singledispatch
 def to_serializable(val):
@@ -41,7 +41,7 @@ def parse_args():
     parser.add_argument('-d', '--embedding-dim', type=int, default=100, help="The graph embedding dimension.")
     parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, help="Learning rate for the embedding model.")
     parser.add_argument('-e', '--epochs', type=int, default=300, help='Number of epochs for the embedding model.')
-    parser.add_argument('-k', '--top-k', type=int, default=10, help='Number for K for Recall@K and DP@K metrics.')
+    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', help='Number for K for Recall@K and DP@K metrics.')
     parser.add_argument('-f', '--folds', type=int, default=5, help='Number of folds for k-fold cross validation.')
     parser.add_argument('--lambda-param', type=float, default=1, help='The learning rate multiplier for the fair loss.')
     return parser.parse_args()
@@ -98,8 +98,9 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
         recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
-        rdict['recall@k'] = recall_at_k(fair_nodes, test_edges, k=args.top_k)
-        rdict['dp@k'] = dp_at_k(fair_nodes, attributes[0], k=args.top_k)
+        for k in args.top_k:
+            rdict[f'recall@{k}'] = recall_at_k(fair_nodes, test_edges, k=k)
+            rdict[f'dp@{k}'] = dp_at_k(fair_nodes, attributes[0], k=k)
         results.append(rdict)
     return results
 
@@ -125,27 +126,17 @@ def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constru
         recon_loss, dp_loss = model.evaluate(features, norm_edges, train_edges, attributes)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
-        rdict['recall@k'] = recall_at_k(fair_nodes, test_edges, k=args.top_k)
-        rdict['dp@k'] = dp_at_k(fair_nodes, attributes[0], k=args.top_k)
-        print(f'Model {i+1}: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
+        for k in args.top_k:
+            rdict[f'recall@{k}'] = recall_at_k(fair_nodes, test_edges, k=k)
+            rdict[f'dp@{k}'] = dp_at_k(fair_nodes, attributes[0], k=k)
+        print(f'Model {i+1}: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
         results.append(rdict)
     return results
 
 def main():
     args = parse_args()
-    if args.dataset == 'citeseer':
-        get_data = lambda: read_citeseer(args.folds)
-    elif args.dataset == 'cora':
-        get_data = lambda: read_cora(args.folds)
-    elif args.dataset == 'credit':
-        get_data = lambda: read_credit(args.folds)
-    elif args.dataset == 'facebook':
-        get_data = lambda: read_facebook(args.folds)
-    elif args.dataset == 'pubmed':
-        get_data = lambda: read_pubmed(args.folds)
-    else:
-        raise ValueError(f"Dataset \"{args.dataset}\" is not recognized.")
- 
+    get_data = read_data(args.dataset, args.folds)
+
     results = {}
     data=get_data()
     results['base'] = kfold_base_model(*data, args)
@@ -156,7 +147,7 @@ def main():
     data=get_data()
     results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args)
     data=get_data()
-    results['fer'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args)
+    results['fw'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args)
 
     with open(f'./results/{args.dataset}/results.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)

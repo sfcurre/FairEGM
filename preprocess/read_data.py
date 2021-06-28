@@ -2,6 +2,39 @@ import numpy as np, pandas as pd
 from scipy.sparse import csr_matrix
 from preprocess.split_data import split_train_and_test
 
+def feature_norm(features):
+    min_values = features.min(axis=0)[0]
+    max_values = features.max(axis=0)[0]
+    return 2*(features - min_values).div(max_values-min_values) - 1
+
+def read_bail(k):
+    features = pd.read_csv('./data/bail/bail.csv')
+    edge_list = open('./data/bail/bail_edges.txt')
+
+    attribute_series = features.pop('WHITE')
+    attributes = np.zeros((len(attribute_series), attribute_series.max() + 1))
+    for i, attr in enumerate(attribute_series):
+        attributes[i][attr] = 1
+
+    def convert_sci(note):
+        base, power = note.split('e+')
+        return int(float(base) * (10 ** int(power)))
+
+    edges = np.zeros((len(features), len(features)))
+    for line in edge_list:
+        line = line.strip().split()
+        edges[convert_sci(line[0]), convert_sci(line[1])] = 1
+        edges[convert_sci(line[1]), convert_sci(line[0])] = 1
+
+    if k == 0:
+        return feature_norm(features.values), edges, attributes
+
+    args = type('Args', (object,), {})
+    args.fold = k
+    edge_gen = split_train_and_test(args, edges)
+
+    return feature_norm(features.values), edge_gen, attributes
+
 def read_citeseer(k):
     content = open('./data/citeseer/citeseer.content')
     indexes, features, attribute_list = {}, [], []
@@ -29,13 +62,13 @@ def read_citeseer(k):
             continue
 
     if k == 0:
-        return features, edges, attributes
+        return feature_norm(features), edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     edge_gen = split_train_and_test(args, edges)
 
-    return features, edge_gen, attributes
+    return feature_norm(features), edge_gen, attributes
 
 def read_cora(k):
     content = open('./data/cora/cora.content')
@@ -61,20 +94,20 @@ def read_cora(k):
         edges[indexes[line[0]], indexes[line[1]]] = 1
 
     if k == 0:
-        return features, edges, attributes
+        return feature_norm(features), edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     edge_gen = split_train_and_test(args, edges)
 
-    return features, edge_gen, attributes
+    return feature_norm(features), edge_gen, attributes
 
 def read_credit(k):
     features = pd.read_csv('./data/credit/credit.csv')
     edge_list = open('./data/credit/credit_edges.txt')
 
     features.pop('Single')
-    attribute_series = features.pop('EducationLevel')
+    attribute_series = features.pop('Age')
     attributes = np.zeros((len(attribute_series), attribute_series.max() + 1))
     for i, attr in enumerate(attribute_series):
         attributes[i][attr] = 1
@@ -90,13 +123,13 @@ def read_credit(k):
         edges[convert_sci(line[1]), convert_sci(line[0])] = 1
 
     if k == 0:
-        return features.values, edges, attributes
+        return feature_norm(features.values), edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     edge_gen = split_train_and_test(args, edges)
 
-    return features.values, edge_gen, attributes
+    return feature_norm(features.values), edge_gen, attributes
 
 def read_facebook(k):
     nodes = np.loadtxt('./data/facebook/fb_features_ego_1684.txt')
@@ -105,13 +138,45 @@ def read_facebook(k):
     attributes = nodes[:, [147, 148]]
 
     if k == 0:
-        return features, edges, attributes
+        return feature_norm(features), edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     edge_gen = split_train_and_test(args, edges)
 
-    return features, edge_gen, attributes
+    return feature_norm(features), edge_gen, attributes
+
+def read_german(k):
+    features = pd.read_csv('./data/german/german.csv')
+    edge_list = open('./data/german/german_edges.txt')
+
+    features.pop('OtherLoansAtStore')
+    features.pop('PurposeOfLoan')
+    attribute_series = features.pop('Gender')
+    attribute_series[attribute_series == 'Female'] = 1
+    attribute_series[attribute_series == 'Male'] = 0
+    attributes = np.zeros((len(attribute_series), attribute_series.max() + 1))
+    for i, attr in enumerate(attribute_series):
+        attributes[i][attr] = 1
+
+    def convert_sci(note):
+        base, power = note.split('e+')
+        return int(float(base) * (10 ** int(power)))
+
+    edges = np.zeros((len(features), len(features)))
+    for line in edge_list:
+        line = line.strip().split()
+        edges[convert_sci(line[0]), convert_sci(line[1])] = 1
+        edges[convert_sci(line[1]), convert_sci(line[0])] = 1
+
+    if k == 0:
+        return feature_norm(features.values), edges, attributes
+
+    args = type('Args', (object,), {})
+    args.fold = k
+    edge_gen = split_train_and_test(args, edges)
+
+    return feature_norm(features.values), edge_gen, attributes
 
 def read_pubmed(k):
     content = open('./data/pubmed/Pubmed-Diabetes.NODE.paper.tab')
@@ -153,10 +218,29 @@ def read_pubmed(k):
         edges[indexes[p1], indexes[p2]] = 1
 
     if k == 0:
-        return features, edges, attributes
+        return feature_norm(features), edges, attributes
 
     args = type('Args', (object,), {})
     args.fold = k
     edge_gen = split_train_and_test(args, edges)
 
-    return features, edge_gen, attributes
+    return feature_norm(features), edge_gen, attributes
+
+def read_data(dataset, folds):
+    if dataset == 'bail':
+        get_data = lambda: read_bail(folds)
+    elif dataset == 'citeseer':
+        get_data = lambda: read_citeseer(folds)
+    elif dataset == 'cora':
+        get_data = lambda: read_cora(folds)
+    elif dataset == 'credit':
+        get_data = lambda: read_credit(folds)
+    elif dataset == 'facebook':
+        get_data = lambda: read_facebook(folds)
+    elif dataset == 'german':
+        get_data = lambda: read_german(folds)
+    elif dataset == 'pubmed':
+        get_data = lambda: read_pubmed(folds)
+    else:
+        raise ValueError(f"Dataset \"{dataset}\" is not recognized.")
+    return get_data
