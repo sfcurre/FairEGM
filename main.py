@@ -46,6 +46,13 @@ def parse_args():
     parser.add_argument('--lambda-param', type=float, default=1, help='The learning rate multiplier for the fair loss.')
     return parser.parse_args()
 
+def preprocess_graph(adj):
+    adj_ = adj + np.eye(adj.shape[0])
+    rowsum = np.array(adj_.sum(axis=1))
+    degree_mat_inv_sqrt = np.diag(np.power(rowsum, -0.5).flatten())
+    adj_normalized = adj_.dot(degree_mat_inv_sqrt).transpose().dot(degree_mat_inv_sqrt)
+    return adj_normalized
+
 def reconstruction_model(num_nodes, num_features):
     # num_features == embedding_dim
     nodes = tf.keras.layers.Input((num_nodes, num_features))
@@ -72,6 +79,7 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
 
         features, train_edges = all_features[None, use_node, :], train_edges[None, use_node][..., use_node]
         test_edges, attributes = test_edges[use_node][..., use_node], all_attributes[None, use_node, :]
+        norm_edges = preprocess_graph(train_edges[0])[None,...]
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         
@@ -80,14 +88,14 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
 
         base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim)
         base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
-        history = base.fit([features, train_edges], train_edges, epochs = args.epochs, verbose = 2).history
+        history = base.fit([features, norm_edges], train_edges, epochs = args.epochs, verbose = 2).history
         history['task loss'] = history.pop('loss')
         history['fair loss'] = history.pop('dp_metric')
         rdict['history'] = history
         #not actually fair for base
-        fair_nodes, _ = base_embedding.predict([features, train_edges])
+        fair_nodes, _ = base_embedding.predict([features, norm_edges])
         fair_nodes = fair_nodes[0]
-        recon_loss, dp_loss = base.evaluate([features, train_edges], train_edges)
+        recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
         rdict['recall@k'] = recall_at_k(fair_nodes, test_edges, k=args.top_k)
@@ -104,17 +112,19 @@ def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constru
 
         features, train_edges = all_features[None, use_node, :], train_edges[None, use_node][..., use_node]
         test_edges, attributes = test_edges[use_node][..., use_node], all_attributes[None, use_node, :]
+        norm_edges = preprocess_graph(train_edges[0])[None,...]
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         
         model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim))
         model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
-        history = model.fit(features, train_edges, train_edges, attributes, args.epochs, verbose=0)
+        history = model.fit(features, norm_edges, train_edges, attributes, args.epochs, verbose=0)
         rdict['history'] = history
-        fair_nodes, fair_edges = model.predict_embeddings([features, train_edges])
+        fair_nodes, fair_edges = model.predict_embeddings([features, norm_edges])
         fair_nodes = fair_nodes[0]
-        rdict['reconstruction loss'] = history['task loss'][-1]
-        rdict['link divergence'] = history['fair loss'][-1]
+        recon_loss, dp_loss = model.evaluate(features, norm_edges, train_edges, attributes)
+        rdict['reconstruction loss'] = recon_loss
+        rdict['link divergence'] = dp_loss
         rdict['recall@k'] = recall_at_k(fair_nodes, test_edges, k=args.top_k)
         rdict['dp@k'] = dp_at_k(fair_nodes, attributes[0], k=args.top_k)
         print(f'Model {i+1}: [{rdict["reconstruction loss"]},{rdict["link divergence"]},{rdict["recall@k"]},{rdict["dp@k"]}]')
