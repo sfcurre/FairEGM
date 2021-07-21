@@ -8,7 +8,7 @@ import argparse
 from layers.graph_cnn import GraphCNN
 from layers.gfo_graph_conv import GFOGraphConv
 from layers.cfo_graph_conv import CFOGraphConv
-from layers.fw_graph_conv import FWGraphConv
+from layers.few_graph_conv import FEWGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
@@ -25,7 +25,7 @@ tf.random.set_seed(5429)
 TARGETED_FAIRNESS = lambda: GFOGraphConv()
 COMMUNITY_FAIRNESS_10 = lambda: CFOGraphConv(10)
 COMMUNITY_FAIRNESS_100 = lambda: CFOGraphConv(100)
-SPARSE_FAIRNESS = lambda: FWGraphConv()
+SPARSE_FAIRNESS = lambda: FEWGraphConv()
 
 @singledispatch
 def to_serializable(val):
