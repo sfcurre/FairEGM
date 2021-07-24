@@ -5,7 +5,7 @@ from preprocess.split_data import split_train_and_test
 def feature_norm(features):
     min_values = features.min(axis=0)[0]
     max_values = features.max(axis=0)[0]
-    return 2*(features - min_values).div(max_values-min_values) - 1
+    return 2*(features - min_values)/(max_values-min_values) - 1
 
 def read_bail(k):
     features = pd.read_csv('./data/bail/bail.csv')

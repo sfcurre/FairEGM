@@ -22,7 +22,7 @@ class FEWGraphConv(tf.keras.layers.Layer):
         self.num_features = node_shape[2]
 
         #initialize all necessary weights and kernels
-        self.weights = self.add_weight(name = 'weights',
+        self.edge_weights = self.add_weight(name = 'edge_weights',
                                        shape = (self.num_nodes, self.num_nodes),
                                        initializer = self.reduction_initializer,
                                        regularizer = self.reduction_regularizer,
@@ -36,7 +36,7 @@ class FEWGraphConv(tf.keras.layers.Layer):
         #adj has shape (batch, nodes, nodes)
 
         #apply fair sparsification
-        fair_adj = adj * self.weights
+        fair_adj = adj * self.edge_weights
         #fair_adj has shape (batch, nodes, nodes)
 
         #perform convolution
