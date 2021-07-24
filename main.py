@@ -88,7 +88,7 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
 
         base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim)
         base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
-        history = base.fit([features, norm_edges], train_edges, epochs = args.epochs, verbose = 2).history
+        history = base.fit([features, norm_edges], train_edges, epochs = args.epochs, verbose = 0).history
         history['task loss'] = history.pop('loss')
         history['fair loss'] = history.pop('dp_metric')
         rdict['history'] = history
