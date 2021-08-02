@@ -230,7 +230,8 @@ def run_gae(features, train_adj, test_adj, attributes, args, model_str):
         avg_cost = outs[1]
         avg_accuracy = outs[2]
 
-        print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(avg_cost),
+        if (epoch + 1) % 100 == 0:
+            print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(avg_cost),
             "train_acc=", "{:.5f}".format(avg_accuracy),
             "time=", "{:.5f}".format(time.time() - t))
 
@@ -276,7 +277,6 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
         embs = model.train(graph)
 
         adj_rec = sigmoid(embs @ embs.T)
-        print(adj_rec)
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
         rdict['link divergence'] = dp_link_divergence(attributes[None,...], adj_rec)
