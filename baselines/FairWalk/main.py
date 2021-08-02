@@ -16,12 +16,14 @@ def fairwalk(train_adj, test_adj, attributes, attr_id=0, fold_id=0):
     edge_path = export_edgelist(train_adj, attributes, path, fold_id, rid, attr_id)
 
     # Sample random walks
-    run_on_windows = True
+    run_on_windows = os.name == 'nt'
     walk_path = edge_path[:-8] + "walk" # path + "/tmp/" + "773_0_6740_0.walk"
     print("walk_path %s"%walk_path)
     if run_on_windows:
         os.system('.\\baselines\\FairWalk\\fast-random-walk\\walk --if={} --of={} --length=80 --walks=20 -w'.format(edge_path, walk_path))
     else:
+        os.system('make -C ./baselines/FairWalk/fast-random-walk/ clean')
+        os.system('make -C ./baselines/FairWalk/fast-random-walk/')
         os.system('./baselines/FairWalk/fast-random-walk/walk --if={} --of={} --length=80 --walks=20 -w'.format(edge_path, walk_path))
 
     # read walks and process for gensim.model.word2vec
