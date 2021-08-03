@@ -66,7 +66,7 @@ class FairModel:
         fl = tf.reduce_mean(fair_loss, axis = None)
         tl = tf.reduce_mean(task_loss, axis = None)
     
-        return tl, fl
+        return tl.numpy(), fl.numpy()
 
     def fit(self, nodes, edges, target, sensitive_attributes, epochs, verbose = 1):
         assert self.compiled, "Model must be compiled before use"
