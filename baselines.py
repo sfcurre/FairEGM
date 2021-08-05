@@ -4,19 +4,27 @@ from __future__ import print_function
 import time, argparse
 import os, json
 
+import logging
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+logging.info('import time, argparse, os, json')
+
 # Train on CPU (hide GPU) due to memory constraints
 os.environ['CUDA_VISIBLE_DEVICES'] = ""
+logging.info('set no gpu for use in tensorflow')
 
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
+logging.info('import tensorflow.compat.v1')
 import numpy as np
 import scipy.sparse as sp
 from scipy.spatial.distance import squareform, pdist
 from functools import singledispatch
+logging.info('import numpy, scipy, singledispatch')
 
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import average_precision_score
 import sklearn.preprocessing as skpp
+logging.info('import sklearn')
 
 from baselines.gae.gae.optimizer import OptimizerAE, OptimizerVAE
 from baselines.gae.gae.model import GCNModelAE, GCNModelVAE
@@ -24,13 +32,16 @@ from baselines.gae.gae.preprocessing import preprocess_graph, construct_feed_dic
 from baselines.inform.method.debias_graph import DebiasGraph
 from baselines.inform.utils import *
 from baselines.FairWalk.main import fairwalk
+logging.info('import baseline methods')
 
 import networkx as nx
 from scipy.stats import entropy
 from sklearn.metrics.pairwise import cosine_similarity
+logging.info('import networkx, entropy, cosine_similarity')
 
 from models.metrics import *
 from preprocess.read_data import *
+logging.info('import metrics, preprocess.read_data')
 
 @singledispatch
 def to_serializable(val):
@@ -230,8 +241,7 @@ def run_gae(features, train_adj, test_adj, attributes, args, model_str):
         avg_cost = outs[1]
         avg_accuracy = outs[2]
 
-        if (epoch + 1) % 100 == 0:
-            print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(avg_cost),
+        print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(avg_cost),
             "train_acc=", "{:.5f}".format(avg_accuracy),
             "time=", "{:.5f}".format(time.time() - t))
 
@@ -241,6 +251,9 @@ def run_gae(features, train_adj, test_adj, attributes, args, model_str):
     return results
 
 def kmeans_gae(all_features, fold_gen, all_attributes, args, model_str):
+    import logging
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+
     results = []
     for train_edges, test_edges in fold_gen:
 
@@ -249,11 +262,15 @@ def kmeans_gae(all_features, fold_gen, all_attributes, args, model_str):
         attributes = all_attributes[use_node]
         train_edges = train_edges[use_node][:, use_node]
         test_edges = test_edges[use_node][:, use_node]
+        logging.info('gae: get fold')
 
         results.append(run_gae(features, train_edges, test_edges, attributes, args, model_str))
+        logging.info('gae: run_gae')
     return results
 
 def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
+    import logging
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
     def sigmoid(x):
         return 1 / (1 + np.exp(-x))
@@ -269,14 +286,17 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         sims = 1 - squareform(pdist(features, metric='cosine'))
+        logging.info('inform: initialize')
 
         FairGraph = DebiasGraph()
         adj = FairGraph.line(sp.csc_matrix(train_edges),sp.csc_matrix(sims), alpha=alpha, maxiter=args.epochs, lr=args.learning_rate, tol=1e-6)
         graph = nx.from_scipy_sparse_matrix(adj, create_using=nx.Graph(), edge_attribute='weight')
         model = LINE(ratio=3200, seed=0)
         embs = model.train(graph)
+        logging.info('inform: train')
 
         adj_rec = sigmoid(embs @ embs.T)
+        print(adj_rec)
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
         rdict['link divergence'] = dp_link_divergence(attributes[None,...], adj_rec)
@@ -284,11 +304,14 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
             rdict[f'recall@{k}'] = recall_at_k(embs, test_edges, k=k)
             rdict[f'dp@{k}'] = dp_at_k(embs, attributes, k=k)
         print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
+        logging.info('inform: result')
         results.append(rdict)
     
     return results
 
 def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
+    import logging
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_gen):
 
@@ -299,8 +322,10 @@ def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
         train_edges = train_edges[use_node][:, use_node]
         test_edges = test_edges[use_node][:, use_node]
         pos_weight = float(train_edges.shape[0] * train_edges.shape[0] - train_edges.sum()) / train_edges.sum()
+        logging.info('fairwalk: initialize')
 
         embeddings = fairwalk(train_edges, test_edges, attributes, fold_id=i, attr_id=attr_id)
+        logging.info('fairwalk: embed')
 
         # Evaluate the embeddings
         def get_scores(train_edges, test_edges, attributes, emb):
@@ -319,16 +344,22 @@ def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
             print(f'Model: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
 
             return rdict
+
         results.append(get_scores(train_edges, test_edges, attributes, embeddings))
+        logging.info('fairwalk: result')
     return results
 
 def main():
+    import logging
+    logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     args = parse_args()
     get_data = read_data(args.dataset, args.folds)
+    logging.info('get_data function selected')
 
     results = {}
-    for model in ['gae', 'vgae', 'inform', 'fairwalk']:
+    for model in ['gae', 'vgae', 'fairwalk']:  # , 'inform'
         data = get_data()
+        logging.info('get_data')
         if model == 'gae':
             rlist = kmeans_gae(*data, args, 'gcn_ae')
         elif model == 'vgae':
@@ -337,8 +368,12 @@ def main():
             rlist = kmeans_inform(*data, args, alpha=0.5)
         elif model == 'fairwalk':
             rlist = kmeans_fairwalk(*data, args)
+        logging.info('embed_baselines')
 
         results[model] = rlist
+
+    if not os.path.exists(f'./results/{args.dataset}'):
+        os.mkdir(f'./results/{args.dataset}')
 
     with open(f'./results/{args.dataset}/baseline_results.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)
