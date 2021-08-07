@@ -25,7 +25,7 @@ tf.random.set_seed(5429)
 TARGETED_FAIRNESS = lambda: GFOGraphConv()
 COMMUNITY_FAIRNESS_10 = lambda: CFOGraphConv(10)
 COMMUNITY_FAIRNESS_100 = lambda: CFOGraphConv(100)
-SPARSE_FAIRNESS = lambda: FEWGraphConv()
+SPARSE_FAIRNESS = lambda: FEWGraphConv(kernel_initializer=tf.keras.initializers.Ones())
 
 @singledispatch
 def to_serializable(val):

@@ -2,18 +2,18 @@ import tensorflow as tf
 
 class FEWGraphConv(tf.keras.layers.Layer):
     def __init__(self,
-                 reduction_initializer=None,
-                 reduction_regularizer=None,
-                 reduction_constraint=None,
+                 kernel_initializer=None,
+                 kernel_regularizer=None,
+                 kernel_constraint=None,
                  **kwargs):
 
         if 'input_shape' not in kwargs and 'input_dim' in kwargs:
             kwargs['input_shape'] = (kwargs.pop('input_dim'),)
         super(FEWGraphConv, self).__init__(**kwargs)
 
-        self.reduction_initializer = tf.keras.initializers.get(reduction_initializer)
-        self.reduction_regularizer = tf.keras.regularizers.get(reduction_regularizer)
-        self.reduction_constraint = tf.keras.constraints.get(reduction_constraint)
+        self.kernel_initializer = tf.keras.initializers.get(kernel_initializer)
+        self.kernel_regularizer = tf.keras.regularizers.get(kernel_regularizer)
+        self.kernel_constraint = tf.keras.constraints.get(kernel_constraint)
 
     def build(self, input_shape):
         assert len(input_shape) == 2
@@ -22,11 +22,11 @@ class FEWGraphConv(tf.keras.layers.Layer):
         self.num_features = node_shape[2]
 
         #initialize all necessary weights and kernels
-        self.edge_weights = self.add_weight(name = 'edge_weights',
+        self.kernel = self.add_weight(name = 'kernels',
                                        shape = (self.num_nodes, self.num_nodes),
-                                       initializer = self.reduction_initializer,
-                                       regularizer = self.reduction_regularizer,
-                                       constraint = self.reduction_constraint,
+                                       initializer = self.kernel_initializer,
+                                       regularizer = self.kernel_regularizer,
+                                       constraint = self.kernel_constraint,
                                        trainable = True)
         super(FEWGraphConv, self).build(input_shape)
 
@@ -36,7 +36,7 @@ class FEWGraphConv(tf.keras.layers.Layer):
         #adj has shape (batch, nodes, nodes)
 
         #apply fair sparsification
-        fair_adj = adj * self.edge_weights
+        fair_adj = adj * self.kernel
         #fair_adj has shape (batch, nodes, nodes)
 
         #perform convolution

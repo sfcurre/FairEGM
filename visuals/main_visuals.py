@@ -5,6 +5,7 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.neighbors import KernelDensity
 
 sns.set_theme()
+EPOCHS=100
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -43,27 +44,27 @@ def main():
     tl.append(np.array([fold['history']['task loss'] for fold in results['gfo']]).mean(axis = 0))
     tl.append(np.array([fold['history']['task loss'] for fold in results['cfo_10']]).mean(axis = 0))
     tl.append(np.array([fold['history']['task loss'] for fold in results['cfo_100']]).mean(axis = 0))
-    tl.append(np.array([fold['history']['task loss'] for fold in results['fer']]).mean(axis = 0))
-    task_loss = pd.DataFrame(tl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(300)).transpose()
+    tl.append(np.array([fold['history']['task loss'] for fold in results['few']]).mean(axis = 0))
+    task_loss = pd.DataFrame(tl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
     
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
     g.set_xlabel('Epoch')
     g.set_ylabel('Reconstruction Loss')
     axes[0].legend(['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], loc='upper right')
-    g.set_xlim(1, 300)
+    g.set_xlim(1, EPOCHS)
 
     fl = []
     fl.append(np.array([fold['history']['fair loss'] for fold in results['base']]).mean(axis = 0))
     fl.append(np.array([fold['history']['fair loss'] for fold in results['gfo']]).mean(axis = 0))
     fl.append(np.array([fold['history']['fair loss'] for fold in results['cfo_10']]).mean(axis = 0))
     fl.append(np.array([fold['history']['fair loss'] for fold in results['cfo_100']]).mean(axis = 0))
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['fer']]).mean(axis = 0))
-    fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(300)).transpose()
+    fl.append(np.array([fold['history']['fair loss'] for fold in results['few']]).mean(axis = 0))
+    fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
     g.set_xlabel('Epoch')
     g.set_ylabel('Link Divergence')
-    g.set_xlim(1, 300)
+    g.set_xlim(1, EPOCHS)
 
     plt.savefig(f'./visuals/images/{args.dataset}_main_training.png')
     plt.show()

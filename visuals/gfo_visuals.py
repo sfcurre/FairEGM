@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 sns.set_theme()
+EPOCHS = 100
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -46,8 +47,8 @@ def main():
         tl.append(np.array([fold['history']['task loss'] for fold in results[f'gfo_lambda{n}']]).mean(axis = 0))
         fl.append(np.array([fold['history']['fair loss'] for fold in results[f'gfo_lambda{n}']]).mean(axis = 0))
     
-    task_loss = pd.DataFrame(tl, index = x, columns = 1 + np.arange(300)).transpose()
-    fair_loss = pd.DataFrame(fl, index = x, columns = 1 + np.arange(300)).transpose()
+    task_loss = pd.DataFrame(tl, index = x, columns = 1 + np.arange(EPOCHS)).transpose()
+    fair_loss = pd.DataFrame(fl, index = x, columns = 1 + np.arange(EPOCHS)).transpose()
 
     fig, axes = plt.subplots(1, 2, figsize=(10,5))
 
@@ -55,12 +56,12 @@ def main():
     g.set_xlabel('Epoch')
     g.set_ylabel('Reconstruction Loss')
     axes[0].legend(x, loc='upper right')
-    g.set_xlim(1, 300)
+    g.set_xlim(1, EPOCHS)
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
     g.set_xlabel('Epoch')
     g.set_ylabel('Link Divergence')
-    g.set_xlim(1, 300)
+    g.set_xlim(1, EPOCHS)
 
     plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_training.png')
     plt.show()
