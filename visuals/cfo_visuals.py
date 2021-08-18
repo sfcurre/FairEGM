@@ -38,7 +38,7 @@ def main():
     axes[1, 0].set_xlabel('Number of Introduced Nodes')
     axes[1, 1].set_xlabel('Number of Introduced Nodes')
     plt.savefig(f'./visuals/images/{args.dataset}_cfo_metrics.png')
-    plt.show()
+    plt.clf()
 
 if __name__ == '__main__':
     main()

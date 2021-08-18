@@ -67,7 +67,7 @@ def main():
     g.set_xlim(1, EPOCHS)
 
     plt.savefig(f'./visuals/images/{args.dataset}_main_training.png')
-    plt.show()
+    plt.clf()
 
 if __name__ == '__main__':
     main()

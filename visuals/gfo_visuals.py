@@ -40,7 +40,7 @@ def main():
     axes[1, 1].set_xlabel('Lambda')
 
     plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_metrics.png')
-    plt.show()
+    plt.clf()
 
     tl, fl = [],[]
     for n in x:
@@ -64,7 +64,7 @@ def main():
     g.set_xlim(1, EPOCHS)
 
     plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_training.png')
-    plt.show()
+    plt.clf()
 
 if __name__ == '__main__':
     main()
