@@ -5,11 +5,12 @@ from scipy.spatial.distance import pdist, squareform
 from sklearn.neighbors import KernelDensity
 
 sns.set_theme()
-EPOCHS=100
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [cora, citeseer, facebook].')
+    parser.add_argument('--view', action='store_true', help='Whether or not to display the generated figure.')
+    parser.add_argument('--epochs', type=int, default=100, help='The number of epochs to display.')
     return parser.parse_args()
 
 def kernel_plot(ax, embeddings, attributes):
@@ -37,29 +38,32 @@ def main():
     with open(f'results/{args.dataset}/results.json') as fp:
         results = json.load(fp)
 
-    fig, axes = plt.subplots(1, 2, figsize=(10,5))
+    fig, axes = plt.subplots(1, 2, figsize=(9,4))
+
+    EPOCHS = args.epochs
 
     tl = []
-    tl.append(np.array([fold['history']['task loss'] for fold in results['base']]).mean(axis = 0))
-    tl.append(np.array([fold['history']['task loss'] for fold in results['gfo']]).mean(axis = 0))
-    tl.append(np.array([fold['history']['task loss'] for fold in results['cfo_10']]).mean(axis = 0))
-    tl.append(np.array([fold['history']['task loss'] for fold in results['cfo_100']]).mean(axis = 0))
-    tl.append(np.array([fold['history']['task loss'] for fold in results['few']]).mean(axis = 0))
-    task_loss = pd.DataFrame(tl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
+    tl.append(np.array(results['base'][0]['history']['task loss'])[:EPOCHS])
+    tl.append(np.array(results['gfo'][0]['history']['task loss'])[:EPOCHS])
+    tl.append(np.array(results['cfo_10'][0]['history']['task loss'])[:EPOCHS])
+    tl.append(np.array(results['cfo_100'][0]['history']['task loss'])[:EPOCHS])
+    tl.append(np.array(results['few'][0]['history']['task loss'])[:EPOCHS])
+    task_loss = pd.DataFrame(tl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
     
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
     g.set_xlabel('Epoch')
     g.set_ylabel('Reconstruction Loss')
-    axes[0].legend(['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], loc='upper right')
+    axes[0].legend(['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], loc='upper right')
     g.set_xlim(1, EPOCHS)
+    g.set_ylim(1, 2)
 
     fl = []
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['base']]).mean(axis = 0))
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['gfo']]).mean(axis = 0))
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['cfo_10']]).mean(axis = 0))
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['cfo_100']]).mean(axis = 0))
-    fl.append(np.array([fold['history']['fair loss'] for fold in results['few']]).mean(axis = 0))
-    fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FER + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
+    fl.append(np.array(results['base'][0]['history']['fair loss'])[:EPOCHS])
+    fl.append(np.array(results['gfo'][0]['history']['fair loss'])[:EPOCHS])
+    fl.append(np.array(results['cfo_10'][0]['history']['fair loss'])[:EPOCHS])
+    fl.append(np.array(results['cfo_100'][0]['history']['fair loss'])[:EPOCHS])
+    fl.append(np.array(results['few'][0]['history']['fair loss'])[:EPOCHS])
+    fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
     g.set_xlabel('Epoch')
@@ -67,6 +71,8 @@ def main():
     g.set_xlim(1, EPOCHS)
 
     plt.savefig(f'./visuals/images/{args.dataset}_main_training.png')
+    if args.view:
+        plt.show()
     plt.clf()
 
 if __name__ == '__main__':

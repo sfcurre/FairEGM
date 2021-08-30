@@ -45,7 +45,7 @@ def main():
     get_data = read_data(args.dataset, args.folds)
     results = defaultdict(dict)
 
-    for n in [1, 2, 4, 8, 16] + list(range(30, 360, 10)):
+    for n in range(1, 30, 3):#[1, 2, 4, 8, 16] + list(range(30, 360, 10)):
 
         data = get_data()
         COMMUNITY_FAIRNESS = lambda: CFOGraphConv(n)
