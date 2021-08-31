@@ -147,7 +147,6 @@ def main():
     data=get_data()
     results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args)
     data=get_data()
-    args.lambda_param *= 100
     results['few'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args)
 
     with open(f'./results/{args.dataset}/results.json', 'w') as fp:
