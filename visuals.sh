@@ -5,7 +5,7 @@ python visuals/main_visuals.py --dataset cora --epochs 300
 python visuals/main_visuals.py --dataset citeseer --epochs 300
 python visuals/main_visuals.py --dataset facebook --epochs 300
 python visuals/main_visuals.py --dataset pubmed --epochs 100
-python visuals/main_visuals.py --dataset german --epochs 100
+# python visuals/main_visuals.py --dataset german --epochs 100
 python visuals/main_visuals.py --dataset bail --epochs 700
 
 python visuals/cfo_visuals.py --dataset cora

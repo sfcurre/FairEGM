@@ -37,7 +37,7 @@ def ts_float32(val):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [cora, citeseer, facebook].')
+    parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [bail, cora, citeseer, facebook, pubmed].')
     parser.add_argument('-d', '--embedding-dim', type=int, default=100, help="The graph embedding dimension.")
     parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, help="Learning rate for the embedding model.")
     parser.add_argument('-e', '--epochs', type=int, default=300, help='Number of epochs for the embedding model.')
@@ -70,7 +70,7 @@ def base_model(num_nodes, num_features, embedding_dim):
     output = LinkReconstruction()(conv_nodes)
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [conv_nodes, conv_edges])
 
-def kfold_base_model(all_features, fold_generator, all_attributes, args):
+def kfold_base_model(all_features, fold_generator, all_attributes, args, embedding_file=''):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_generator):
         rdict = {}
@@ -95,6 +95,8 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
         #not actually fair for base
         fair_nodes, _ = base_embedding.predict([features, norm_edges])
         fair_nodes = fair_nodes[0]
+        if embedding_file:
+            np.save(embedding_file + f'_{i}.npy', fair_nodes)
         recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
@@ -104,7 +106,7 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args):
         results.append(rdict)
     return results
 
-def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constructor, args):
+def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constructor, args, embedding_file=''):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_generator):
         rdict = {}
@@ -123,6 +125,8 @@ def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constru
         rdict['history'] = history
         fair_nodes, fair_edges = model.predict_embeddings([features, norm_edges])
         fair_nodes = fair_nodes[0]
+        if embedding_file:
+            np.save(embedding_file + f'_{i}.npy', fair_nodes)
         recon_loss, dp_loss = model.evaluate(features, norm_edges, train_edges, attributes)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
@@ -139,15 +143,15 @@ def main():
 
     results = {}
     data=get_data()
-    results['base'] = kfold_base_model(*data, args)
+    results['base'] = kfold_base_model(*data, args, embedding_file=f'./results/{args.dataset}/embeddings/base')
     data=get_data()
-    results['gfo'] = kfold_fair_model(*data, TARGETED_FAIRNESS, args)
+    results['gfo'] = kfold_fair_model(*data, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo')
     data=get_data()
-    results['cfo_10'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_10, args)
+    results['cfo_10'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10')
     data=get_data()
-    results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args)
+    results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100')
     data=get_data()
-    results['few'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args)
+    results['few'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few')
 
     with open(f'./results/{args.dataset}/results.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)

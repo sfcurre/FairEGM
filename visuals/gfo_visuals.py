@@ -18,7 +18,7 @@ def main():
     with open(f'results/{args.dataset}/lambda_results.json') as fp:
         results = json.load(fp)
 
-    x = [0, 0.001, 0.01, 0.1, 1, 10, 100, 1000]
+    x = [0, 0.001, 0.01, 0.1, 1, 10, 100]#, 1000]
     labels = [('reconstruction loss', 'Reconstruction Loss'),
               ('link divergence', 'Link Divergence'),
               ('recall@20', 'Recall@20'),
@@ -32,9 +32,8 @@ def main():
             val = np.array([fold[key] for fold in results[f'gfo_lambda{n}']]).mean()
             values.append(val)
         ax = axes[i // 2, i % 2]
-        ax.plot(x, values)
+        ax.bar(list(range(len(values))), values, tick_label=[str(x_) for x_ in x], color=sns.color_palette())
         ax.set_ylabel(label)
-        ax.set_xscale('log')
 
     axes[1, 0].set_xlabel('Lambda')
     axes[1, 1].set_xlabel('Lambda')
@@ -50,18 +49,20 @@ def main():
     task_loss = pd.DataFrame(tl, index = x, columns = 1 + np.arange(EPOCHS)).transpose()
     fair_loss = pd.DataFrame(fl, index = x, columns = 1 + np.arange(EPOCHS)).transpose()
 
-    fig, axes = plt.subplots(1, 2, figsize=(10,5))
+    fig, axes = plt.subplots(1, 2, figsize=(15,5))
 
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
-    g.set_xlabel('Epoch')
-    g.set_ylabel('Reconstruction Loss')
+    g.set_xlabel('Epoch', fontsize=16)
+    g.set_ylabel('Reconstruction Loss', fontsize=16)
     axes[0].legend(x, loc='upper right')
     g.set_xlim(1, EPOCHS)
+    g.set_ylim(1, 2)
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
-    g.set_xlabel('Epoch')
-    g.set_ylabel('Link Divergence')
+    g.set_xlabel('Epoch', fontsize=16)
+    g.set_ylabel('Link Divergence', fontsize=16)
     g.set_xlim(1, EPOCHS)
+    axes[1].ticklabel_format(scilimits=(-3,3))
 
     plt.savefig(f'./visuals/images/{args.dataset}_gfo_lambda_training.png')
     plt.clf()

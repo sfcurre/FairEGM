@@ -34,6 +34,7 @@ def main():
         ax.plot(x, values)
         ax.set_ylabel(label)
         ax.set_xlim(1, 340)
+        ax.ticklabel_format(scilimits=(-3,3))
 
     axes[1, 0].set_xlabel('Number of Introduced Nodes')
     axes[1, 1].set_xlabel('Number of Introduced Nodes')

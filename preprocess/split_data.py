@@ -21,6 +21,7 @@ def is_in_train(train, node):
 
 def split_train_and_test(args, data):
     np.random.seed(5429)
+
     #print(np.sum(data))
     # preprocess
     data[np.tril_indices_from(

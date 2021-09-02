@@ -38,7 +38,7 @@ def main():
     with open(f'results/{args.dataset}/results.json') as fp:
         results = json.load(fp)
 
-    fig, axes = plt.subplots(1, 2, figsize=(9,4))
+    fig, axes = plt.subplots(1, 2, figsize=(15,5))
 
     EPOCHS = args.epochs
 
@@ -51,8 +51,8 @@ def main():
     task_loss = pd.DataFrame(tl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
     
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
-    g.set_xlabel('Epoch')
-    g.set_ylabel('Reconstruction Loss')
+    g.set_xlabel('Epoch', fontsize=16)
+    g.set_ylabel('Reconstruction Loss', fontsize=16)
     axes[0].legend(['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], loc='upper right')
     g.set_xlim(1, EPOCHS)
     g.set_ylim(1, 2)
@@ -66,9 +66,10 @@ def main():
     fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
-    g.set_xlabel('Epoch')
-    g.set_ylabel('Link Divergence')
+    g.set_xlabel('Epoch', fontsize=16)
+    g.set_ylabel('Link Divergence', fontsize=16)
     g.set_xlim(1, EPOCHS)
+    axes[1].ticklabel_format(scilimits=(-3,3))
 
     plt.savefig(f'./visuals/images/{args.dataset}_main_training.png')
     if args.view:

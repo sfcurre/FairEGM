@@ -45,13 +45,13 @@ def main():
     get_data = read_data(args.dataset, args.folds)
     results = defaultdict(dict)
 
-    for n in range(1, 30, 3):#[1, 2, 4, 8, 16] + list(range(30, 360, 10)):
+    for n in [1, 2, 4, 8, 16] + list(range(30, 360, 10)):
 
         data = get_data()
         COMMUNITY_FAIRNESS = lambda: CFOGraphConv(n)
 
         print(f'Model cfo_{n}: START')
-        results[f'cfo_{n}']= kfold_fair_model(*data, COMMUNITY_FAIRNESS, args)
+        results[f'cfo_{n}']= kfold_fair_model(*data, COMMUNITY_FAIRNESS, args, f"./results/{args.dataset}/embeddings/cfo_{n}")
         print(f'Model cfo_{n}: FINISHED')
 
     with open(f'results/{args.dataset}/community_results.json', 'w') as fp:
