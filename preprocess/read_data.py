@@ -228,19 +228,19 @@ def read_pubmed(k):
 
 def read_data(dataset, folds):
     if dataset == 'bail':
-        get_data = lambda: read_bail(folds)
+        get_data = read_bail(folds)
     elif dataset == 'citeseer':
-        get_data = lambda: read_citeseer(folds)
+        get_data = read_citeseer(folds)
     elif dataset == 'cora':
-        get_data = lambda: read_cora(folds)
+        get_data = read_cora(folds)
     elif dataset == 'credit':
-        get_data = lambda: read_credit(folds)
+        get_data = read_credit(folds)
     elif dataset == 'facebook':
-        get_data = lambda: read_facebook(folds)
+        get_data = read_facebook(folds)
     elif dataset == 'german':
-        get_data = lambda: read_german(folds)
+        get_data = read_german(folds)
     elif dataset == 'pubmed':
-        get_data = lambda: read_pubmed(folds)
+        get_data = read_pubmed(folds)
     else:
         raise ValueError(f"Dataset \"{dataset}\" is not recognized.")
     return get_data

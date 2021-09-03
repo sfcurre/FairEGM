@@ -41,15 +41,20 @@ def parse_args():
 def main():
 
     args = parse_args()
-    get_data = read_data(args.dataset, args.folds)
+    features, _, attributes = read_data(args.dataset, args.folds)
  
     results = defaultdict(dict)
 
+    fold_names = []
+    for i in range(args.folds):
+        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
+
     for l in [0, 0.001, 0.01, 0.1, 1, 10, 100, 1000]:
-        data = get_data()
+        
         print(f'Model gfo_lambda{l}: START')
         args.lambda_param = l
-        results[f'gfo_lambda{l}']= kfold_fair_model(*data, GFOGraphConv, args)
+        results[f'gfo_lambda{l}']= kfold_fair_model(features, fold_names, attributes, GFOGraphConv, args)
         print(f'Model gfo_lambda{l}: FINISHED')
 
     with open(f'results/{args.dataset}/lambda_results.json', 'w') as fp:

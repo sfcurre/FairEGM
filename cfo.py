@@ -42,16 +42,20 @@ def parse_args():
 def main():
 
     args = parse_args()
-    get_data = read_data(args.dataset, args.folds)
+    features, _, attributes = read_data(args.dataset, args.folds)
     results = defaultdict(dict)
+
+    fold_names = []
+    for i in range(args.folds):
+        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     for n in [1, 2, 4, 8, 16] + list(range(30, 360, 10)):
 
-        data = get_data()
         COMMUNITY_FAIRNESS = lambda: CFOGraphConv(n)
 
         print(f'Model cfo_{n}: START')
-        results[f'cfo_{n}']= kfold_fair_model(*data, COMMUNITY_FAIRNESS, args, f"./results/{args.dataset}/embeddings/cfo_{n}")
+        results[f'cfo_{n}']= kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS, args, f"./results/{args.dataset}/embeddings/cfo_{n}")
         print(f'Model cfo_{n}: FINISHED')
 
     with open(f'results/{args.dataset}/community_results.json', 'w') as fp:

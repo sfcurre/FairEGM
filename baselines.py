@@ -257,6 +257,9 @@ def kmeans_gae(all_features, fold_gen, all_attributes, args, model_str):
     results = []
     for train_edges, test_edges in fold_gen:
 
+        train_edges = np.load(train_edges)
+        test_edges = np.load(test_edges)
+
         use_node = np.any((train_edges != 0), axis = -1)
         features = all_features[use_node]
         attributes = all_attributes[use_node]
@@ -278,6 +281,9 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
     results = []
     for train_edges, test_edges in fold_gen:
         rdict = {}
+
+        train_edges = np.load(train_edges)
+        test_edges = np.load(test_edges)
 
         use_node = np.any((train_edges != 0), axis = -1)
 
@@ -314,6 +320,9 @@ def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_gen):
+
+        train_edges = np.load(train_edges)
+        test_edges = np.load(test_edges)
 
         use_node = np.any((train_edges != 0), axis=-1)
         print(use_node.sum())
@@ -353,21 +362,25 @@ def main():
     import logging
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     args = parse_args()
-    get_data = read_data(args.dataset, args.folds)
+    features, _, attributes = read_data(args.dataset, args.folds)
     logging.info('get_data function selected')
+
+    fold_names = []
+    for i in range(args.folds):
+        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     results = {}
     for model in ['gae', 'vgae', 'fairwalk']:  # , 'inform'
-        data = get_data()
         logging.info('get_data')
         if model == 'gae':
-            rlist = kmeans_gae(*data, args, 'gcn_ae')
+            rlist = kmeans_gae(features, fold_names, attributes, args, 'gcn_ae')
         elif model == 'vgae':
-            rlist = kmeans_gae(*data, args, 'gcn_vae')
+            rlist = kmeans_gae(features, fold_names, attributes, args, 'gcn_vae')
         elif model == 'inform':
-            rlist = kmeans_inform(*data, args, alpha=0.5)
+            rlist = kmeans_inform(features, fold_names, attributes, args, alpha=0.5)
         elif model == 'fairwalk':
-            rlist = kmeans_fairwalk(*data, args)
+            rlist = kmeans_fairwalk(features, fold_names, attributes, args)
         logging.info('embed_baselines')
 
         results[model] = rlist

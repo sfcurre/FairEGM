@@ -70,10 +70,13 @@ def base_model(num_nodes, num_features, embedding_dim):
     output = LinkReconstruction()(conv_nodes)
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [conv_nodes, conv_edges])
 
-def kfold_base_model(all_features, fold_generator, all_attributes, args, embedding_file=''):
+def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file=''):
     results = []
-    for i, (train_edges, test_edges) in enumerate(fold_generator):
+    for i, (train_edges, test_edges) in enumerate(fold_names):
         rdict = {}
+
+        train_edges = np.load(train_edges)
+        test_edges = np.load(test_edges)
 
         use_node = np.any((train_edges != 0), axis = -1)
 
@@ -106,10 +109,13 @@ def kfold_base_model(all_features, fold_generator, all_attributes, args, embeddi
         results.append(rdict)
     return results
 
-def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constructor, args, embedding_file=''):
+def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor, args, embedding_file=''):
     results = []
-    for i, (train_edges, test_edges) in enumerate(fold_generator):
+    for i, (train_edges, test_edges) in enumerate(fold_names):
         rdict = {}
+        
+        train_edges = np.load(train_edges)
+        test_edges = np.load(test_edges)
 
         use_node = np.any((train_edges != 0), axis = -1)
 
@@ -139,19 +145,21 @@ def kfold_fair_model(all_features, fold_generator, all_attributes, layer_constru
 
 def main():
     args = parse_args()
-    get_data = read_data(args.dataset, args.folds)
+    features, edge_gen, attributes = read_data(args.dataset, args.folds)
+    
+    fold_names = []
+    for i, (train, test) in enumerate(edge_gen):
+        np.save(f'./data/{args.dataset}/folds/fold{i}_train.npy', train)
+        np.save(f'./data/{args.dataset}/folds/fold{i}_test.npy', test)
+        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     results = {}
-    data=get_data()
-    results['base'] = kfold_base_model(*data, args, embedding_file=f'./results/{args.dataset}/embeddings/base')
-    data=get_data()
-    results['gfo'] = kfold_fair_model(*data, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo')
-    data=get_data()
-    results['cfo_10'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10')
-    data=get_data()
-    results['cfo_100'] = kfold_fair_model(*data, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100')
-    data=get_data()
-    results['few'] = kfold_fair_model(*data, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few')
+    results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base')
+    results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo')
+    results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10')
+    results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100')
+    results['few'] = kfold_fair_model(features, fold_names, attributes, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few')
 
     with open(f'./results/{args.dataset}/results.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)
