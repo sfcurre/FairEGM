@@ -22,8 +22,8 @@ def fairwalk(train_adj, test_adj, attributes, num_walk=20, walk_len=80, learning
     if run_on_windows:
         os.system('.\\baselines\\FairWalk\\fast-random-walk\\walk --if={} --of={} --length={} --walks={} -w'.format(edge_path, walk_path, walk_len, num_walk))
     else:
-        os.system('make -C ./baselines/FairWalk/fast-random-walk/ clean')
-        os.system('make -C ./baselines/FairWalk/fast-random-walk/')
+        # os.system('make -C ./baselines/FairWalk/fast-random-walk/ clean')
+        # os.system('make -C ./baselines/FairWalk/fast-random-walk/')
         os.system('./baselines/FairWalk/fast-random-walk/walk --if={} --of={} --length={} --walks={} -w'.format(edge_path, walk_path, walk_len, num_walk))
 
     # read walks and process for gensim.model.word2vec
