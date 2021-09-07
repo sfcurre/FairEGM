@@ -57,18 +57,18 @@ def reconstruction_model(num_nodes, num_features):
     # num_features == embedding_dim
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((num_nodes, num_nodes))
-    conv_nodes, conv_edges = GraphCNN(num_features, activation='linear')([nodes, edges])
-    output = LinkReconstruction()(conv_nodes)
-    return tf.keras.models.Model([nodes, edges], output)
+    embeddings, conv_edges = GraphCNN(num_features, activation='linear')([nodes, edges])
+    output = LinkReconstruction()(embeddings)
+    return tf.keras.models.Model([nodes, edges], [output, embeddings])
 
 def base_model(num_nodes, num_features, embedding_dim):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((num_nodes, num_nodes))
 
     conv_nodes, conv_edges = GraphCNN(embedding_dim, activation='relu')([nodes, edges])
-    conv_nodes, conv_edges = GraphCNN(embedding_dim, activation='linear')([conv_nodes, conv_edges])
-    output = LinkReconstruction()(conv_nodes)
-    return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [conv_nodes, conv_edges])
+    embeddings, conv_edges = GraphCNN(embedding_dim, activation='linear')([conv_nodes, conv_edges])
+    output = LinkReconstruction()(embeddings)
+    return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [embeddings, conv_edges])
 
 def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file=''):
     results = []
@@ -153,7 +153,7 @@ def main():
         np.save(f'./data/{args.dataset}/folds/fold{i}_test.npy', test)
         fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
-
+    
     results = {}
     results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base')
     results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo')

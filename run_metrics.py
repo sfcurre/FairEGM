@@ -1,13 +1,22 @@
 import numpy as np
-import json, argparse
+import json, argparse, os
 from glob import glob
 from collections import defaultdict
+from functools import singledispatch
 
 from models.metrics import *
 from preprocess.read_data import read_data
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, roc_auc_score
+
+@singledispatch
+def to_serializable(val):
+    return str(val)
+
+@to_serializable.register(np.float32)
+def ts_float32(val):
+    return np.float64(val)
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -29,7 +38,7 @@ def main():
     for model in ['base', 'gfo', 'cfo_10', 'cfo_100', 'few']:
         np.random.seed(5429)
 
-        files = glob(f'./results/{args.dataset}/embeddings/{model.replace("_", "")}*')
+        files = glob(f'./results/{args.dataset}/embeddings/{model.replace("_", "")}_*')
         for fname, (train_edges, test_edges) in zip(files, fold_names):
             f_results = {}
             embeddings = np.load(fname)
@@ -57,22 +66,24 @@ def main():
             test_embeddings = np.concatenate([embeddings[test_indices[:, 0]], embeddings[test_indices[:, 1]]], axis=-1)
             train_labels = np.concatenate([np.ones(len(pos_train)), np.zeros(len(neg_train))])
             test_labels = np.concatenate([np.ones(len(pos_test)), np.zeros(len(neg_test))])
+            train_attrs = np.stack([attributes[0, train_indices[:, 0]].argmax(axis=-1), attributes[0, train_indices[:, 1]].argmax(axis=-1)], axis=-1)
+            test_attrs = np.stack([attributes[0, test_indices[:, 0]].argmax(axis=-1), attributes[0, test_indices[:, 1]].argmax(axis=-1)], axis=-1)
 
-            lr_model = LogisticRegression()
-            lr_model.fit(train_embeddings, train_labels)
-
-            train_prob_preds = lr_model.predict_proba(train_embeddings)[:,1]
-            test_prob_preds = lr_model.predict_proba(test_embeddings)[:,1]
-                
+            adj = sigmoid(embeddings @ embeddings.T)
+            train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
+            test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
+            
             f_results['train_auc'] = roc_auc_score(train_labels, train_prob_preds)
             f_results['test_auc'] = roc_auc_score(test_labels, test_prob_preds)
             f_results['train_f1'] = f1_score(train_labels, (train_prob_preds > 0.5).astype(int))
             f_results['test_f1'] = f1_score(test_labels, (test_prob_preds > 0.5).astype(int))
+            f_results['max_diff'] = max_p_diff(test_attrs, test_prob_preds)
+            f_results['dp'] = dp(test_attrs, test_prob_preds)
 
             results[model].append(f_results)
     
     with open(f'./results/{args.dataset}/results2.json', 'w') as fp:
-        json.dump(results, fp)
+        json.dump(results, fp, indent=True, default=to_serializable)
 
 if __name__ == '__main__':
     main()

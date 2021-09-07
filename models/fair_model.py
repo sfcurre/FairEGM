@@ -8,7 +8,7 @@ class FairModel:
         self.dense_layer = dense_layer
         self.fair_layer = fair_layer
         self.task_model = task_model
-        self.model = self.build()
+        self.model, self.embedding_model = self.build()
 
         self.compiled = False
 
@@ -19,10 +19,8 @@ class FairModel:
         fair_conv, fair_edges = self.fair_layer([nodes, edges])
         fair_nodes = tf.keras.layers.TimeDistributed(self.dense_layer)(fair_conv)
 
-        self.embedding_model = tf.keras.models.Model([nodes, edges], [fair_nodes, fair_edges])
-
-        output = self.task_model([fair_nodes, fair_edges])
-        return tf.keras.models.Model([nodes, edges], output)
+        output, embeddings = self.task_model([fair_nodes, fair_edges])
+        return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [embeddings, fair_edges])
 
     def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss):
         self.task_optimizer = task_optimizer

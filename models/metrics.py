@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import entropy
-from scipy.spatial.distance import pdist, squareform
+from collections import defaultdict
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -13,7 +13,7 @@ def dp_link_divergence(attributes, edges):
     norme = np.sum(e, axis = -1, keepdims=True)
     normf = np.sum(f, axis = -1, keepdims=True)
     retval = entropy(e / norme, f / normf)
-    return np.mean(retval)
+    return retval
 
 def build_reconstruction_metric(pos_weight):
 
@@ -49,3 +49,30 @@ def dp_at_k(embeddings, attributes, k=10):
         distro = distro / distro.sum(axis = -1)
         dp_total += entropy(totals, distro)
     return dp_total / len(embeddings)
+
+def max_p_diff(attributes, prob_list):
+    pdict = defaultdict(float)
+    cdict = defaultdict(int)
+    for p, (a, b) in zip(prob_list, attributes):
+            cdict[a, b] += 1
+            cdict[b, a] += 1
+            pdict[a, b] += p
+            pdict[b, a] += p
+    mx = 0
+    mn = 1
+    for key in cdict:
+            p = pdict[key] / cdict[key]
+            if p < mn:
+                mn = p
+            if p > mx:
+                mx = p
+    return mx - mn
+
+def dp(attributes, prob_list):
+    intra_probs, inter_probs = [], []
+    for p, (a, b) in zip(prob_list, attributes):
+        if a == b:
+            intra_probs.append(p)
+        else:
+            inter_probs.append(p)
+    return abs(sum(intra_probs) / len(intra_probs) - sum(inter_probs) / len(inter_probs))
