@@ -41,9 +41,9 @@ def make_baselines_from_file(filepath):
 def make_main2_from_file(filepath, dataset):
     with open(filepath) as fp:
         results = json.load(fp)
-    metrics = ['test_auc', 'test_f1', 'max_diff', 'dp']
+    metrics = ['reconstruction_loss', 'link_divergence', 'test_auc', 'test_f1', 'dp@20', 'dp@40', 'dp']
     model_titles = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN']
-    metric_titles = ['AUROC', 'F1-Score', '$Max P_{diff}$', '$\Delta$DP']
+    metric_titles = ['$L_{R}$', '$L_{D}$', 'AUROC', 'F1-Score', 'DP@20', 'DP@40', 'DP']
     latex_str = ' & '.join(['model'] + metric_titles) + ' \\\\\n'
     for i, model in enumerate(['base', 'gfo', 'cfo_10', 'cfo_100', 'few']):
         addition = '& ' + model_titles[i]

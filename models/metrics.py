@@ -12,8 +12,8 @@ def dp_link_divergence(attributes, edges):
     e = np.repeat(e, f.shape[-2], axis = 0)
     norme = np.sum(e, axis = -1, keepdims=True)
     normf = np.sum(f, axis = -1, keepdims=True)
-    retval = entropy(e / norme, f / normf)
-    return retval
+    retval = entropy(e / norme, f / normf, axis = -1)
+    return retval.mean()
 
 def build_reconstruction_metric(pos_weight):
 

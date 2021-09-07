@@ -73,10 +73,17 @@ def main():
             train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
             test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
             
+            pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
+            recon_loss = build_reconstruction_metric(pos_weight)
+
+            f_results['reconstruction_loss'] = recon_loss(train_edges, embeddings @ embeddings.T)
+            f_results['link_divergence'] = dp_link_divergence(attributes, embeddings @ embeddings.T)
             f_results['train_auc'] = roc_auc_score(train_labels, train_prob_preds)
             f_results['test_auc'] = roc_auc_score(test_labels, test_prob_preds)
             f_results['train_f1'] = f1_score(train_labels, (train_prob_preds > 0.5).astype(int))
             f_results['test_f1'] = f1_score(test_labels, (test_prob_preds > 0.5).astype(int))
+            f_results['dp@20'] = dp_at_k(embeddings, attributes[0], 20)
+            f_results['dp@40'] = dp_at_k(embeddings, attributes[0], 40)
             f_results['max_diff'] = max_p_diff(test_attrs, test_prob_preds)
             f_results['dp'] = dp(test_attrs, test_prob_preds)
 
