@@ -9,7 +9,7 @@ from gensim.models import KeyedVectors, word2vec
 import os
 
 
-def fairwalk(train_adj, test_adj, attributes, attr_id=0, fold_id=0):
+def fairwalk(train_adj, test_adj, attributes, num_walk=20, walk_len=80, learning_rate=0.025, epoch=5, attr_id=0, fold_id=0, embedding_dir=None):
     # Initialize
     path = "./baselines/FairWalk"
     rid = np.random.randint(10000)
@@ -20,11 +20,11 @@ def fairwalk(train_adj, test_adj, attributes, attr_id=0, fold_id=0):
     walk_path = edge_path[:-8] + "walk" # path + "/tmp/" + "773_0_6740_0.walk"
     print("walk_path %s"%walk_path)
     if run_on_windows:
-        os.system('.\\baselines\\FairWalk\\fast-random-walk\\walk --if={} --of={} --length=80 --walks=20 -w'.format(edge_path, walk_path))
+        os.system('.\\baselines\\FairWalk\\fast-random-walk\\walk --if={} --of={} --length={} --walks={} -w'.format(edge_path, walk_path, walk_len, num_walk))
     else:
         os.system('make -C ./baselines/FairWalk/fast-random-walk/ clean')
         os.system('make -C ./baselines/FairWalk/fast-random-walk/')
-        os.system('./baselines/FairWalk/fast-random-walk/walk --if={} --of={} --length=80 --walks=20 -w'.format(edge_path, walk_path))
+        os.system('./baselines/FairWalk/fast-random-walk/walk --if={} --of={} --length={} --walks={} -w'.format(edge_path, walk_path, walk_len, num_walk))
 
     # read walks and process for gensim.model.word2vec
     walks = pd.read_csv(walk_path, header=None)
@@ -41,7 +41,11 @@ def fairwalk(train_adj, test_adj, attributes, attr_id=0, fold_id=0):
     # walks = generate_walks(edge_path)  # deprecated: using our own code for generating random walks.
 
     # Learn embeddings
-    embeddings = emb_train(train_adj.shape[0], walks)
+    embeddings = emb_train(train_adj.shape[0], walks, walk_len=walk_len, walk_times=num_walk, learning_rate=0.025, epoch=5)
+    if embedding_dir:
+        if not os.path.exists(embedding_dir):
+            os.mkdir(embedding_dir)
+        np.save(embedding_dir + f'num-walk-{num_walk}_walk-len-{walk_len}_lr-{learning_rate}_epoch-{epoch}_fold-{fold_id}.npy', embeddings)
 
     return embeddings
 
@@ -116,8 +120,8 @@ def export_edgelist(adj, attributes, path, fold_id, rid, attr_id):
 
 
 # adapted from emb.py, line 41, emb_train
-def emb_train(n, walks, walk_len=80, walk_times=20, num_features=128):
-    min_word_count = 10
+def emb_train(n, walks, walk_len=80, walk_times=20, num_features=128, learning_rate=0.025, epoch=5):
+    min_word_count = 1
     num_workers = mp.cpu_count()
     context = 10
     downsampling = 1e-3
@@ -128,6 +132,7 @@ def emb_train(n, walks, walk_len=80, walk_times=20, num_features=128):
                             sg=1, \
                             workers=num_workers, \
                             vector_size=num_features, min_count=min_word_count, \
+                            epochs=epoch, alpha=learning_rate, \
                             window=context, sample=downsampling)
     print('training done')
     embeddings = np.zeros((n, num_features), dtype=np.float32)
