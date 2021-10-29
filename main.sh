@@ -1,34 +1,30 @@
 #Code to run main.py for all datasets
 set -e
 
-python main.py --dataset citeseer -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-python main.py --dataset cora -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-python main.py --dataset facebook -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-python main.py --dataset german -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
+python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python main.py --dataset bail -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-#python main.py --dataset credit -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python main.py --dataset pubmed -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset citeseer -d 64 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset cora -d 64 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset facebook -d 64 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python cfo.py --dataset citeseer -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python cfo.py --dataset cora -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python cfo.py --dataset facebook -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python cfo.py --dataset german -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset citeseer -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset cora -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset facebook -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python gfo.py --dataset citeseer -d 128 -e 300 -k 5 10 20 40 -f 5
-#python gfo.py --dataset cora -d 128 -e 300 -k 5 10 20 40 -f 5
-#python gfo.py --dataset facebook -d 128 -e 300 -k 5 10 20 40 -f 5
-#python gfo.py --dataset german -d 128 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset citeseer -d 256 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset cora -d 256 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset facebook -d 256 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python gfo.py --dataset bail -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python gfo.py --dataset credit -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python gfo.py --dataset pubmed -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset citeseer -d 32 -d2 16 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset cora -d 32 -d2 16 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+python main.py --dataset facebook -d 32 -d2 16 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python baselines.py --dataset citeseer -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-#python baselines.py --dataset cora -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-#python baselines.py --dataset facebook -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-#python baselines.py --dataset german -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
+# python cfo.py --dataset citeseer -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+# python cfo.py --dataset cora -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
+# python cfo.py --dataset facebook -d 128 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5
 
-#python baselines.py --dataset bail -d 128 -lr 0.001 -e 500 -k 5 10 20 40 -f 5
-#python baselines.py --dataset credit -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
-#python baselines.py --dataset pubmed -d 128 -lr 0.001 -e 300 -k 5 10 20 40 -f 5
+# python run_metrics.py --dataset citeseer -f 5
+# python run_metrics.py --dataset cora -f 5
+# python run_metrics.py --dataset facebook -f 5

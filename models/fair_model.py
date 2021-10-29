@@ -30,43 +30,47 @@ class FairModel:
         self.compiled = True
 
     @tf.function
-    def train_step(self, nodes, edges, target, sensitive_attributes):
+    def train_step(self, nodes, edges, target, sensitive_attributes, lambda_epochs):
 
         with tf.GradientTape() as fair_tape, tf.GradientTape() as task_tape:
 
             output = self.model([nodes, edges], training = True)
-
-            fair_loss = self.fair_loss(sensitive_attributes, output)
             task_loss = self.task_loss(target, output)
-            self.model.trainable = False
-            self.fair_layer.trainable = True
-
-            fair_gradients = fair_tape.gradient(fair_loss, self.fair_layer.trainable_variables)
-            self.fair_optimizer.apply_gradients(zip(fair_gradients, self.fair_layer.trainable_variables))
-
+            
             self.model.trainable = True
             self.fair_layer.trainable = False
 
             task_gradients = task_tape.gradient(task_loss, self.model.trainable_variables)
             self.task_optimizer.apply_gradients(zip(task_gradients, self.model.trainable_variables))
 
-            fl = tf.reduce_mean(fair_loss, axis = None)
+            for i in range(lambda_epochs):
+                
+                output = self.model([nodes, edges], training = True)
+                fair_loss = self.fair_loss(sensitive_attributes, output)
+                
+                self.model.trainable = False
+                self.fair_layer.trainable = True
+
+                fair_gradients = fair_tape.gradient(fair_loss, self.fair_layer.trainable_variables)
+                self.fair_optimizer.apply_gradients(zip(fair_gradients, self.fair_layer.trainable_variables))
+
             tl = tf.reduce_mean(task_loss, axis = None)
-        
-        return fl, tl
+            fl = tf.reduce_mean(fair_loss, axis = None)
+            
+        return tl, fl
 
     def evaluate(self, nodes, edges, target, sensitive_attributes):
         output = self.model([nodes, edges], training = False)
 
-        fair_loss = self.fair_loss(sensitive_attributes, output)
         task_loss = self.task_loss(target, output)
+        fair_loss = self.fair_loss(sensitive_attributes, output)
         
-        fl = tf.reduce_mean(fair_loss, axis = None)
         tl = tf.reduce_mean(task_loss, axis = None)
-    
+        fl = tf.reduce_mean(fair_loss, axis = None)
+        
         return tl.numpy(), fl.numpy()
 
-    def fit(self, nodes, edges, target, sensitive_attributes, epochs, verbose = 1):
+    def fit(self, nodes, edges, target, sensitive_attributes, epochs, lambda_epochs = 1, verbose = 1):
         assert self.compiled, "Model must be compiled before use"
 
         nodes = tf.constant(nodes, dtype = tf.float32)
@@ -82,21 +86,21 @@ class FairModel:
             if verbose and print_con(i):
                 print(f'Epoch {i+1}/{epochs}:')
             
-            fl, tl = self.train_step(nodes, edges, target, sensitive_attributes)
+            tl, fl = self.train_step(nodes, edges, target, sensitive_attributes, lambda_epochs)
             
-            fl = fl.numpy()
             tl = tl.numpy()
+            fl = fl.numpy()
             
             if verbose and print_con(i):
-                print(f'Fairness - {fl}')
                 print(f'Task     - {tl}')
-
+                print(f'Fairness - {fl}')
+                
             tf.keras.backend.clear_session()
             gc.collect()
 
-            history['fair loss'].append(fl)
             history['task loss'].append(tl)
-
+            history['fair loss'].append(fl)
+            
         return history
 
     def predict(self, *args, **kwargs):

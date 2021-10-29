@@ -212,7 +212,7 @@ def run_gae(features, train_adj, test_adj, attributes, args, model_str):
             return 1 / (1 + np.exp(-x))
 
         # Predict on test set of edges
-        adj_rec = sigmoid(np.dot(emb, emb.T))
+        adj_rec = np.dot(emb, emb.T)
         
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
@@ -301,8 +301,7 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
         embs = model.train(graph)
         logging.info('inform: train')
 
-        adj_rec = sigmoid(embs @ embs.T)
-        print(adj_rec)
+        adj_rec = embs @ embs.T
         rdict = {}
         rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
         rdict['link divergence'] = dp_link_divergence(attributes[None,...], adj_rec)
@@ -315,7 +314,7 @@ def kmeans_inform(all_features, fold_gen, all_attributes, args, alpha = 0.5):
     
     return results
 
-def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
+def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0, embedding_file=''):
     import logging
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     results = []
@@ -336,13 +335,15 @@ def kmeans_fairwalk(all_features, fold_gen, all_attributes, args, attr_id=0):
         embeddings = fairwalk(train_edges, test_edges, attributes, fold_id=i, attr_id=attr_id)
         logging.info('fairwalk: embed')
 
+        np.save(embedding_file + f'_{i}.npy', embeddings)
+
         # Evaluate the embeddings
         def get_scores(train_edges, test_edges, attributes, emb):
             def sigmoid(x):
                 return 1 / (1 + np.exp(-x))
 
             # Predict on test set of edges
-            adj_rec = sigmoid(np.dot(emb, emb.T))
+            adj_rec = np.dot(emb, emb.T)
 
             rdict = {}
             rdict['reconstruction loss'] = build_reconstruction_metric(pos_weight)(train_edges, adj_rec)
@@ -371,16 +372,18 @@ def main():
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     results = {}
-    for model in ['gae', 'vgae', 'fairwalk']:  # , 'inform'
+    for model in ['fairwalk']: #['gae', 'vgae', 'fairwalk']:  # , 'inform'
         logging.info('get_data')
         if model == 'gae':
+            pass
             rlist = kmeans_gae(features, fold_names, attributes, args, 'gcn_ae')
         elif model == 'vgae':
+            pass
             rlist = kmeans_gae(features, fold_names, attributes, args, 'gcn_vae')
         elif model == 'inform':
             rlist = kmeans_inform(features, fold_names, attributes, args, alpha=0.5)
         elif model == 'fairwalk':
-            rlist = kmeans_fairwalk(features, fold_names, attributes, args)
+            rlist = kmeans_fairwalk(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/fairwalk')
         logging.info('embed_baselines')
 
         results[model] = rlist

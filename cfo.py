@@ -30,18 +30,30 @@ def ts_float32(val):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [cora, citeseer, facebook].')
-    parser.add_argument('-d', '--embedding-dim', type=int, default=100, help="The graph embedding dimension.")
-    parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, help="Learning rate for the embedding model.")
-    parser.add_argument('-e', '--epochs', type=int, default=300, help='Number of epochs for the embedding model.')
-    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', help='Number for K for Recall@K and DP@K metrics.')
-    parser.add_argument('-f', '--folds', type=int, default=5, help='Number of folds for k-fold cross validation. ONLY THE FIRST FOLD IS USED.')
-    parser.add_argument('--lambda-param', type=float, default=1, help='The learning rate multiplier for the fair loss.')
+    parser.add_argument('--dataset', type=str, default='facebook', 
+                        help='The dataset to train models on, one of [cora, citeseer, facebook].')
+    parser.add_argument('-d', '--embedding-dim', type=int, default=100, 
+                        help="The graph embedding dimension.")
+    parser.add_argument('-d2', '--embedding-dim2', type=int, default=0, 
+                        help="The second graph embedding dimension. If 0, use the same embedding dimension as the first.")
+    parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, 
+                        help="Learning rate for the embedding model.")
+    parser.add_argument('-e', '--epochs', type=int, default=300, 
+                        help='Number of epochs for the embedding model.')
+    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', 
+                        help='Number for K for Recall@K and DP@K metrics.')
+    parser.add_argument('-f', '--folds', type=int, default=5, 
+                        help='Number of folds for k-fold cross validation. ONLY THE FIRST FOLD IS USED.')
+    parser.add_argument('--lambda-param', type=float, default=1, 
+                        help='The learning rate multiplier for the fair loss.')
     return parser.parse_args()
 
 def main():
 
     args = parse_args()
+    if args.embedding_dim2 == 0:
+        args.embedding_dim2 = args.embedding_dim
+
     features, _, attributes = read_data(args.dataset, args.folds)
     results = defaultdict(dict)
 

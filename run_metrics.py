@@ -3,6 +3,7 @@ import json, argparse, os
 from glob import glob
 from collections import defaultdict
 from functools import singledispatch
+from tqdm import tqdm
 
 from models.metrics import *
 from preprocess.read_data import read_data
@@ -35,11 +36,18 @@ def main():
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     results = defaultdict(list)
-    for model in ['base', 'gfo', 'cfo_10', 'cfo_100', 'few']:
-        np.random.seed(5429)
 
-        files = glob(f'./results/{args.dataset}/embeddings/{model.replace("_", "")}_*')
-        for fname, (train_edges, test_edges) in zip(files, fold_names):
+    mod_list = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
+    specs = ['d-32_d2-16', 'd-32_d2-32', 'd-64_d2-64', 'd-128_d2-128', 'd-256_d2-256']
+    mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
+    mod_list += ['fairwalk']
+
+    for model in tqdm(mod_list):
+        np.random.seed(5429)
+        for i, (train_edges, test_edges) in zip(range(args.folds), fold_names):
+        
+            fname = f'./results/{args.dataset}/embeddings/{model}_{i}.npy'
+        
             f_results = {}
             embeddings = np.load(fname)
             train_edges = np.load(train_edges)
@@ -69,27 +77,44 @@ def main():
             train_attrs = np.stack([attributes[0, train_indices[:, 0]].argmax(axis=-1), attributes[0, train_indices[:, 1]].argmax(axis=-1)], axis=-1)
             test_attrs = np.stack([attributes[0, test_indices[:, 0]].argmax(axis=-1), attributes[0, test_indices[:, 1]].argmax(axis=-1)], axis=-1)
 
-            adj = sigmoid(embeddings @ embeddings.T)
-            train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
-            test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
+            #adj = sigmoid(embeddings @ embeddings.T)
+            
+            lr_model = LogisticRegression()
+            lr_model.fit(train_embeddings, train_labels)
+
+            train_prob_preds = lr_model.predict_proba(train_embeddings)[:,1]
+            test_prob_preds = lr_model.predict_proba(test_embeddings)[:,1]
+
+            # train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
+            # test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
             
             pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
             recon_loss = build_reconstruction_metric(pos_weight)
 
             f_results['reconstruction_loss'] = recon_loss(train_edges, embeddings @ embeddings.T)
             f_results['link_divergence'] = dp_link_divergence(attributes, embeddings @ embeddings.T)
-            f_results['train_auc'] = roc_auc_score(train_labels, train_prob_preds)
+            #f_results['train_auc'] = roc_auc_score(train_labels, train_prob_preds)
             f_results['test_auc'] = roc_auc_score(test_labels, test_prob_preds)
-            f_results['train_f1'] = f1_score(train_labels, (train_prob_preds > 0.5).astype(int))
+            #f_results['train_f1'] = f1_score(train_labels, (train_prob_preds > 0.5).astype(int))
             f_results['test_f1'] = f1_score(test_labels, (test_prob_preds > 0.5).astype(int))
+            f_results['dp@10'] = dp_at_k(embeddings, attributes[0], 10)
             f_results['dp@20'] = dp_at_k(embeddings, attributes[0], 20)
             f_results['dp@40'] = dp_at_k(embeddings, attributes[0], 40)
-            f_results['max_diff'] = max_p_diff(test_attrs, test_prob_preds)
-            f_results['dp'] = dp(test_attrs, test_prob_preds)
+            f_results['recall@10'] = recall_at_k(embeddings, test_edges, 10)
+            f_results['recall@20'] = recall_at_k(embeddings, test_edges, 20)
+            f_results['recall@40'] = recall_at_k(embeddings, test_edges, 40)
+            f_results['dyf10%'] = dyf_at_threshold(test_attrs, test_prob_preds, attributes[0], 10)
+            f_results['dyf20%'] = dyf_at_threshold(test_attrs, test_prob_preds, attributes[0], 20)
+            # f_results['dp10%'] = dp_threshold(embeddings, attributes[0], 10, train_adj=train_edges)
+            # f_results['dp20%'] = dp_threshold(embeddings, attributes[0], 20, train_adj=train_edges)
+            #f_results['dp10%'] = delta_dp_threshold(test_attrs, test_prob_preds, 10)
+            #f_results['dp20%'] = delta_dp_threshold(test_attrs, test_prob_preds, 20)
+            #f_results['max_diff'] = max_p_diff(test_attrs, test_prob_preds)
+            #f_results['dp'] = dp(test_attrs, test_prob_preds)
 
             results[model].append(f_results)
     
-    with open(f'./results/{args.dataset}/results2.json', 'w') as fp:
+    with open(f'./results/{args.dataset}/results_all.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)
 
 if __name__ == '__main__':

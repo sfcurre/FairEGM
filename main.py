@@ -3,7 +3,7 @@ import os, json
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 from collections import defaultdict
 from functools import singledispatch
-import argparse
+import argparse, time
 
 from layers.graph_cnn import GraphCNN
 from layers.gfo_graph_conv import GFOGraphConv
@@ -37,13 +37,24 @@ def ts_float32(val):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='facebook', help='The dataset to train models on, one of [bail, cora, citeseer, facebook, pubmed].')
-    parser.add_argument('-d', '--embedding-dim', type=int, default=100, help="The graph embedding dimension.")
-    parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, help="Learning rate for the embedding model.")
-    parser.add_argument('-e', '--epochs', type=int, default=300, help='Number of epochs for the embedding model.')
-    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', help='Number for K for Recall@K and DP@K metrics.')
-    parser.add_argument('-f', '--folds', type=int, default=5, help='Number of folds for k-fold cross validation.')
-    parser.add_argument('--lambda-param', type=float, default=1, help='The learning rate multiplier for the fair loss.')
+    parser.add_argument('--dataset', type=str, default='facebook', 
+                        help='The dataset to train models on, one of [bail, cora, citeseer, facebook, pubmed].')
+    parser.add_argument('-d', '--embedding-dim', type=int, default=100, 
+                        help="The graph embedding dimension.")
+    parser.add_argument('-d2', '--embedding-dim2', type=int, default=0, 
+                        help="The second graph embedding dimension. If 0, use the same embedding dimension as the first.")
+    parser.add_argument('-lr', '--learning-rate', type=float, default=1e-3, 
+                        help="Learning rate for the embedding model.")
+    parser.add_argument('-e', '--epochs', type=int, default=300, 
+                        help='Number of epochs for the embedding model.')
+    parser.add_argument('-k', '--top-k', type=int, default=[10], nargs='+', 
+                        help='Number for K for Recall@K and DP@K metrics.')
+    parser.add_argument('-f', '--folds', type=int, default=5, 
+                        help='Number of folds for k-fold cross validation.')
+    parser.add_argument('-Lp', '--lambda-param', type=float, default=1, 
+                        help='The learning rate multiplier for the fair loss.')
+    parser.add_argument('-Le', '--lambda-epochs', type=float, default=1, 
+                        help='The number of epochs for the fair loss.')                    
     return parser.parse_args()
 
 def preprocess_graph(adj):
@@ -53,20 +64,20 @@ def preprocess_graph(adj):
     adj_normalized = adj_.dot(degree_mat_inv_sqrt).transpose().dot(degree_mat_inv_sqrt)
     return adj_normalized
 
-def reconstruction_model(num_nodes, num_features):
+def reconstruction_model(num_nodes, num_features, embedding_dim):
     # num_features == embedding_dim
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((num_nodes, num_nodes))
-    embeddings, conv_edges = GraphCNN(num_features, activation='linear')([nodes, edges])
+    embeddings, conv_edges = GraphCNN(embedding_dim, activation='linear')([nodes, edges])
     output = LinkReconstruction()(embeddings)
     return tf.keras.models.Model([nodes, edges], [output, embeddings])
 
-def base_model(num_nodes, num_features, embedding_dim):
+def base_model(num_nodes, num_features, embedding_dim1, embedding_dim2):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((num_nodes, num_nodes))
 
-    conv_nodes, conv_edges = GraphCNN(embedding_dim, activation='relu')([nodes, edges])
-    embeddings, conv_edges = GraphCNN(embedding_dim, activation='linear')([conv_nodes, conv_edges])
+    conv_nodes, conv_edges = GraphCNN(embedding_dim1, activation='relu')([nodes, edges])
+    embeddings, conv_edges = GraphCNN(embedding_dim2, activation='linear')([conv_nodes, conv_edges])
     output = LinkReconstruction()(embeddings)
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [embeddings, conv_edges])
 
@@ -89,9 +100,12 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
         def dp_metric(y_true, y_pred):
             return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
 
-        base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim)
+        base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
         base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
+        start_time = time.time()
         history = base.fit([features, norm_edges], train_edges, epochs = args.epochs, verbose = 0).history
+        end_time = time.time()
+        rdict['time'] = end_time - start_time
         history['task loss'] = history.pop('loss')
         history['fair loss'] = history.pop('dp_metric')
         rdict['history'] = history
@@ -125,9 +139,12 @@ def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         
-        model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim))
+        model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim, args.embedding_dim2))
         model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
-        history = model.fit(features, norm_edges, train_edges, attributes, args.epochs, verbose=0)
+        start_time = time.time()
+        history = model.fit(features, norm_edges, train_edges, attributes, args.epochs, args.lambda_epochs, verbose=0)
+        end_time = time.time()
+        rdict['time'] = end_time - start_time
         rdict['history'] = history
         fair_nodes, fair_edges = model.predict_embeddings([features, norm_edges])
         fair_nodes = fair_nodes[0]
@@ -145,6 +162,9 @@ def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor
 
 def main():
     args = parse_args()
+    if args.embedding_dim2 == 0:
+        args.embedding_dim2 = args.embedding_dim
+
     features, edge_gen, attributes = read_data(args.dataset, args.folds)
     
     fold_names = []
@@ -154,14 +174,16 @@ def main():
         fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
     
-    results = {}
-    results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base')
-    results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo')
-    results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10')
-    results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100')
-    results['few'] = kfold_fair_model(features, fold_names, attributes, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few')
+    addon = f'd-{args.embedding_dim}_d2-{args.embedding_dim2}'
 
-    with open(f'./results/{args.dataset}/results.json', 'w') as fp:
+    results = {}
+    results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base_{addon}')
+    results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo_{addon}')
+    results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10_{addon}')
+    results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100_{addon}')
+    results['few'] = kfold_fair_model(features, fold_names, attributes, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few_{addon}')
+
+    with open(f'./results/{args.dataset}/results_{addon}.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)
 
 
