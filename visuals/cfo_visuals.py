@@ -102,22 +102,22 @@ def main_():
             test_indices = np.concatenate([pos_test, neg_test])
 
             #get metrics as necessary
-            #train_embeddings = np.concatenate([embeddings[train_indices[:, 0]], embeddings[train_indices[:, 1]]], axis=-1)
-            #test_embeddings = np.concatenate([embeddings[test_indices[:, 0]], embeddings[test_indices[:, 1]]], axis=-1)
-            #train_labels = np.concatenate([np.ones(len(pos_train)), np.zeros(len(neg_train))])
+            train_embeddings = np.concatenate([embeddings[train_indices[:, 0]], embeddings[train_indices[:, 1]]], axis=-1)
+            test_embeddings = np.concatenate([embeddings[test_indices[:, 0]], embeddings[test_indices[:, 1]]], axis=-1)
+            train_labels = np.concatenate([np.ones(len(pos_train)), np.zeros(len(neg_train))])
             test_labels = np.concatenate([np.ones(len(pos_test)), np.zeros(len(neg_test))])
-            #train_attrs = np.stack([attributes[0, train_indices[:, 0]].argmax(axis=-1), attributes[0, train_indices[:, 1]].argmax(axis=-1)], axis=-1)
+            train_attrs = np.stack([attributes[0, train_indices[:, 0]].argmax(axis=-1), attributes[0, train_indices[:, 1]].argmax(axis=-1)], axis=-1)
             test_attrs = np.stack([attributes[0, test_indices[:, 0]].argmax(axis=-1), attributes[0, test_indices[:, 1]].argmax(axis=-1)], axis=-1)
 
-            # lr_model = LogisticRegression()
-            # lr_model.fit(train_embeddings, train_labels)
+            lr_model = LogisticRegression()
+            lr_model.fit(train_embeddings, train_labels)
 
-            # train_prob_preds = lr_model.predict_proba(train_embeddings)[:,1]
-            # test_prob_preds = lr_model.predict_proba(test_embeddings)[:,1]
+            train_prob_preds = lr_model.predict_proba(train_embeddings)[:,1]
+            test_prob_preds = lr_model.predict_proba(test_embeddings)[:,1]
 
-            adj = sigmoid(embeddings @ embeddings.T)
-            train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
-            test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
+            # adj = sigmoid(embeddings @ embeddings.T)
+            # train_prob_preds = np.array([adj[e[0], e[1]] for e in train_indices])
+            # test_prob_preds = np.array([adj[e[0], e[1]] for e in test_indices])
 
 
             pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
@@ -131,8 +131,7 @@ def main_():
             f_results['test_f1'] = f1_score(test_labels, (test_prob_preds > 0.5).astype(int))
             f_results['dp@20'] = dp_at_k(embeddings, attributes[0], 20)
             f_results['dp@40'] = dp_at_k(embeddings, attributes[0], 40)
-            f_results['max_diff'] = max_p_diff(test_attrs, test_prob_preds)
-            f_results['dp'] = dp(test_attrs, test_prob_preds)
+            #f_results['dp'] = dp(test_attrs, test_prob_preds)
 
             results[n].append(f_results)
 
@@ -142,7 +141,7 @@ def main_():
     labels = [('reconstruction_loss', 'Reconstruction Loss'),
               ('link_divergence', 'Link Divergence'),
               ('test_auc', 'AUROC'),
-              ('dp', '$\Delta$DP')]
+              ('dp@20', 'DP@20')]
     fig, axes = plt.subplots(2, 2, figsize=(12,6))
 
     for i, (key, label) in enumerate(labels):

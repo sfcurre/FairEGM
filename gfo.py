@@ -44,6 +44,8 @@ def parse_args():
                         help='Number for K for Recall@K and DP@K metrics.')
     parser.add_argument('-f', '--folds', type=int, default=5, 
                         help='Number of folds for k-fold cross validation. ONLY THE FIRST FOLD IS USED.')
+    parser.add_argument('-Le', '--lambda-epochs', type=float, default=1, 
+                        help='The number of epochs for the fair loss.')
     return parser.parse_args()
 
 def main():
