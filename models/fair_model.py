@@ -19,8 +19,8 @@ class FairModel:
         fair_conv, fair_edges = self.fair_layer([nodes, edges])
         fair_nodes = tf.keras.layers.TimeDistributed(self.dense_layer)(fair_conv)
 
-        output, embeddings = self.task_model([fair_nodes, fair_edges])
-        return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [embeddings, fair_edges])
+        outputs = self.task_model([fair_nodes, fair_edges])
+        return tf.keras.models.Model([nodes, edges], outputs[:-1]), tf.keras.models.Model([nodes, edges], [outputs[-1], fair_edges])
 
     def compile(self, task_optimizer, fair_optimizer, task_loss, fair_loss):
         self.task_optimizer = task_optimizer
@@ -32,7 +32,7 @@ class FairModel:
     @tf.function
     def train_step(self, nodes, edges, target, sensitive_attributes, lambda_epochs):
 
-        with tf.GradientTape() as fair_tape, tf.GradientTape() as task_tape:
+        with tf.GradientTape() as task_tape:
 
             output = self.model([nodes, edges], training = True)
             task_loss = self.task_loss(target, output)
@@ -43,8 +43,9 @@ class FairModel:
             task_gradients = task_tape.gradient(task_loss, self.model.trainable_variables)
             self.task_optimizer.apply_gradients(zip(task_gradients, self.model.trainable_variables))
 
-            for i in range(lambda_epochs):
-                
+        for i in range(lambda_epochs):
+            with tf.GradientTape() as fair_tape: 
+
                 output = self.model([nodes, edges], training = True)
                 fair_loss = self.fair_loss(sensitive_attributes, output)
                 
@@ -54,9 +55,9 @@ class FairModel:
                 fair_gradients = fair_tape.gradient(fair_loss, self.fair_layer.trainable_variables)
                 self.fair_optimizer.apply_gradients(zip(fair_gradients, self.fair_layer.trainable_variables))
 
-            tl = tf.reduce_mean(task_loss, axis = None)
-            fl = tf.reduce_mean(fair_loss, axis = None)
-            
+        tl = tf.reduce_mean(task_loss, axis = None)
+        fl = tf.reduce_mean(fair_loss, axis = None)
+        
         return tl, fl
 
     def evaluate(self, nodes, edges, target, sensitive_attributes):

@@ -20,8 +20,6 @@ def is_in_train(train, node):
 
 
 def split_train_and_test(args, data):
-    np.random.seed(5429)
-
     #print(np.sum(data))
     # preprocess
     data[np.tril_indices_from(
@@ -70,6 +68,54 @@ def split_train_and_test(args, data):
         #print(np.sum(train_mtx), np.sum(test_mtx), np.sum(train_mtx + test_mtx))
         yield train_mtx, test_mtx
 
+def split_train_and_test_random(args, data):
+    #print(np.sum(data))
+    # preprocess
+    data[np.tril_indices_from(
+        data)] = 0  # remove all edges (u, v) such that u >= v, including self-loops and duplicate edges
+    idx_i, idx_j = np.where(data > 0)  # construct edgelist
+    node_num = data.shape[0]
+    edge_num = len(idx_i)
+
+    # randomly select (1-args.train_prop) positive test edges
+    for itr in range(args.random):
+        permu = np.random.permutation(edge_num)
+        test_st, test_ed = 0, int(float(edge_num) * 0.2)
+        #print("Iteration: %d / %d, [test_st, test_ed] = [%d, %d]"%(itr, args.fold, test_st, test_ed))
+
+        # initial split
+        test_mtx = np.zeros_like(data, dtype=np.int32)
+        test_mtx[idx_i[permu[test_st:test_ed]], idx_j[permu[test_st:test_ed]]] = 1
+        train_mtx = data - test_mtx
+        #print(np.sum(train_mtx) * 2, np.sum(test_mtx) * 2, np.sum(train_mtx + test_mtx) * 2)
+
+        # find the largest (weakly) connected component of the training set
+        train_nx = nx.convert_matrix.from_numpy_array(train_mtx)
+        largest_cc = max(nx.connected_components(train_nx), key=len)
+        for i in range(node_num):
+            if i not in largest_cc:
+                train_mtx[i, :] = 0
+                train_mtx[:, i] = 0
+        train_mtx += train_mtx.T
+        #print(np.sum(train_mtx))
+
+        # remove test nodes not in the training set
+        idx_i_test, idx_j_test = np.where(test_mtx > 0)
+        edge_num_test = len(idx_i_test)
+        for e in range(edge_num_test):
+            i, j = idx_i_test[e], idx_j_test[e]
+            if test_mtx[i, j] == 0:
+                continue
+            if not is_in_train(train_mtx, i):
+                test_mtx[i, :] = 0
+                test_mtx[:, i] = 0
+            if not is_in_train(train_mtx, j):
+                test_mtx[j, :] = 0
+                test_mtx[:, j] = 0
+        test_mtx += test_mtx.T  # symmetric
+
+        #print(np.sum(train_mtx), np.sum(test_mtx), np.sum(train_mtx + test_mtx))
+        yield train_mtx, test_mtx
 
 if __name__ == "__main__":
     args = parse_args()

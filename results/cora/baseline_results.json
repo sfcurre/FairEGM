@@ -1,98 +1,44 @@
 {
- "gae": [
+ "fairwalk": [
   {
-   "reconstruction loss": 0.7216081051430188,
-   "link divergence": 0.0015616654130260375,
-   "recall@k": 0.30709876543209874,
-   "dp@k": 8.585373918906654
+   "reconstruction loss": 1.607163691396694,
+   "link divergence": 1.2166887996237243e-05,
+   "recall@20": 0.3431952662721893,
+   "dp@20": 8.460474332592938,
+   "recall@40": 0.4541420118343195,
+   "dp@40": 5.647472072390152
   },
   {
-   "reconstruction loss": 0.7404895685306125,
-   "link divergence": 0.0030806893174998395,
-   "recall@k": 0.30597014925373134,
-   "dp@k": 8.383431119046103
+   "reconstruction loss": 1.6097249708627706,
+   "link divergence": 8.461007610594078e-06,
+   "recall@20": 0.3611111111111111,
+   "dp@20": 9.160145551190263,
+   "recall@40": 0.45760233918128657,
+   "dp@40": 6.744379431985909
   },
   {
-   "reconstruction loss": 0.7373006379278779,
-   "link divergence": 0.002985529659297429,
-   "recall@k": 0.2939297124600639,
-   "dp@k": 9.146074236016581
+   "reconstruction loss": 1.6092664339492226,
+   "link divergence": 8.784310035946297e-06,
+   "recall@20": 0.35691318327974275,
+   "dp@20": 8.606371726605667,
+   "recall@40": 0.4646302250803859,
+   "dp@40": 5.888828079194131
   },
   {
-   "reconstruction loss": 0.7455815070327099,
-   "link divergence": 0.0035454437618837108,
-   "recall@k": 0.271513353115727,
-   "dp@k": 8.485982332807533
+   "reconstruction loss": 1.6066651951214455,
+   "link divergence": 1.1299502315463233e-05,
+   "recall@20": 0.3870481927710843,
+   "dp@20": 8.359649499412154,
+   "recall@40": 0.46987951807228917,
+   "dp@40": 6.049079814258732
   },
   {
-   "reconstruction loss": 0.7668917367681122,
-   "link divergence": 0.0058664247778502775,
-   "recall@k": 0.2189265536723164,
-   "dp@k": 7.603756566405388
-  }
- ],
- "vgae": [
-  {
-   "reconstruction loss": 0.7236272007705697,
-   "link divergence": 0.0017510528610053765,
-   "recall@k": 0.37962962962962965,
-   "dp@k": 8.565453681928
-  },
-  {
-   "reconstruction loss": 0.7250701980784121,
-   "link divergence": 0.0017880573076009074,
-   "recall@k": 0.45671641791044776,
-   "dp@k": 8.565177873423078
-  },
-  {
-   "reconstruction loss": 0.7255996571816914,
-   "link divergence": 0.001811944625126611,
-   "recall@k": 0.4249201277955272,
-   "dp@k": 9.03342000664506
-  },
-  {
-   "reconstruction loss": 0.7245697568214102,
-   "link divergence": 0.001527812473860268,
-   "recall@k": 0.4540059347181009,
-   "dp@k": 8.558918302214822
-  },
-  {
-   "reconstruction loss": 0.7258798132370312,
-   "link divergence": 0.0016836871245732466,
-   "recall@k": 0.4505649717514124,
-   "dp@k": 8.596009962977963
-  }
- ],
- "inform": [
-  {
-   "reconstruction loss": NaN,
-   "link divergence": Infinity,
-   "recall@k": 0.38117283950617287,
-   "dp@k": 8.05704934728337
-  },
-  {
-   "reconstruction loss": NaN,
-   "link divergence": Infinity,
-   "recall@k": 0.43283582089552236,
-   "dp@k": 7.854359591283069
-  },
-  {
-   "reconstruction loss": NaN,
-   "link divergence": Infinity,
-   "recall@k": 0.40894568690095845,
-   "dp@k": 8.31937327201689
-  },
-  {
-   "reconstruction loss": NaN,
-   "link divergence": Infinity,
-   "recall@k": 0.41543026706231456,
-   "dp@k": 7.746935861127478
-  },
-  {
-   "reconstruction loss": NaN,
-   "link divergence": Infinity,
-   "recall@k": 0.4138418079096045,
-   "dp@k": 7.944156191865101
+   "reconstruction loss": 1.6086818120258302,
+   "link divergence": 9.730553230335253e-06,
+   "recall@20": 0.3104956268221574,
+   "dp@20": 8.646623424458683,
+   "recall@40": 0.41836734693877553,
+   "dp@40": 6.108622896680691
   }
  ]
 }

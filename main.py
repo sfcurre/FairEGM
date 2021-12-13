@@ -12,7 +12,7 @@ from layers.few_graph_conv import FEWGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
-from models.losses import dp_link_divergence_loss, dp_link_entropy_loss, build_reconstruction_loss
+from models.losses import *
 from models.metrics import dp_link_divergence, recall_at_k, dp_at_k
 from preprocess.read_data import read_data
 
@@ -53,8 +53,18 @@ def parse_args():
                         help='Number of folds for k-fold cross validation.')
     parser.add_argument('-Lp', '--lambda-param', type=float, default=1, 
                         help='The learning rate multiplier for the fair loss.')
-    parser.add_argument('-Le', '--lambda-epochs', type=float, default=1, 
-                        help='The number of epochs for the fair loss.')                    
+    parser.add_argument('-Le', '--lambda-epochs', type=int, default=1, 
+                        help='The number of epochs for the fair loss.')
+    parser.add_argument('-i', '--init', type=str, default='glorot_normal',
+                        help='Initialization to use for the fairness weights.')
+    parser.add_argument('-i2', '--init2', type=str, default='glorot_normal',
+                        help='Initialization to use for the fairness weight connections.')
+    parser.add_argument('-r', '--random', type=int, default=0,
+                        help='Number of random trials to run.')
+    parser.add_argument('-c', '--constraint', type=str, default='',
+                        help='Constraint method for fairness weights.')
+    parser.add_argument('--vgae', action='store_true',
+                        help='Whether or not to use the vgae architecture (default is gae).')
     return parser.parse_args()
 
 def preprocess_graph(adj):
@@ -72,6 +82,20 @@ def reconstruction_model(num_nodes, num_features, embedding_dim):
     output = LinkReconstruction()(embeddings)
     return tf.keras.models.Model([nodes, edges], [output, embeddings])
 
+def reconstruction_model_variational(num_nodes, num_features, embedding_dim):
+    # num_features == embedding_dim
+    nodes = tf.keras.layers.Input((num_nodes, num_features))
+    edges = tf.keras.layers.Input((num_nodes, num_nodes))
+    z_mean, conv_edges = GraphCNN(embedding_dim, activation='linear')([nodes, edges])
+    z_log_std, conv_edges = GraphCNN(embedding_dim, activation='linear')([nodes, edges])
+    z = tf.keras.layers.Lambda(lambda x: x[0] + tf.random.normal([num_nodes, embedding_dim]) * tf.exp(x[1]))([z_mean, z_log_std])
+    output = LinkReconstruction()(z)
+    
+    output = tf.keras.layers.Concatenate()([output, z_mean, z_log_std])
+
+    model = tf.keras.models.Model([nodes, edges], [output, z])
+    return model
+
 def base_model(num_nodes, num_features, embedding_dim1, embedding_dim2):
     nodes = tf.keras.layers.Input((num_nodes, num_features))
     edges = tf.keras.layers.Input((num_nodes, num_nodes))
@@ -80,6 +104,19 @@ def base_model(num_nodes, num_features, embedding_dim1, embedding_dim2):
     embeddings, conv_edges = GraphCNN(embedding_dim2, activation='linear')([conv_nodes, conv_edges])
     output = LinkReconstruction()(embeddings)
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [embeddings, conv_edges])
+
+def base_model_variational(num_nodes, num_features, embedding_dim1, embedding_dim2):
+    nodes = tf.keras.layers.Input((num_nodes, num_features))
+    edges = tf.keras.layers.Input((num_nodes, num_nodes))
+
+    conv_nodes, conv_edges = GraphCNN(embedding_dim1, activation='relu')([nodes, edges])
+    z_mean, conv_edges = GraphCNN(embedding_dim2, activation='linear')([nodes, edges])
+    z_log_std, conv_edges = GraphCNN(embedding_dim2, activation='linear')([nodes, edges])
+    z = tf.keras.layers.Lambda(lambda x: x[0] + tf.random.normal([num_nodes, embedding_dim2]) * tf.exp(x[1]))([z_mean, z_log_std])
+    output = LinkReconstruction()(z)
+    output = tf.keras.layers.Concatenate()([output, z_mean, z_log_std])
+
+    return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [z, conv_edges])
 
 def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file=''):
     results = []
@@ -97,11 +134,21 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         
-        def dp_metric(y_true, y_pred):
-            return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
-
-        base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
-        base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
+        if args.vgae:
+            dp_loss = build_dp_link_divergence_loss_vgae(args.embedding_dim2)
+            norm = (train_edges.shape[-1] * train_edges.shape[-1] / 
+                    float((train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) * 2))
+            def dp_metric(y_true, y_pred):
+                return dp_loss(attributes.astype(np.float32), y_pred)
+            base, base_embedding = base_model_variational(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
+            base.compile(tf.keras.optimizers.Adam(args.learning_rate),
+                         build_reconstruction_loss_vgae(pos_weight, norm, features.shape[1], args.embedding_dim2), [dp_metric])
+        else:    
+            def dp_metric(y_true, y_pred):
+                return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
+            base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
+            base.compile(tf.keras.optimizers.Adam(args.learning_rate), build_reconstruction_loss(pos_weight), [dp_metric])
+            
         start_time = time.time()
         history = base.fit([features, norm_edges], train_edges, epochs = args.epochs, verbose = 0).history
         end_time = time.time()
@@ -139,8 +186,23 @@ def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor
 
         pos_weight = float(train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) / train_edges.sum()
         
-        model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'), reconstruction_model(features.shape[-2], args.embedding_dim, args.embedding_dim2))
-        model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param), build_reconstruction_loss(pos_weight), dp_link_divergence_loss)
+        if args.vgae:
+            norm = (train_edges.shape[-1] * train_edges.shape[-1] / 
+                    float((train_edges.shape[-1] * train_edges.shape[-1] - train_edges.sum()) * 2))
+            task_loss = build_reconstruction_loss_vgae(pos_weight, norm, features.shape[1], args.embedding_dim2)
+            fair_loss = build_dp_link_divergence_loss_vgae(args.embedding_dim2)
+            
+            model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'),
+                               reconstruction_model_variational(features.shape[-2], args.embedding_dim, args.embedding_dim2))
+        
+            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param),
+                          task_loss, fair_loss)
+        else:
+            model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'),
+                               reconstruction_model(features.shape[-2], args.embedding_dim, args.embedding_dim2))
+            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param),
+                          build_reconstruction_loss(pos_weight), dp_link_divergence_loss)        
+        
         start_time = time.time()
         history = model.fit(features, norm_edges, train_edges, attributes, args.epochs, args.lambda_epochs, verbose=0)
         end_time = time.time()
@@ -165,7 +227,7 @@ def main():
     if args.embedding_dim2 == 0:
         args.embedding_dim2 = args.embedding_dim
 
-    features, edge_gen, attributes = read_data(args.dataset, args.folds)
+    features, edge_gen, attributes = read_data(args.dataset, args.folds, args.random)
     
     fold_names = []
     for i, (train, test) in enumerate(edge_gen):
@@ -174,7 +236,27 @@ def main():
         fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
     
-    addon = f'd-{args.embedding_dim}_d2-{args.embedding_dim2}'
+    addon = f'd-{args.embedding_dim}_d2-{args.embedding_dim2}_i-{args.init}_i2-{args.init2}'
+
+    con = None
+    if args.constraint:
+        addon += f'_c-{args.constraint}'
+        con = getattr(tf.keras.constraints, args.constraint)()
+        # if type(con) is tf.keras.constraints.Constraint:
+        #     con = con()
+
+    if args.lambda_epochs != 1:
+        addon += f'_Le-{args.lambda_epochs}'
+
+    if args.vgae:
+        addon += f'_m-VGAE'
+
+    TARGETED_FAIRNESS = lambda: GFOGraphConv(addition_initializer=args.init, addition_constraint=con)
+    COMMUNITY_FAIRNESS_10 = lambda: CFOGraphConv(10, addition_initializer=args.init, addition_constraint=con,
+                                                 connection_initializer=args.init2, connection_constraint=con)
+    COMMUNITY_FAIRNESS_100 = lambda: CFOGraphConv(100, addition_initializer=args.init, addition_constraint=con, 
+                                                  connection_initializer=args.init2, connection_constraint=con)
+    SPARSE_FAIRNESS = lambda: FEWGraphConv(kernel_initializer=tf.keras.initializers.Ones(), kernel_constraint=con)
 
     results = {}
     results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base_{addon}')

@@ -38,7 +38,10 @@ def main():
     results = defaultdict(list)
 
     mod_list = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
-    specs = ['d-32_d2-16', 'd-32_d2-32', 'd-64_d2-64', 'd-128_d2-128', 'd-256_d2-256']
+    specs = ['d_32_16', 'd_32_32', 'd_64_64', 'd_128_128', 'd_256_256']
+    specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
+    specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
+    specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
     mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
     mod_list += ['fairwalk']
 

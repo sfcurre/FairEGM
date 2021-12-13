@@ -7,7 +7,7 @@ def feature_norm(features):
     max_values = features.max(axis=0)[0]
     return 2*(features - min_values)/(max_values-min_values) - 1
 
-def read_bail(k):
+def read_bail(k, r=0):
     features = pd.read_csv('./data/bail/bail.csv')
     edge_list = open('./data/bail/bail_edges.txt')
 
@@ -31,11 +31,15 @@ def read_bail(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
-
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
+        
     return feature_norm(features.values), edge_gen, attributes
 
-def read_citeseer(k):
+def read_citeseer(k, r=0):
     content = open('./data/citeseer/citeseer.content')
     indexes, features, attribute_list = {}, [], []
     attr_index, attr_count = {}, 0
@@ -66,11 +70,15 @@ def read_citeseer(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
-
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
+        
     return feature_norm(features), edge_gen, attributes
 
-def read_cora(k):
+def read_cora(k, r=0):
     content = open('./data/cora/cora.content')
     indexes, features, attribute_list = {}, [], []
     attr_index, attr_count = {}, 0
@@ -98,11 +106,15 @@ def read_cora(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
-
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
+        
     return feature_norm(features), edge_gen, attributes
 
-def read_credit(k):
+def read_credit(k, r=0):
     features = pd.read_csv('./data/credit/credit.csv')
     edge_list = open('./data/credit/credit_edges.txt')
 
@@ -127,11 +139,15 @@ def read_credit(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
-
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
+        
     return feature_norm(features.values), edge_gen, attributes
 
-def read_facebook(k):
+def read_facebook(k, r=0):
     nodes = np.loadtxt('./data/facebook/fb_features_ego_1684.txt')
     edges = np.loadtxt('./data/facebook/fb_adjacency_1684.txt')
     features = np.concatenate([nodes[:, :147], nodes[:, 149:]], axis = -1)
@@ -142,11 +158,15 @@ def read_facebook(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
-
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
+        
     return feature_norm(features), edge_gen, attributes
 
-def read_german(k):
+def read_german(k, r=0):
     features = pd.read_csv('./data/german/german.csv')
     edge_list = open('./data/german/german_edges.txt')
 
@@ -174,11 +194,15 @@ def read_german(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
 
     return feature_norm(features.values), edge_gen, attributes
 
-def read_pubmed(k):
+def read_pubmed(k, r=0):
     content = open('./data/pubmed/Pubmed-Diabetes.NODE.paper.tab')
     #skip two header lines
     content.readline()
@@ -222,25 +246,29 @@ def read_pubmed(k):
 
     args = type('Args', (object,), {})
     args.fold = k
-    edge_gen = split_train_and_test(args, edges)
+    args.random = r
+    if args.random:
+        edge_gen = split_train_and_test_random(args, edges)
+    else:
+        edge_gen = split_train_and_test(args, edges)
 
     return feature_norm(features), edge_gen, attributes
 
-def read_data(dataset, folds):
+def read_data(dataset, folds, r=0):
     if dataset == 'bail':
-        get_data = read_bail(folds)
+        get_data = read_bail(folds, r=r)
     elif dataset == 'citeseer':
-        get_data = read_citeseer(folds)
+        get_data = read_citeseer(folds, r=r)
     elif dataset == 'cora':
-        get_data = read_cora(folds)
+        get_data = read_cora(folds, r=r)
     elif dataset == 'credit':
-        get_data = read_credit(folds)
+        get_data = read_credit(folds, r=r)
     elif dataset == 'facebook':
-        get_data = read_facebook(folds)
+        get_data = read_facebook(folds, r=r)
     elif dataset == 'german':
-        get_data = read_german(folds)
+        get_data = read_german(folds, r=r)
     elif dataset == 'pubmed':
-        get_data = read_pubmed(folds)
+        get_data = read_pubmed(folds, r=r)
     else:
         raise ValueError(f"Dataset \"{dataset}\" is not recognized.")
     return get_data

@@ -5,7 +5,7 @@ def make_table_from_file(filepath, dataset, mod_list, metrics):
         results = json.load(fp)
     latex_str = ' & '.join(['model'] + metrics) + ' \\\\\n'
     for model in mod_list:
-        addition = '& ' + model.ljust(20)
+        addition = '& ' + model.ljust(50)
         for metric in metrics:
             try:
                 addition += ' & ' + f'{float(f"{np.mean([fold[metric] for fold in results[model]]):.3g}"):g}'.ljust(10)
@@ -28,7 +28,9 @@ def main():
     for dataset in ['citeseer', 'cora', 'facebook']:#, 'pubmed']:
     
         mod_list = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
-        specs = ['d-32_d2-16', 'd-32_d2-32', 'd-64_d2-64', 'd-128_d2-128', 'd-256_d2-256']
+        specs = ['d_32_16', 'd_32_32', 'd_64_64', 'd_128_128', 'd_256_256']
+        specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
+        specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
         mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
         mod_list += ['fairwalk']
     
