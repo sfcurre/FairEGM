@@ -140,8 +140,8 @@ def run_gae(features, train_adj, test_adj, attributes, args, model_str):
     flags = type('FLAGS', (object,), {})
     flags.learning_rate = args.learning_rate
     flags.epochs = args.epochs
-    flags.hidden1 = 128
-    flags.hidden2 = 128
+    flags.hidden1 = 32
+    flags.hidden2 = 16
     flags.weight_decay = 0
     flags.dropout = 0
     flags.features = 1
@@ -372,7 +372,8 @@ def main():
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
     results = {}
-    for model in ['fairwalk']: #['gae', 'vgae', 'fairwalk']:  # , 'inform'
+    #for model in ['fairwalk', 'gae', 'vgae', 'fairwalk']:  # , 'inform'
+    for model in ['gae', 'vgae']:  # , 'inform'
         logging.info('get_data')
         if model == 'gae':
             pass

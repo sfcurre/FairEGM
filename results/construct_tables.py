@@ -32,8 +32,17 @@ def main():
         specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
         specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
         mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
-        mod_list += ['fairwalk']
     
+        all_adj = os.listdir(f'./results/baselines/results/Results/{args.dataset}/tune_fairadj_final') 
+        all_walk = os.listdir(f'./results/baselines/results/Results/{args.dataset}/tune_fairwalk_final')
+
+        mod_list2 = set()
+        for filelist, folder in [(all_adj, 'tune_fairadj_final'), (all_walk, 'tune_fairwalk_final')]:
+            for fname in filelist:
+                mod_list2.add(folder + '/' + '_'.join(fname.split('_')[:-1]))
+        
+        mod_list += sorted(mod_list2)
+
         task_metrics = ['reconstruction_loss', 'link_divergence', 'test_auc', 'test_f1']
         fair_metrics = ['recall@10', 'recall@20', 'recall@40', 'dp@10', 'dp@20', 'dp@40', 'dyf10%', 'dyf20%']
 
