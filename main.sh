@@ -12,21 +12,21 @@ set -e
 # python main.py --dataset citeseer -d 32 -d 16 -lr 0.0001 -e 200 -k 5 10 20 40 -f 5 --vgae
 # python main.py --dataset cora -d 32 -d 16 -lr 0.0001 -e 200 -k 5 10 20 40 -f 5 --vgae
 
-python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2
-python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2
-python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2 
+# python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2
+# python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2
+# python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 2 
 
-python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
-python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
-python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
+# python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
+# python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
+# python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
 
-python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 4
-python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
-python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 4
+# python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 4
+# python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
+# python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 4
 
-python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 10
-python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
-python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 10
+# python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 10
+# python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 3
+# python main.py --dataset facebook -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -Le 10
 
 # python main.py --dataset citeseer -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -c non_neg
 # python main.py --dataset cora -d 32 -lr 0.0001 -e 300 -k 5 10 20 40 -f 5 -c non_neg

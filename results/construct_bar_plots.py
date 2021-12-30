@@ -23,7 +23,7 @@ def main():
 
         for metric in tqdm(task_metrics + fair_metrics):
             for spec, specname in zip([specs1, specs2, specs3, specs4], ['d', 'i1', 'i2', 'Le']):
-                fig = plt.figure(figsize=(16, 9))
+                fig = plt.figure(figsize=(16, 11))
                 X = np.arange(len(spec))
                 for i, mod in enumerate(mod_list):
                     vals = []
@@ -32,7 +32,7 @@ def main():
                     plt.bar(X + 0.15 * i, vals, width=0.15, label=mod)
                 plt.title(dataset, fontsize=32)
                 plt.ylabel(metric, fontsize=24)
-                plt.xticks(X + 0.3, spec, fontsize=16, rotation = 90)
+                plt.xticks(X + 0.3, spec, fontsize=16, rotation = 10)
                 plt.legend(fontsize=16)
                 plt.savefig(f"./results/bars/{dataset}_results_{metric}_bar_spec-{specname}.jpg")
                 #plt.show()
@@ -45,11 +45,11 @@ def main():
         for filelist, folder, mod_set in [(all_adj, 'tune_fairadj_final', adj_mods), (all_walk, 'tune_fairwalk_final', walk_mods)]:
             for fname in filelist:
                 mod_set.add(folder + '/' + '_'.join(fname.split('_')[:-1]))
-        adj_mods, walk_mods = sorted(adj_mods), sorted(walk_mods)
+        adj_mods, walk_mods = sorted(adj_mods), sorted(walk_mods)[9:18]
 
         for metric in tqdm(task_metrics + fair_metrics):
             for mods, modname in zip([adj_mods, walk_mods], ['FairAdj', 'FairWalk']):
-                fig = plt.figure(figsize=(16, 9))
+                fig = plt.figure(figsize=(16, 11))
                 X = np.arange(len(mods))
                 vals = []
                 for m in mods:
@@ -57,7 +57,7 @@ def main():
                 plt.bar(X, vals, width=0.5)
                 plt.title(dataset, fontsize=32)
                 plt.ylabel(metric, fontsize=24)
-                plt.xticks(X + 0.075, [m.split('/')[-1] for m in mods], fontsize=12, rotation=90)
+                plt.xticks(X + 0.075, [m.split('/')[-1] for m in mods], fontsize=12, rotation=10)
                 plt.savefig(f"./results/bars/{dataset}_results_{metric}_bar_spec-{modname}.jpg")
                 #plt.show()
                 plt.close()
