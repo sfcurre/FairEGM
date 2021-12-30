@@ -1,6 +1,6 @@
 import numpy as np, pandas as pd
 from scipy.sparse import csr_matrix
-from preprocess.split_data import split_train_and_test
+from preprocess.split_data import *
 
 def feature_norm(features):
     min_values = features.min(axis=0)[0]
