@@ -35,7 +35,7 @@ def main():
 
     args = parse_args()
 
-    with open(f'results/{args.dataset}/results.json') as fp:
+    with open(f'results/{args.dataset}/results_d-32_d2-16_i-glorot_normal_i2-glorot_normal.json') as fp:
         results = json.load(fp)
 
     fig, axes = plt.subplots(1, 2, figsize=(15,5))

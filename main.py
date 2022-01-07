@@ -231,10 +231,10 @@ def main():
     
     fold_names = []
     for i, (train, test) in enumerate(edge_gen):
-        np.save(f'./data/{args.dataset}/folds/fold{i}_train.npy', train)
-        np.save(f'./data/{args.dataset}/folds/fold{i}_test.npy', test)
-        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
-                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
+        np.save(f'./data/{args.dataset}/folds{("_r" if args.random else "")}/fold{i}_train.npy', train)
+        np.save(f'./data/{args.dataset}/folds{("_r" if args.random else "")}/fold{i}_test.npy', test)
+        fold_names.append((f'./data/{args.dataset}/folds{("_r" if args.random else "")}/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds{("_r" if args.random else "")}/fold{i}_test.npy'))
     
     addon = f'd-{args.embedding_dim}_d2-{args.embedding_dim2}_i-{args.init}_i2-{args.init2}'
 

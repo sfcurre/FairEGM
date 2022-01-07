@@ -51,7 +51,7 @@ def dp_at_k(embeddings, attributes, k=10):
     return dp_total / len(embeddings)
 
 def dyf_at_threshold(attributes, prob_list, global_attributes, percent=10):
-    percentile = np.percentile(prob_list, 100-percent)
+    percentile = np.percentile(prob_list, 100 - percent)
     chosen = (prob_list >= percentile)
     attribute_distro = global_attributes.sum(axis=0)
     upr_indices = np.triu_indices(len(attribute_distro))

@@ -35,6 +35,12 @@ def main():
         fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
                            f'./data/{args.dataset}/folds/fold{i}_test.npy'))
 
+    fold_names_r = []
+    for i in range(20):
+        fold_names_r.append((f'./data/{args.dataset}/folds_r/fold{i}_train.npy',
+                             f'./data/{args.dataset}/folds_r/fold{i}_test.npy'))
+
+
     results = defaultdict(list)
 
     mod_list = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
@@ -42,19 +48,30 @@ def main():
     specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
     specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
     specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
+    specs += ['d-32_d2-16_i-glorot_normal_i2-glorot_normal']
     mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
+
+    final = 'd-32_d2-16_i-glorot_normal_i2-glorot_normal'
 
     for model in tqdm(mod_list):
         np.random.seed(5429)
-        for i, (train_edges, test_edges) in zip(range(args.folds), fold_names):
+        if model.endswith(final):
+            fold_names_ = fold_names_r
+        else:
+            fold_names_ = fold_names
+        for i, (train_edges, test_edges) in enumerate(fold_names_):
         
             fname = f'./results/{args.dataset}/embeddings/{model}_{i}.npy'
         
-            f_results = {}
-            embeddings = np.load(fname)
-            train_edges = np.load(train_edges)
-            test_edges = np.load(test_edges)
-
+            try:
+                f_results = {}
+                embeddings = np.load(fname)
+                train_edges = np.load(train_edges)
+                test_edges = np.load(test_edges)
+            except FileNotFoundError:
+                print(f'{fname} not found.')
+                continue
+            
             use_node = np.any((train_edges != 0), axis = -1)
             features, train_edges = all_features[None, use_node, :], train_edges[use_node][..., use_node]
             test_edges, attributes = test_edges[use_node][..., use_node], all_attributes[None, use_node, :]
@@ -126,7 +143,7 @@ def main():
 
     for model in tqdm(mod_list2):
         np.random.seed(5429)
-        for i, (train_edges, test_edges) in zip(range(args.folds), fold_names):
+        for i, (train_edges, test_edges) in enumerate(fold_names):
         
             fname = f'./results/baselines/results/Results/{args.dataset}/{model}_fold-{i}.npy'
 

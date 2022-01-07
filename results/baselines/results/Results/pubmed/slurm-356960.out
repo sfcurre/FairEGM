@@ -1,0 +1,2392 @@
+/home/he.1773/miniconda2/envs/FairGraph
+/home/he.1773/miniconda2/envs/FairGraph/bin/python
+gpu17
+*********baselines pubmed*********
+2021-08-30 09:57:43,134 import time, argparse, os, json
+2021-08-30 09:57:43,134 set no gpu for use in tensorflow
+2021-08-30 09:57:43.417814: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-08-30 09:57:45,987 From /home/he.1773/miniconda2/envs/FairGraph/lib/python3.8/site-packages/tensorflow/python/compat/v2_compat.py:96: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+2021-08-30 09:57:45,987 import tensorflow.compat.v1
+2021-08-30 09:57:46,016 import numpy, scipy, singledispatch
+2021-08-30 09:57:46,488 import sklearn
+/home/he.1773/miniconda2/envs/FairGraph/lib/python3.8/site-packages/gensim/similarities/__init__.py:15: UserWarning: The gensim.similarities.levenshtein submodule is disabled, because the optional Levenshtein package <https://pypi.org/project/python-Levenshtein/> is unavailable. Install Levenhstein (e.g. `pip install python-Levenshtein`) to suppress this warning.
+  warnings.warn(msg)
+2021-08-30 09:57:47,065 import baseline methods
+2021-08-30 09:57:47,065 import networkx, entropy, cosine_similarity
+2021-08-30 09:57:47,068 import metrics, preprocess.read_data
+2021-08-30 09:57:47,070 get_data function selected
+2021-08-30 09:57:49,101 get_data
+2021-08-30 09:58:08,322 gae: get fold
+2021-08-30 09:58:09,893 From /home/he.1773/miniconda2/envs/FairGraph/lib/python3.8/site-packages/tensorflow/python/util/dispatch.py:201: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+2021-08-30 09:58:10,124 From /home/he.1773/miniconda2/envs/FairGraph/lib/python3.8/site-packages/tensorflow/python/util/dispatch.py:201: calling weighted_cross_entropy_with_logits (from tensorflow.python.ops.nn_impl) with targets is deprecated and will be removed in a future version.
+Instructions for updating:
+targets is deprecated, use labels instead
+2021-08-30 09:58:10.323652: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 09:58:10.325741: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-08-30 09:58:14.323872: E tensorflow/stream_executor/cuda/cuda_driver.cc:328] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-08-30 09:58:14.323926: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: gpu17.cluster
+2021-08-30 09:58:14.323937: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: gpu17.cluster
+2021-08-30 09:58:14.324105: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 460.32.3
+2021-08-30 09:58:14.324155: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 460.32.3
+2021-08-30 09:58:14.324165: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 460.32.3
+2021-08-30 09:58:14.324651: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-08-30 09:58:14.326234: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 09:58:14.332206: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:196] None of the MLIR optimization passes are enabled (registered 0 passes)
+2021-08-30 09:58:14.338004: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2400045000 Hz
+2021-08-30 10:01:34,875 gae: run_gae
+2021-08-30 10:01:50,551 gae: get fold
+2021-08-30 10:01:52.707557: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:05:15,176 gae: run_gae
+2021-08-30 10:05:31,099 gae: get fold
+2021-08-30 10:05:33.207287: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:08:53,630 gae: run_gae
+2021-08-30 10:09:09,724 gae: get fold
+2021-08-30 10:09:11.688040: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:12:33,067 gae: run_gae
+2021-08-30 10:12:49,447 gae: get fold
+2021-08-30 10:12:51.936035: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:16:16,713 gae: run_gae
+2021-08-30 10:16:16,771 embed_baselines
+2021-08-30 10:16:18,787 get_data
+2021-08-30 10:16:47,894 gae: get fold
+2021-08-30 10:16:50.629052: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:21:13,330 gae: run_gae
+2021-08-30 10:21:39,288 gae: get fold
+2021-08-30 10:21:42.143605: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:26:06,639 gae: run_gae
+2021-08-30 10:26:30,624 gae: get fold
+2021-08-30 10:26:32.898461: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:30:20,417 gae: run_gae
+2021-08-30 10:30:36,420 gae: get fold
+2021-08-30 10:30:38.564159: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:34:23,692 gae: run_gae
+2021-08-30 10:34:40,776 gae: get fold
+2021-08-30 10:34:43.417301: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-08-30 10:38:25,763 gae: run_gae
+2021-08-30 10:38:25,853 embed_baselines
+2021-08-30 10:38:27,773 get_data
+2021-08-30 10:38:59,439 fairwalk: initialize
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+rm -f *.o walk
+make -C unit_tests clean
+make[1]: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+rm -f *.o Graph HelperFunctions WeightedGraph
+make[1]: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+g++ -Wall -std=c++11 -g -O2  -c Graph.cpp
+g++ -Wall -std=c++11 -g -O2  -c HelperFunctions.cpp
+g++ -Wall -std=c++11 -g -O2  -c walk.cpp
+g++ -Wall -std=c++11 -g -O2  -c WeightedGraph.cpp
+echo "Sources: " Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+Sources:  Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+echo Graph.o HelperFunctions.o walk.o WeightedGraph.o
+Graph.o HelperFunctions.o walk.o WeightedGraph.o
+g++ -Wall -std=c++11 -g -O2 -o walk Graph.o HelperFunctions.o walk.o WeightedGraph.o
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+2021-08-30 10:39:12,983 collecting all words and their counts
+2021-08-30 10:39:12,983 PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2021-08-30 10:39:13,141 PROGRESS: at sentence #10000, processed 800000 words, keeping 10908 word types
+2021-08-30 10:39:13,305 PROGRESS: at sentence #20000, processed 1600000 words, keeping 10908 word types
+2021-08-30 10:39:13,466 PROGRESS: at sentence #30000, processed 2400000 words, keeping 10908 word types
+2021-08-30 10:39:13,627 PROGRESS: at sentence #40000, processed 3200000 words, keeping 10908 word types
+2021-08-30 10:39:13,787 PROGRESS: at sentence #50000, processed 4000000 words, keeping 10908 word types
+2021-08-30 10:39:13,949 PROGRESS: at sentence #60000, processed 4800000 words, keeping 10908 word types
+2021-08-30 10:39:14,114 PROGRESS: at sentence #70000, processed 5600000 words, keeping 10908 word types
+2021-08-30 10:39:14,280 PROGRESS: at sentence #80000, processed 6400000 words, keeping 10908 word types
+2021-08-30 10:39:14,443 PROGRESS: at sentence #90000, processed 7200000 words, keeping 10908 word types
+2021-08-30 10:39:14,606 PROGRESS: at sentence #100000, processed 8000000 words, keeping 10908 word types
+2021-08-30 10:39:14,768 PROGRESS: at sentence #110000, processed 8800000 words, keeping 10908 word types
+2021-08-30 10:39:14,931 PROGRESS: at sentence #120000, processed 9600000 words, keeping 10908 word types
+2021-08-30 10:39:15,095 PROGRESS: at sentence #130000, processed 10400000 words, keeping 10908 word types
+2021-08-30 10:39:15,261 PROGRESS: at sentence #140000, processed 11200000 words, keeping 10908 word types
+2021-08-30 10:39:15,423 PROGRESS: at sentence #150000, processed 12000000 words, keeping 10908 word types
+2021-08-30 10:39:15,588 PROGRESS: at sentence #160000, processed 12800000 words, keeping 10908 word types
+2021-08-30 10:39:15,751 PROGRESS: at sentence #170000, processed 13600000 words, keeping 10908 word types
+2021-08-30 10:39:15,913 PROGRESS: at sentence #180000, processed 14400000 words, keeping 10908 word types
+2021-08-30 10:39:16,075 PROGRESS: at sentence #190000, processed 15200000 words, keeping 10908 word types
+2021-08-30 10:39:16,237 PROGRESS: at sentence #200000, processed 16000000 words, keeping 10908 word types
+2021-08-30 10:39:16,400 PROGRESS: at sentence #210000, processed 16800000 words, keeping 10908 word types
+2021-08-30 10:39:16,532 collected 10908 word types from a corpus of 17452800 raw words and 218160 sentences
+2021-08-30 10:39:16,532 Creating a fresh vocabulary
+2021-08-30 10:39:16,594 Word2Vec lifecycle event {'msg': 'effective_min_count=10 retains 10908 unique words (100.0%% of original 10908, drops 0)', 'datetime': '2021-08-30T10:39:16.562217', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:39:16,594 Word2Vec lifecycle event {'msg': 'effective_min_count=10 leaves 17452800 word corpus (100.0%% of original 17452800, drops 0)', 'datetime': '2021-08-30T10:39:16.594790', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:39:16,642 deleting the raw counts dictionary of 10908 items
+2021-08-30 10:39:16,642 sample=0.001 downsamples 2 most-common words
+2021-08-30 10:39:16,642 Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 17442581.61277315 word corpus (99.9%% of prior 17452800)', 'datetime': '2021-08-30T10:39:16.642943', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:39:16,737 estimated required memory for 10908 words and 128 dimensions: 16623792 bytes
+2021-08-30 10:39:16,737 resetting layer weights
+2021-08-30 10:39:16,743 Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2021-08-30T10:39:16.743687', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'build_vocab'}
+2021-08-30 10:39:16,743 Word2Vec lifecycle event {'msg': 'training model with 28 workers on 10908 vocabulary and 128 features, using sg=1 hs=0 sample=0.001 negative=5 window=10', 'datetime': '2021-08-30T10:39:16.743782', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:39:17,763 EPOCH 1 - PROGRESS: at 3.95% examples, 682393 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:39:18,865 EPOCH 1 - PROGRESS: at 10.54% examples, 870666 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:19,894 EPOCH 1 - PROGRESS: at 17.59% examples, 976650 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:39:20,915 EPOCH 1 - PROGRESS: at 25.04% examples, 1049174 words/s, in_qsize 50, out_qsize 5
+2021-08-30 10:39:21,941 EPOCH 1 - PROGRESS: at 33.40% examples, 1122968 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:22,988 EPOCH 1 - PROGRESS: at 41.54% examples, 1162064 words/s, in_qsize 56, out_qsize 7
+2021-08-30 10:39:23,990 EPOCH 1 - PROGRESS: at 50.82% examples, 1224873 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:25,029 EPOCH 1 - PROGRESS: at 59.70% examples, 1258400 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:39:26,033 EPOCH 1 - PROGRESS: at 68.93% examples, 1295510 words/s, in_qsize 51, out_qsize 0
+2021-08-30 10:39:27,037 EPOCH 1 - PROGRESS: at 77.92% examples, 1321607 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:28,055 EPOCH 1 - PROGRESS: at 87.15% examples, 1344931 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:39:29,075 EPOCH 1 - PROGRESS: at 96.37% examples, 1364182 words/s, in_qsize 53, out_qsize 4
+2021-08-30 10:39:29,277 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:39:29,277 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:39:29,288 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:39:29,288 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:39:29,300 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:39:29,302 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:39:29,313 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:39:29,313 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:39:29,317 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:39:29,321 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:39:29,327 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:39:29,329 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:39:29,334 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:39:29,342 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:39:29,345 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:39:29,350 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:39:29,361 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:39:29,361 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:39:29,362 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:39:29,366 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:39:29,375 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:39:29,377 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:39:29,382 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:39:29,384 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:39:29,389 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:39:29,395 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:39:29,403 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:39:29,405 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:39:29,405 EPOCH - 1 : training on 17452800 raw words (17442600 effective words) took 12.7s, 1378582 effective words/s
+2021-08-30 10:39:30,426 EPOCH 2 - PROGRESS: at 7.22% examples, 1244168 words/s, in_qsize 52, out_qsize 3
+2021-08-30 10:39:31,427 EPOCH 2 - PROGRESS: at 15.99% examples, 1385288 words/s, in_qsize 53, out_qsize 6
+2021-08-30 10:39:32,428 EPOCH 2 - PROGRESS: at 24.98% examples, 1445623 words/s, in_qsize 55, out_qsize 4
+2021-08-30 10:39:33,429 EPOCH 2 - PROGRESS: at 33.63% examples, 1461140 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:39:34,478 EPOCH 2 - PROGRESS: at 42.29% examples, 1456605 words/s, in_qsize 55, out_qsize 11
+2021-08-30 10:39:35,488 EPOCH 2 - PROGRESS: at 51.57% examples, 1480847 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:36,505 EPOCH 2 - PROGRESS: at 60.39% examples, 1485623 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:39:37,511 EPOCH 2 - PROGRESS: at 69.33% examples, 1493495 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:39:38,514 EPOCH 2 - PROGRESS: at 78.04% examples, 1495918 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:39,527 EPOCH 2 - PROGRESS: at 86.29% examples, 1488291 words/s, in_qsize 55, out_qsize 2
+2021-08-30 10:39:40,530 EPOCH 2 - PROGRESS: at 95.00% examples, 1490667 words/s, in_qsize 52, out_qsize 0
+2021-08-30 10:39:40,920 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:39:40,931 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:39:40,940 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:39:40,941 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:39:40,944 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:39:40,953 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:39:40,953 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:39:40,961 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:39:40,964 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:39:40,968 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:39:40,968 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:39:40,973 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:39:40,973 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:39:40,979 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:39:40,986 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:39:40,986 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:39:40,992 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:39:40,997 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:39:41,009 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:39:41,010 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:39:41,015 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:39:41,019 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:39:41,024 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:39:41,035 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:39:41,039 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:39:41,047 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:39:41,054 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:39:41,059 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:39:41,059 EPOCH - 2 : training on 17452800 raw words (17442577 effective words) took 11.6s, 1497842 effective words/s
+2021-08-30 10:39:42,072 EPOCH 3 - PROGRESS: at 7.22% examples, 1256160 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:43,080 EPOCH 3 - PROGRESS: at 15.24% examples, 1321908 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:44,094 EPOCH 3 - PROGRESS: at 23.72% examples, 1367791 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:45,096 EPOCH 3 - PROGRESS: at 32.26% examples, 1397460 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:39:46,108 EPOCH 3 - PROGRESS: at 41.20% examples, 1426135 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:47,154 EPOCH 3 - PROGRESS: at 50.25% examples, 1440414 words/s, in_qsize 55, out_qsize 8
+2021-08-30 10:39:48,163 EPOCH 3 - PROGRESS: at 59.70% examples, 1467990 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:39:49,166 EPOCH 3 - PROGRESS: at 68.81% examples, 1482388 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:50,184 EPOCH 3 - PROGRESS: at 78.21% examples, 1496655 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:39:51,187 EPOCH 3 - PROGRESS: at 87.49% examples, 1508342 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:39:52,192 EPOCH 3 - PROGRESS: at 96.37% examples, 1511371 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:39:52,424 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:39:52,424 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:39:52,427 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:39:52,427 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:39:52,431 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:39:52,435 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:39:52,440 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:39:52,449 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:39:52,457 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:39:52,459 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:39:52,462 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:39:52,466 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:39:52,466 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:39:52,470 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:39:52,474 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:39:52,479 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:39:52,482 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:39:52,489 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:39:52,495 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:39:52,498 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:39:52,508 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:39:52,512 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:39:52,515 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:39:52,519 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:39:52,524 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:39:52,534 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:39:52,536 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:39:52,548 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:39:52,548 EPOCH - 3 : training on 17452800 raw words (17442689 effective words) took 11.5s, 1519586 effective words/s
+2021-08-30 10:39:53,558 EPOCH 4 - PROGRESS: at 7.56% examples, 1316223 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:39:54,568 EPOCH 4 - PROGRESS: at 16.33% examples, 1416074 words/s, in_qsize 55, out_qsize 3
+2021-08-30 10:39:55,593 EPOCH 4 - PROGRESS: at 25.78% examples, 1480779 words/s, in_qsize 55, out_qsize 3
+2021-08-30 10:39:56,613 EPOCH 4 - PROGRESS: at 34.72% examples, 1492742 words/s, in_qsize 52, out_qsize 10
+2021-08-30 10:39:57,631 EPOCH 4 - PROGRESS: at 44.46% examples, 1528117 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:39:58,657 EPOCH 4 - PROGRESS: at 53.57% examples, 1531590 words/s, in_qsize 50, out_qsize 5
+2021-08-30 10:39:59,675 EPOCH 4 - PROGRESS: at 63.20% examples, 1548426 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:00,683 EPOCH 4 - PROGRESS: at 72.37% examples, 1553136 words/s, in_qsize 54, out_qsize 0
+2021-08-30 10:40:01,689 EPOCH 4 - PROGRESS: at 81.36% examples, 1554030 words/s, in_qsize 51, out_qsize 6
+2021-08-30 10:40:02,692 EPOCH 4 - PROGRESS: at 90.76% examples, 1561810 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:03,510 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:40:03,524 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:40:03,529 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:40:03,539 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:40:03,549 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:40:03,555 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:40:03,558 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:40:03,564 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:40:03,568 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:40:03,571 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:40:03,577 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:40:03,582 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:40:03,587 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:40:03,588 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:40:03,591 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:40:03,597 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:40:03,608 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:40:03,609 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:40:03,612 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:40:03,620 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:40:03,624 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:40:03,630 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:40:03,633 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:40:03,639 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:40:03,641 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:40:03,643 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:40:03,646 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:40:03,649 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:40:03,649 EPOCH - 4 : training on 17452800 raw words (17442609 effective words) took 11.1s, 1572337 effective words/s
+2021-08-30 10:40:04,661 EPOCH 5 - PROGRESS: at 7.56% examples, 1315983 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:40:05,670 EPOCH 5 - PROGRESS: at 16.90% examples, 1466082 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:06,678 EPOCH 5 - PROGRESS: at 26.07% examples, 1506228 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:07,719 EPOCH 5 - PROGRESS: at 35.18% examples, 1511603 words/s, in_qsize 56, out_qsize 6
+2021-08-30 10:40:08,725 EPOCH 5 - PROGRESS: at 44.75% examples, 1540769 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:09,728 EPOCH 5 - PROGRESS: at 54.03% examples, 1552862 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:10,762 EPOCH 5 - PROGRESS: at 63.20% examples, 1551981 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:40:11,762 EPOCH 5 - PROGRESS: at 72.60% examples, 1562592 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:40:12,768 EPOCH 5 - PROGRESS: at 81.82% examples, 1566668 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:13,777 EPOCH 5 - PROGRESS: at 91.05% examples, 1569489 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:40:14,571 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:40:14,578 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:40:14,585 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:40:14,587 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:40:14,605 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:40:14,607 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:40:14,613 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:40:14,616 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:40:14,620 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:40:14,623 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:40:14,630 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:40:14,635 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:40:14,644 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:40:14,649 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:40:14,654 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:40:14,661 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:40:14,668 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:40:14,670 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:40:14,671 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:40:14,673 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:40:14,681 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:40:14,684 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:40:14,691 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:40:14,694 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:40:14,696 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:40:14,699 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:40:14,710 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:40:14,712 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:40:14,712 EPOCH - 5 : training on 17452800 raw words (17442492 effective words) took 11.1s, 1577983 effective words/s
+2021-08-30 10:40:14,713 Word2Vec lifecycle event {'msg': 'training on 87264000 raw words (87212967 effective words) took 58.0s, 1504459 effective words/s', 'datetime': '2021-08-30T10:40:14.713550', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:40:14,713 Word2Vec lifecycle event {'params': 'Word2Vec(vocab=10908, vector_size=128, alpha=0.025)', 'datetime': '2021-08-30T10:40:14.713726', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'created'}
+2021-08-30 10:40:16,138 fairwalk: embed
+2021-08-30 10:41:56,551 fairwalk: result
+2021-08-30 10:42:24,093 fairwalk: initialize
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+rm -f *.o walk
+make -C unit_tests clean
+make[1]: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+rm -f *.o Graph HelperFunctions WeightedGraph
+make[1]: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+g++ -Wall -std=c++11 -g -O2  -c Graph.cpp
+g++ -Wall -std=c++11 -g -O2  -c HelperFunctions.cpp
+g++ -Wall -std=c++11 -g -O2  -c walk.cpp
+g++ -Wall -std=c++11 -g -O2  -c WeightedGraph.cpp
+echo "Sources: " Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+Sources:  Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+echo Graph.o HelperFunctions.o walk.o WeightedGraph.o
+Graph.o HelperFunctions.o walk.o WeightedGraph.o
+g++ -Wall -std=c++11 -g -O2 -o walk Graph.o HelperFunctions.o walk.o WeightedGraph.o
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+2021-08-30 10:42:37,997 collecting all words and their counts
+2021-08-30 10:42:37,997 PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2021-08-30 10:42:38,147 PROGRESS: at sentence #10000, processed 800000 words, keeping 10956 word types
+2021-08-30 10:42:38,301 PROGRESS: at sentence #20000, processed 1600000 words, keeping 10958 word types
+2021-08-30 10:42:38,455 PROGRESS: at sentence #30000, processed 2400000 words, keeping 10958 word types
+2021-08-30 10:42:38,611 PROGRESS: at sentence #40000, processed 3200000 words, keeping 10958 word types
+2021-08-30 10:42:38,766 PROGRESS: at sentence #50000, processed 4000000 words, keeping 10958 word types
+2021-08-30 10:42:38,920 PROGRESS: at sentence #60000, processed 4800000 words, keeping 10958 word types
+2021-08-30 10:42:39,076 PROGRESS: at sentence #70000, processed 5600000 words, keeping 10958 word types
+2021-08-30 10:42:39,231 PROGRESS: at sentence #80000, processed 6400000 words, keeping 10958 word types
+2021-08-30 10:42:39,387 PROGRESS: at sentence #90000, processed 7200000 words, keeping 10958 word types
+2021-08-30 10:42:39,545 PROGRESS: at sentence #100000, processed 8000000 words, keeping 10958 word types
+2021-08-30 10:42:39,702 PROGRESS: at sentence #110000, processed 8800000 words, keeping 10958 word types
+2021-08-30 10:42:39,858 PROGRESS: at sentence #120000, processed 9600000 words, keeping 10958 word types
+2021-08-30 10:42:40,014 PROGRESS: at sentence #130000, processed 10400000 words, keeping 10958 word types
+2021-08-30 10:42:40,172 PROGRESS: at sentence #140000, processed 11200000 words, keeping 10958 word types
+2021-08-30 10:42:40,329 PROGRESS: at sentence #150000, processed 12000000 words, keeping 10958 word types
+2021-08-30 10:42:40,485 PROGRESS: at sentence #160000, processed 12800000 words, keeping 10958 word types
+2021-08-30 10:42:40,642 PROGRESS: at sentence #170000, processed 13600000 words, keeping 10958 word types
+2021-08-30 10:42:40,799 PROGRESS: at sentence #180000, processed 14400000 words, keeping 10958 word types
+2021-08-30 10:42:40,957 PROGRESS: at sentence #190000, processed 15200000 words, keeping 10958 word types
+2021-08-30 10:42:41,113 PROGRESS: at sentence #200000, processed 16000000 words, keeping 10958 word types
+2021-08-30 10:42:41,271 PROGRESS: at sentence #210000, processed 16800000 words, keeping 10958 word types
+2021-08-30 10:42:41,416 collected 10958 word types from a corpus of 17532800 raw words and 219160 sentences
+2021-08-30 10:42:41,416 Creating a fresh vocabulary
+2021-08-30 10:42:41,446 Word2Vec lifecycle event {'msg': 'effective_min_count=10 retains 10958 unique words (100.0%% of original 10958, drops 0)', 'datetime': '2021-08-30T10:42:41.446326', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:42:41,446 Word2Vec lifecycle event {'msg': 'effective_min_count=10 leaves 17532800 word corpus (100.0%% of original 17532800, drops 0)', 'datetime': '2021-08-30T10:42:41.446441', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:42:41,492 deleting the raw counts dictionary of 10958 items
+2021-08-30 10:42:41,492 sample=0.001 downsamples 1 most-common words
+2021-08-30 10:42:41,492 Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 17528391.665533587 word corpus (100.0%% of prior 17532800)', 'datetime': '2021-08-30T10:42:41.492688', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:42:41,585 estimated required memory for 10958 words and 128 dimensions: 16699992 bytes
+2021-08-30 10:42:41,585 resetting layer weights
+2021-08-30 10:42:41,594 Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2021-08-30T10:42:41.594212', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'build_vocab'}
+2021-08-30 10:42:41,594 Word2Vec lifecycle event {'msg': 'training model with 28 workers on 10958 vocabulary and 128 features, using sg=1 hs=0 sample=0.001 negative=5 window=10', 'datetime': '2021-08-30T10:42:41.594311', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:42:42,647 EPOCH 1 - PROGRESS: at 4.28% examples, 738378 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:42:43,655 EPOCH 1 - PROGRESS: at 12.83% examples, 1112021 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:42:44,694 EPOCH 1 - PROGRESS: at 22.07% examples, 1263308 words/s, in_qsize 56, out_qsize 6
+2021-08-30 10:42:45,701 EPOCH 1 - PROGRESS: at 31.94% examples, 1375660 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:42:46,723 EPOCH 1 - PROGRESS: at 41.52% examples, 1429433 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:42:47,727 EPOCH 1 - PROGRESS: at 51.62% examples, 1484280 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:42:48,739 EPOCH 1 - PROGRESS: at 61.66% examples, 1520522 words/s, in_qsize 48, out_qsize 3
+2021-08-30 10:42:49,745 EPOCH 1 - PROGRESS: at 71.47% examples, 1544033 words/s, in_qsize 56, out_qsize 6
+2021-08-30 10:42:50,768 EPOCH 1 - PROGRESS: at 81.62% examples, 1565821 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:42:51,779 EPOCH 1 - PROGRESS: at 91.43% examples, 1579259 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:42:52,477 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:42:52,483 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:42:52,487 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:42:52,500 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:42:52,514 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:42:52,515 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:42:52,523 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:42:52,530 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:42:52,532 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:42:52,536 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:42:52,540 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:42:52,540 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:42:52,551 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:42:52,552 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:42:52,553 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:42:52,556 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:42:52,564 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:42:52,568 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:42:52,571 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:42:52,575 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:42:52,576 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:42:52,580 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:42:52,590 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:42:52,591 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:42:52,594 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:42:52,594 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:42:52,604 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:42:52,605 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:42:52,605 EPOCH - 1 : training on 17532800 raw words (17528289 effective words) took 11.0s, 1597379 effective words/s
+2021-08-30 10:42:53,616 EPOCH 2 - PROGRESS: at 7.64% examples, 1338172 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:42:54,635 EPOCH 2 - PROGRESS: at 17.80% examples, 1544000 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:42:55,640 EPOCH 2 - PROGRESS: at 28.40% examples, 1645934 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:42:56,647 EPOCH 2 - PROGRESS: at 38.73% examples, 1683516 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:42:57,653 EPOCH 2 - PROGRESS: at 48.99% examples, 1704582 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:42:58,656 EPOCH 2 - PROGRESS: at 59.26% examples, 1719461 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:42:59,670 EPOCH 2 - PROGRESS: at 69.70% examples, 1731892 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:00,669 EPOCH 2 - PROGRESS: at 79.96% examples, 1740239 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:43:01,675 EPOCH 2 - PROGRESS: at 90.52% examples, 1751340 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:43:02,452 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:43:02,458 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:43:02,459 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:43:02,465 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:43:02,467 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:43:02,471 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:43:02,477 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:43:02,481 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:43:02,487 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:43:02,488 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:43:02,490 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:43:02,494 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:43:02,499 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:43:02,499 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:43:02,506 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:43:02,512 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:43:02,515 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:43:02,520 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:43:02,526 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:43:02,533 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:43:02,535 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:43:02,549 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:43:02,555 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:43:02,559 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:43:02,564 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:43:02,566 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:43:02,574 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:43:02,575 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:43:02,575 EPOCH - 2 : training on 17532800 raw words (17528455 effective words) took 10.0s, 1759915 effective words/s
+2021-08-30 10:43:03,615 EPOCH 3 - PROGRESS: at 8.50% examples, 1445014 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:43:04,622 EPOCH 3 - PROGRESS: at 18.82% examples, 1618976 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:43:05,630 EPOCH 3 - PROGRESS: at 29.15% examples, 1677289 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:43:06,650 EPOCH 3 - PROGRESS: at 39.41% examples, 1699145 words/s, in_qsize 55, out_qsize 4
+2021-08-30 10:43:07,652 EPOCH 3 - PROGRESS: at 49.68% examples, 1718510 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:08,654 EPOCH 3 - PROGRESS: at 59.66% examples, 1723006 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:43:09,656 EPOCH 3 - PROGRESS: at 69.36% examples, 1719074 words/s, in_qsize 54, out_qsize 4
+2021-08-30 10:43:10,658 EPOCH 3 - PROGRESS: at 79.39% examples, 1723717 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:43:11,666 EPOCH 3 - PROGRESS: at 89.03% examples, 1718601 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:43:12,670 EPOCH 3 - PROGRESS: at 98.50% examples, 1711872 words/s, in_qsize 27, out_qsize 1
+2021-08-30 10:43:12,671 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:43:12,677 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:43:12,683 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:43:12,684 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:43:12,691 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:43:12,697 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:43:12,699 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:43:12,701 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:43:12,701 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:43:12,709 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:43:12,716 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:43:12,720 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:43:12,723 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:43:12,727 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:43:12,735 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:43:12,741 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:43:12,742 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:43:12,745 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:43:12,746 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:43:12,748 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:43:12,749 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:43:12,754 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:43:12,757 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:43:12,761 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:43:12,763 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:43:12,764 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:43:12,771 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:43:12,783 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:43:12,783 EPOCH - 3 : training on 17532800 raw words (17528456 effective words) took 10.2s, 1718714 effective words/s
+2021-08-30 10:43:13,803 EPOCH 4 - PROGRESS: at 7.76% examples, 1344027 words/s, in_qsize 53, out_qsize 0
+2021-08-30 10:43:14,804 EPOCH 4 - PROGRESS: at 17.57% examples, 1529963 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:15,808 EPOCH 4 - PROGRESS: at 27.83% examples, 1617560 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:43:16,814 EPOCH 4 - PROGRESS: at 38.27% examples, 1668028 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:43:17,815 EPOCH 4 - PROGRESS: at 48.54% examples, 1693703 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:43:18,819 EPOCH 4 - PROGRESS: at 58.75% examples, 1708367 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:43:19,827 EPOCH 4 - PROGRESS: at 68.61% examples, 1709435 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:43:20,834 EPOCH 4 - PROGRESS: at 78.60% examples, 1712944 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:43:21,842 EPOCH 4 - PROGRESS: at 88.75% examples, 1718871 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:43:22,842 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:43:22,842 EPOCH 4 - PROGRESS: at 98.56% examples, 1718811 words/s, in_qsize 26, out_qsize 1
+2021-08-30 10:43:22,843 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:43:22,845 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:43:22,849 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:43:22,854 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:43:22,857 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:43:22,861 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:43:22,870 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:43:22,875 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:43:22,876 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:43:22,881 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:43:22,885 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:43:22,887 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:43:22,891 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:43:22,895 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:43:22,895 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:43:22,897 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:43:22,904 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:43:22,914 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:43:22,915 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:43:22,919 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:43:22,922 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:43:22,931 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:43:22,933 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:43:22,935 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:43:22,936 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:43:22,949 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:43:22,953 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:43:22,953 EPOCH - 4 : training on 17532800 raw words (17528420 effective words) took 10.2s, 1724928 effective words/s
+2021-08-30 10:43:23,983 EPOCH 5 - PROGRESS: at 8.33% examples, 1429934 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:43:24,991 EPOCH 5 - PROGRESS: at 18.31% examples, 1581683 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:43:25,995 EPOCH 5 - PROGRESS: at 28.06% examples, 1621753 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:43:27,004 EPOCH 5 - PROGRESS: at 37.76% examples, 1637701 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:28,004 EPOCH 5 - PROGRESS: at 47.40% examples, 1647839 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:43:29,007 EPOCH 5 - PROGRESS: at 57.04% examples, 1653914 words/s, in_qsize 52, out_qsize 1
+2021-08-30 10:43:30,009 EPOCH 5 - PROGRESS: at 66.50% examples, 1654165 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:43:31,025 EPOCH 5 - PROGRESS: at 76.03% examples, 1652812 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:32,028 EPOCH 5 - PROGRESS: at 85.73% examples, 1657393 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:33,035 EPOCH 5 - PROGRESS: at 95.19% examples, 1656464 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:43:33,376 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:43:33,377 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:43:33,381 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:43:33,389 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:43:33,390 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:43:33,399 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:43:33,404 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:43:33,406 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:43:33,418 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:43:33,418 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:43:33,433 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:43:33,442 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:43:33,447 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:43:33,448 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:43:33,452 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:43:33,462 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:43:33,466 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:43:33,473 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:43:33,475 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:43:33,477 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:43:33,482 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:43:33,484 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:43:33,489 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:43:33,494 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:43:33,497 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:43:33,498 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:43:33,506 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:43:33,508 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:43:33,508 EPOCH - 5 : training on 17532800 raw words (17528317 effective words) took 10.5s, 1662102 effective words/s
+2021-08-30 10:43:33,508 Word2Vec lifecycle event {'msg': 'training on 87664000 raw words (87641937 effective words) took 51.9s, 1688201 effective words/s', 'datetime': '2021-08-30T10:43:33.508838', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:43:33,509 Word2Vec lifecycle event {'params': 'Word2Vec(vocab=10958, vector_size=128, alpha=0.025)', 'datetime': '2021-08-30T10:43:33.508997', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'created'}
+2021-08-30 10:43:34,535 fairwalk: embed
+2021-08-30 10:45:04,646 fairwalk: result
+2021-08-30 10:45:20,782 fairwalk: initialize
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+rm -f *.o walk
+make -C unit_tests clean
+make[1]: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+rm -f *.o Graph HelperFunctions WeightedGraph
+make[1]: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+g++ -Wall -std=c++11 -g -O2  -c Graph.cpp
+g++ -Wall -std=c++11 -g -O2  -c HelperFunctions.cpp
+g++ -Wall -std=c++11 -g -O2  -c walk.cpp
+g++ -Wall -std=c++11 -g -O2  -c WeightedGraph.cpp
+echo "Sources: " Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+Sources:  Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+echo Graph.o HelperFunctions.o walk.o WeightedGraph.o
+Graph.o HelperFunctions.o walk.o WeightedGraph.o
+g++ -Wall -std=c++11 -g -O2 -o walk Graph.o HelperFunctions.o walk.o WeightedGraph.o
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+2021-08-30 10:45:33,572 collecting all words and their counts
+2021-08-30 10:45:33,573 PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2021-08-30 10:45:33,730 PROGRESS: at sentence #10000, processed 800000 words, keeping 10886 word types
+2021-08-30 10:45:33,891 PROGRESS: at sentence #20000, processed 1600000 words, keeping 10886 word types
+2021-08-30 10:45:34,051 PROGRESS: at sentence #30000, processed 2400000 words, keeping 10886 word types
+2021-08-30 10:45:34,213 PROGRESS: at sentence #40000, processed 3200000 words, keeping 10886 word types
+2021-08-30 10:45:34,374 PROGRESS: at sentence #50000, processed 4000000 words, keeping 10886 word types
+2021-08-30 10:45:34,536 PROGRESS: at sentence #60000, processed 4800000 words, keeping 10886 word types
+2021-08-30 10:45:34,698 PROGRESS: at sentence #70000, processed 5600000 words, keeping 10886 word types
+2021-08-30 10:45:34,861 PROGRESS: at sentence #80000, processed 6400000 words, keeping 10886 word types
+2021-08-30 10:45:35,024 PROGRESS: at sentence #90000, processed 7200000 words, keeping 10886 word types
+2021-08-30 10:45:35,188 PROGRESS: at sentence #100000, processed 8000000 words, keeping 10886 word types
+2021-08-30 10:45:35,350 PROGRESS: at sentence #110000, processed 8800000 words, keeping 10886 word types
+2021-08-30 10:45:35,512 PROGRESS: at sentence #120000, processed 9600000 words, keeping 10886 word types
+2021-08-30 10:45:35,675 PROGRESS: at sentence #130000, processed 10400000 words, keeping 10886 word types
+2021-08-30 10:45:35,837 PROGRESS: at sentence #140000, processed 11200000 words, keeping 10886 word types
+2021-08-30 10:45:36,000 PROGRESS: at sentence #150000, processed 12000000 words, keeping 10886 word types
+2021-08-30 10:45:36,162 PROGRESS: at sentence #160000, processed 12800000 words, keeping 10886 word types
+2021-08-30 10:45:36,323 PROGRESS: at sentence #170000, processed 13600000 words, keeping 10886 word types
+2021-08-30 10:45:36,485 PROGRESS: at sentence #180000, processed 14400000 words, keeping 10886 word types
+2021-08-30 10:45:36,649 PROGRESS: at sentence #190000, processed 15200000 words, keeping 10886 word types
+2021-08-30 10:45:36,816 PROGRESS: at sentence #200000, processed 16000000 words, keeping 10886 word types
+2021-08-30 10:45:36,978 PROGRESS: at sentence #210000, processed 16800000 words, keeping 10886 word types
+2021-08-30 10:45:37,103 collected 10886 word types from a corpus of 17417600 raw words and 217720 sentences
+2021-08-30 10:45:37,103 Creating a fresh vocabulary
+2021-08-30 10:45:37,132 Word2Vec lifecycle event {'msg': 'effective_min_count=10 retains 10886 unique words (100.0%% of original 10886, drops 0)', 'datetime': '2021-08-30T10:45:37.132881', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:45:37,133 Word2Vec lifecycle event {'msg': 'effective_min_count=10 leaves 17417600 word corpus (100.0%% of original 17417600, drops 0)', 'datetime': '2021-08-30T10:45:37.133016', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:45:37,178 deleting the raw counts dictionary of 10886 items
+2021-08-30 10:45:37,178 sample=0.001 downsamples 2 most-common words
+2021-08-30 10:45:37,178 Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 17393154.5090026 word corpus (99.9%% of prior 17417600)', 'datetime': '2021-08-30T10:45:37.178972', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:45:37,272 estimated required memory for 10886 words and 128 dimensions: 16590264 bytes
+2021-08-30 10:45:37,272 resetting layer weights
+2021-08-30 10:45:37,280 Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2021-08-30T10:45:37.280496', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'build_vocab'}
+2021-08-30 10:45:37,280 Word2Vec lifecycle event {'msg': 'training model with 28 workers on 10886 vocabulary and 128 features, using sg=1 hs=0 sample=0.001 negative=5 window=10', 'datetime': '2021-08-30T10:45:37.280596', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:45:38,304 EPOCH 1 - PROGRESS: at 6.03% examples, 1032952 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:45:39,315 EPOCH 1 - PROGRESS: at 14.76% examples, 1266611 words/s, in_qsize 50, out_qsize 4
+2021-08-30 10:45:40,315 EPOCH 1 - PROGRESS: at 24.00% examples, 1379280 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:45:41,335 EPOCH 1 - PROGRESS: at 33.24% examples, 1428932 words/s, in_qsize 52, out_qsize 1
+2021-08-30 10:45:42,353 EPOCH 1 - PROGRESS: at 42.49% examples, 1459257 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:45:43,365 EPOCH 1 - PROGRESS: at 51.73% examples, 1480884 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:45:44,367 EPOCH 1 - PROGRESS: at 61.09% examples, 1501196 words/s, in_qsize 51, out_qsize 4
+2021-08-30 10:45:45,368 EPOCH 1 - PROGRESS: at 70.62% examples, 1520288 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:45:46,373 EPOCH 1 - PROGRESS: at 79.98% examples, 1531314 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:45:47,386 EPOCH 1 - PROGRESS: at 89.62% examples, 1543834 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:45:48,317 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:45:48,325 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:45:48,331 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:45:48,336 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:45:48,346 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:45:48,347 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:45:48,354 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:45:48,364 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:45:48,367 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:45:48,370 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:45:48,374 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:45:48,378 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:45:48,382 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:45:48,388 EPOCH 1 - PROGRESS: at 99.21% examples, 1554679 words/s, in_qsize 14, out_qsize 1
+2021-08-30 10:45:48,388 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:45:48,388 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:45:48,396 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:45:48,397 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:45:48,405 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:45:48,410 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:45:48,416 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:45:48,417 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:45:48,419 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:45:48,426 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:45:48,426 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:45:48,428 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:45:48,433 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:45:48,438 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:45:48,445 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:45:48,445 EPOCH - 1 : training on 17417600 raw words (17393339 effective words) took 11.2s, 1559086 effective words/s
+2021-08-30 10:45:49,454 EPOCH 2 - PROGRESS: at 7.46% examples, 1297249 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:45:50,472 EPOCH 2 - PROGRESS: at 16.48% examples, 1419785 words/s, in_qsize 54, out_qsize 4
+2021-08-30 10:45:51,473 EPOCH 2 - PROGRESS: at 26.07% examples, 1501703 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:45:52,475 EPOCH 2 - PROGRESS: at 35.42% examples, 1532089 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:45:53,489 EPOCH 2 - PROGRESS: at 45.01% examples, 1554764 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:45:54,502 EPOCH 2 - PROGRESS: at 54.89% examples, 1578274 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:45:55,504 EPOCH 2 - PROGRESS: at 63.90% examples, 1576385 words/s, in_qsize 55, out_qsize 7
+2021-08-30 10:45:56,510 EPOCH 2 - PROGRESS: at 73.83% examples, 1593970 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:45:57,538 EPOCH 2 - PROGRESS: at 83.02% examples, 1589507 words/s, in_qsize 56, out_qsize 11
+2021-08-30 10:45:58,546 EPOCH 2 - PROGRESS: at 93.01% examples, 1603009 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:45:59,109 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:45:59,110 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:45:59,113 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:45:59,118 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:45:59,126 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:45:59,128 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:45:59,140 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:45:59,158 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:45:59,165 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:45:59,171 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:45:59,175 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:45:59,179 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:45:59,184 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:45:59,187 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:45:59,193 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:45:59,199 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:45:59,200 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:45:59,201 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:45:59,205 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:45:59,209 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:45:59,219 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:45:59,220 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:45:59,220 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:45:59,222 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:45:59,227 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:45:59,233 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:45:59,239 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:45:59,245 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:45:59,245 EPOCH - 2 : training on 17417600 raw words (17393257 effective words) took 10.8s, 1611712 effective words/s
+2021-08-30 10:46:00,265 EPOCH 3 - PROGRESS: at 7.64% examples, 1315683 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:46:01,281 EPOCH 3 - PROGRESS: at 16.82% examples, 1444211 words/s, in_qsize 49, out_qsize 6
+2021-08-30 10:46:02,284 EPOCH 3 - PROGRESS: at 26.52% examples, 1522764 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:46:03,302 EPOCH 3 - PROGRESS: at 36.17% examples, 1554362 words/s, in_qsize 55, out_qsize 4
+2021-08-30 10:46:04,332 EPOCH 3 - PROGRESS: at 45.59% examples, 1561680 words/s, in_qsize 51, out_qsize 2
+2021-08-30 10:46:05,340 EPOCH 3 - PROGRESS: at 55.23% examples, 1578537 words/s, in_qsize 51, out_qsize 2
+2021-08-30 10:46:06,351 EPOCH 3 - PROGRESS: at 64.99% examples, 1592838 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:46:07,354 EPOCH 3 - PROGRESS: at 74.24% examples, 1594128 words/s, in_qsize 46, out_qsize 2
+2021-08-30 10:46:08,358 EPOCH 3 - PROGRESS: at 83.36% examples, 1592695 words/s, in_qsize 56, out_qsize 7
+2021-08-30 10:46:09,360 EPOCH 3 - PROGRESS: at 93.18% examples, 1603845 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:46:09,913 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:46:09,923 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:46:09,944 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:46:09,957 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:46:09,965 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:46:09,966 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:46:09,971 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:46:09,972 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:46:09,976 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:46:09,982 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:46:09,984 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:46:09,996 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:46:10,004 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:46:10,008 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:46:10,009 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:46:10,024 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:46:10,024 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:46:10,028 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:46:10,028 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:46:10,031 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:46:10,035 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:46:10,036 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:46:10,037 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:46:10,040 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:46:10,042 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:46:10,044 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:46:10,046 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:46:10,049 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:46:10,049 EPOCH - 3 : training on 17417600 raw words (17392840 effective words) took 10.8s, 1611299 effective words/s
+2021-08-30 10:46:11,060 EPOCH 4 - PROGRESS: at 7.35% examples, 1275809 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:46:12,100 EPOCH 4 - PROGRESS: at 16.53% examples, 1408590 words/s, in_qsize 56, out_qsize 9
+2021-08-30 10:46:13,102 EPOCH 4 - PROGRESS: at 26.41% examples, 1509182 words/s, in_qsize 52, out_qsize 0
+2021-08-30 10:46:14,129 EPOCH 4 - PROGRESS: at 35.77% examples, 1528202 words/s, in_qsize 49, out_qsize 6
+2021-08-30 10:46:15,136 EPOCH 4 - PROGRESS: at 45.53% examples, 1559540 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:46:16,141 EPOCH 4 - PROGRESS: at 54.89% examples, 1569514 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:46:17,193 EPOCH 4 - PROGRESS: at 64.25% examples, 1566133 words/s, in_qsize 55, out_qsize 9
+2021-08-30 10:46:18,194 EPOCH 4 - PROGRESS: at 73.95% examples, 1580870 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:46:19,203 EPOCH 4 - PROGRESS: at 83.25% examples, 1583431 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:46:20,215 EPOCH 4 - PROGRESS: at 92.55% examples, 1584982 words/s, in_qsize 53, out_qsize 3
+2021-08-30 10:46:20,833 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:46:20,855 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:46:20,866 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:46:20,866 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:46:20,866 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:46:20,874 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:46:20,885 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:46:20,885 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:46:20,890 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:46:20,893 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:46:20,902 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:46:20,912 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:46:20,915 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:46:20,925 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:46:20,927 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:46:20,928 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:46:20,929 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:46:20,930 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:46:20,932 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:46:20,937 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:46:20,938 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:46:20,942 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:46:20,946 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:46:20,947 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:46:20,950 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:46:20,950 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:46:20,958 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:46:20,970 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:46:20,970 EPOCH - 4 : training on 17417600 raw words (17393263 effective words) took 10.9s, 1594034 effective words/s
+2021-08-30 10:46:21,992 EPOCH 5 - PROGRESS: at 7.41% examples, 1270759 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:46:23,005 EPOCH 5 - PROGRESS: at 16.31% examples, 1399262 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:46:24,026 EPOCH 5 - PROGRESS: at 24.97% examples, 1425224 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:46:25,036 EPOCH 5 - PROGRESS: at 33.41% examples, 1432213 words/s, in_qsize 56, out_qsize 7
+2021-08-30 10:46:26,042 EPOCH 5 - PROGRESS: at 43.00% examples, 1477159 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:46:27,046 EPOCH 5 - PROGRESS: at 52.48% examples, 1504196 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:46:28,079 EPOCH 5 - PROGRESS: at 61.43% examples, 1504794 words/s, in_qsize 55, out_qsize 8
+2021-08-30 10:46:29,097 EPOCH 5 - PROGRESS: at 70.96% examples, 1520205 words/s, in_qsize 52, out_qsize 5
+2021-08-30 10:46:30,116 EPOCH 5 - PROGRESS: at 80.55% examples, 1533193 words/s, in_qsize 51, out_qsize 2
+2021-08-30 10:46:31,118 EPOCH 5 - PROGRESS: at 89.51% examples, 1535305 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:46:32,131 EPOCH 5 - PROGRESS: at 98.35% examples, 1533776 words/s, in_qsize 27, out_qsize 3
+2021-08-30 10:46:32,131 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:46:32,133 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:46:32,163 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:46:32,172 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:46:32,174 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:46:32,178 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:46:32,181 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:46:32,182 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:46:32,199 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:46:32,203 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:46:32,206 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:46:32,211 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:46:32,213 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:46:32,217 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:46:32,222 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:46:32,223 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:46:32,225 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:46:32,225 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:46:32,229 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:46:32,243 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:46:32,248 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:46:32,252 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:46:32,254 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:46:32,254 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:46:32,258 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:46:32,259 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:46:32,262 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:46:32,269 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:46:32,269 EPOCH - 5 : training on 17417600 raw words (17393058 effective words) took 11.3s, 1540494 effective words/s
+2021-08-30 10:46:32,270 Word2Vec lifecycle event {'msg': 'training on 87088000 raw words (86965757 effective words) took 55.0s, 1581505 effective words/s', 'datetime': '2021-08-30T10:46:32.269959', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:46:32,270 Word2Vec lifecycle event {'params': 'Word2Vec(vocab=10886, vector_size=128, alpha=0.025)', 'datetime': '2021-08-30T10:46:32.270117', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'created'}
+2021-08-30 10:46:33,184 fairwalk: embed
+2021-08-30 10:48:06,130 fairwalk: result
+2021-08-30 10:48:25,460 fairwalk: initialize
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+rm -f *.o walk
+make -C unit_tests clean
+make[1]: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+rm -f *.o Graph HelperFunctions WeightedGraph
+make[1]: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+g++ -Wall -std=c++11 -g -O2  -c Graph.cpp
+g++ -Wall -std=c++11 -g -O2  -c HelperFunctions.cpp
+g++ -Wall -std=c++11 -g -O2  -c walk.cpp
+g++ -Wall -std=c++11 -g -O2  -c WeightedGraph.cpp
+echo "Sources: " Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+Sources:  Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+echo Graph.o HelperFunctions.o walk.o WeightedGraph.o
+Graph.o HelperFunctions.o walk.o WeightedGraph.o
+g++ -Wall -std=c++11 -g -O2 -o walk Graph.o HelperFunctions.o walk.o WeightedGraph.o
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+2021-08-30 10:48:38,908 collecting all words and their counts
+2021-08-30 10:48:38,909 PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2021-08-30 10:48:39,058 PROGRESS: at sentence #10000, processed 800000 words, keeping 10891 word types
+2021-08-30 10:48:39,211 PROGRESS: at sentence #20000, processed 1600000 words, keeping 10892 word types
+2021-08-30 10:48:39,364 PROGRESS: at sentence #30000, processed 2400000 words, keeping 10892 word types
+2021-08-30 10:48:39,517 PROGRESS: at sentence #40000, processed 3200000 words, keeping 10892 word types
+2021-08-30 10:48:39,669 PROGRESS: at sentence #50000, processed 4000000 words, keeping 10892 word types
+2021-08-30 10:48:39,822 PROGRESS: at sentence #60000, processed 4800000 words, keeping 10892 word types
+2021-08-30 10:48:39,981 PROGRESS: at sentence #70000, processed 5600000 words, keeping 10892 word types
+2021-08-30 10:48:40,136 PROGRESS: at sentence #80000, processed 6400000 words, keeping 10892 word types
+2021-08-30 10:48:40,289 PROGRESS: at sentence #90000, processed 7200000 words, keeping 10892 word types
+2021-08-30 10:48:40,442 PROGRESS: at sentence #100000, processed 8000000 words, keeping 10892 word types
+2021-08-30 10:48:40,596 PROGRESS: at sentence #110000, processed 8800000 words, keeping 10892 word types
+2021-08-30 10:48:40,749 PROGRESS: at sentence #120000, processed 9600000 words, keeping 10892 word types
+2021-08-30 10:48:40,901 PROGRESS: at sentence #130000, processed 10400000 words, keeping 10892 word types
+2021-08-30 10:48:41,053 PROGRESS: at sentence #140000, processed 11200000 words, keeping 10892 word types
+2021-08-30 10:48:41,206 PROGRESS: at sentence #150000, processed 12000000 words, keeping 10892 word types
+2021-08-30 10:48:41,357 PROGRESS: at sentence #160000, processed 12800000 words, keeping 10892 word types
+2021-08-30 10:48:41,509 PROGRESS: at sentence #170000, processed 13600000 words, keeping 10892 word types
+2021-08-30 10:48:41,661 PROGRESS: at sentence #180000, processed 14400000 words, keeping 10892 word types
+2021-08-30 10:48:41,812 PROGRESS: at sentence #190000, processed 15200000 words, keeping 10892 word types
+2021-08-30 10:48:41,964 PROGRESS: at sentence #200000, processed 16000000 words, keeping 10892 word types
+2021-08-30 10:48:42,115 PROGRESS: at sentence #210000, processed 16800000 words, keeping 10892 word types
+2021-08-30 10:48:42,232 collected 10892 word types from a corpus of 17427200 raw words and 217840 sentences
+2021-08-30 10:48:42,233 Creating a fresh vocabulary
+2021-08-30 10:48:42,261 Word2Vec lifecycle event {'msg': 'effective_min_count=10 retains 10892 unique words (100.0%% of original 10892, drops 0)', 'datetime': '2021-08-30T10:48:42.261754', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:48:42,261 Word2Vec lifecycle event {'msg': 'effective_min_count=10 leaves 17427200 word corpus (100.0%% of original 17427200, drops 0)', 'datetime': '2021-08-30T10:48:42.261885', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:48:42,308 deleting the raw counts dictionary of 10892 items
+2021-08-30 10:48:42,308 sample=0.001 downsamples 1 most-common words
+2021-08-30 10:48:42,308 Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 17417936.669315375 word corpus (99.9%% of prior 17427200)', 'datetime': '2021-08-30T10:48:42.308338', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:48:42,399 estimated required memory for 10892 words and 128 dimensions: 16599408 bytes
+2021-08-30 10:48:42,399 resetting layer weights
+2021-08-30 10:48:42,407 Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2021-08-30T10:48:42.407512', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'build_vocab'}
+2021-08-30 10:48:42,407 Word2Vec lifecycle event {'msg': 'training model with 28 workers on 10892 vocabulary and 128 features, using sg=1 hs=0 sample=0.001 negative=5 window=10', 'datetime': '2021-08-30T10:48:42.407622', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:48:43,444 EPOCH 1 - PROGRESS: at 2.52% examples, 428212 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:48:44,475 EPOCH 1 - PROGRESS: at 8.03% examples, 679729 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:48:45,486 EPOCH 1 - PROGRESS: at 13.20% examples, 748890 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:48:46,491 EPOCH 1 - PROGRESS: at 18.65% examples, 797209 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:48:47,506 EPOCH 1 - PROGRESS: at 24.50% examples, 838527 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:48:48,516 EPOCH 1 - PROGRESS: at 30.64% examples, 875051 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:48:49,526 EPOCH 1 - PROGRESS: at 37.01% examples, 906760 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:48:50,530 EPOCH 1 - PROGRESS: at 42.98% examples, 922696 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:48:51,534 EPOCH 1 - PROGRESS: at 49.12% examples, 938339 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:48:52,534 EPOCH 1 - PROGRESS: at 54.91% examples, 945367 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:48:53,565 EPOCH 1 - PROGRESS: at 61.11% examples, 954766 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:48:54,579 EPOCH 1 - PROGRESS: at 67.14% examples, 961452 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:48:55,589 EPOCH 1 - PROGRESS: at 73.16% examples, 967421 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:48:56,610 EPOCH 1 - PROGRESS: at 79.13% examples, 971035 words/s, in_qsize 49, out_qsize 6
+2021-08-30 10:48:57,613 EPOCH 1 - PROGRESS: at 85.67% examples, 981951 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:48:58,659 EPOCH 1 - PROGRESS: at 91.87% examples, 985191 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:48:59,671 EPOCH 1 - PROGRESS: at 98.18% examples, 991086 words/s, in_qsize 32, out_qsize 0
+2021-08-30 10:48:59,719 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:48:59,725 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:48:59,736 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:48:59,741 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:48:59,742 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:48:59,748 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:48:59,750 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:48:59,779 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:48:59,782 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:48:59,784 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:48:59,787 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:48:59,797 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:48:59,802 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:48:59,804 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:48:59,807 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:48:59,807 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:48:59,810 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:48:59,814 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:48:59,817 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:48:59,819 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:48:59,825 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:48:59,826 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:48:59,838 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:48:59,840 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:48:59,848 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:48:59,861 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:48:59,863 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:48:59,870 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:48:59,870 EPOCH - 1 : training on 17427200 raw words (17417788 effective words) took 17.5s, 997978 effective words/s
+2021-08-30 10:49:00,924 EPOCH 2 - PROGRESS: at 5.45% examples, 908190 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:49:01,932 EPOCH 2 - PROGRESS: at 11.82% examples, 1003130 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:49:02,936 EPOCH 2 - PROGRESS: at 18.13% examples, 1032994 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:49:03,941 EPOCH 2 - PROGRESS: at 24.96% examples, 1070421 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:04,954 EPOCH 2 - PROGRESS: at 31.27% examples, 1073223 words/s, in_qsize 54, out_qsize 6
+2021-08-30 10:49:05,974 EPOCH 2 - PROGRESS: at 38.45% examples, 1098598 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:49:06,993 EPOCH 2 - PROGRESS: at 45.16% examples, 1105684 words/s, in_qsize 48, out_qsize 7
+2021-08-30 10:49:07,994 EPOCH 2 - PROGRESS: at 52.27% examples, 1121948 words/s, in_qsize 55, out_qsize 2
+2021-08-30 10:49:09,001 EPOCH 2 - PROGRESS: at 59.62% examples, 1138459 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:10,002 EPOCH 2 - PROGRESS: at 66.85% examples, 1150172 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:49:11,022 EPOCH 2 - PROGRESS: at 74.42% examples, 1163354 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:49:12,030 EPOCH 2 - PROGRESS: at 81.94% examples, 1174537 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:49:13,035 EPOCH 2 - PROGRESS: at 89.69% examples, 1187534 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:49:14,045 EPOCH 2 - PROGRESS: at 97.49% examples, 1198666 words/s, in_qsize 44, out_qsize 0
+2021-08-30 10:49:14,159 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:49:14,160 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:49:14,173 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:49:14,181 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:49:14,183 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:49:14,194 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:49:14,196 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:49:14,201 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:49:14,203 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:49:14,207 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:49:14,214 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:49:14,228 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:49:14,232 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:49:14,238 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:49:14,245 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:49:14,245 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:49:14,247 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:49:14,256 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:49:14,261 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:49:14,263 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:49:14,264 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:49:14,266 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:49:14,276 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:49:14,284 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:49:14,287 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:49:14,288 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:49:14,294 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:49:14,297 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:49:14,297 EPOCH - 2 : training on 17427200 raw words (17417856 effective words) took 14.4s, 1208005 effective words/s
+2021-08-30 10:49:15,308 EPOCH 3 - PROGRESS: at 6.37% examples, 1107335 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:49:16,322 EPOCH 3 - PROGRESS: at 13.77% examples, 1189787 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:49:17,341 EPOCH 3 - PROGRESS: at 21.69% examples, 1244735 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:49:18,343 EPOCH 3 - PROGRESS: at 29.21% examples, 1260465 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:49:19,345 EPOCH 3 - PROGRESS: at 36.95% examples, 1277340 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:49:20,352 EPOCH 3 - PROGRESS: at 44.93% examples, 1294376 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:49:21,363 EPOCH 3 - PROGRESS: at 53.02% examples, 1308635 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:49:22,366 EPOCH 3 - PROGRESS: at 61.28% examples, 1324404 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:49:23,371 EPOCH 3 - PROGRESS: at 69.43% examples, 1334178 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:24,391 EPOCH 3 - PROGRESS: at 77.64% examples, 1340957 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:49:25,391 EPOCH 3 - PROGRESS: at 85.90% examples, 1349725 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:49:26,413 EPOCH 3 - PROGRESS: at 94.11% examples, 1353926 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:49:26,917 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:49:26,926 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:49:26,935 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:49:26,939 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:49:26,957 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:49:26,960 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:49:26,969 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:49:26,981 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:49:26,984 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:49:26,990 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:49:26,995 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:49:27,010 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:49:27,010 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:49:27,010 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:49:27,017 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:49:27,021 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:49:27,024 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:49:27,025 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:49:27,027 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:49:27,033 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:49:27,034 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:49:27,044 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:49:27,052 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:49:27,054 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:49:27,055 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:49:27,058 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:49:27,059 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:49:27,064 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:49:27,064 EPOCH - 3 : training on 17427200 raw words (17418063 effective words) took 12.8s, 1365301 effective words/s
+2021-08-30 10:49:28,107 EPOCH 4 - PROGRESS: at 6.37% examples, 1072548 words/s, in_qsize 55, out_qsize 6
+2021-08-30 10:49:29,118 EPOCH 4 - PROGRESS: at 13.94% examples, 1187801 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:49:30,143 EPOCH 4 - PROGRESS: at 21.80% examples, 1237703 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:49:31,155 EPOCH 4 - PROGRESS: at 29.67% examples, 1265678 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:49:32,181 EPOCH 4 - PROGRESS: at 37.13% examples, 1265827 words/s, in_qsize 53, out_qsize 5
+2021-08-30 10:49:33,208 EPOCH 4 - PROGRESS: at 45.04% examples, 1278694 words/s, in_qsize 50, out_qsize 5
+2021-08-30 10:49:34,215 EPOCH 4 - PROGRESS: at 53.02% examples, 1292951 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:49:35,223 EPOCH 4 - PROGRESS: at 61.00% examples, 1303534 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:36,235 EPOCH 4 - PROGRESS: at 68.69% examples, 1305748 words/s, in_qsize 54, out_qsize 2
+2021-08-30 10:49:37,255 EPOCH 4 - PROGRESS: at 76.72% examples, 1312323 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:49:38,260 EPOCH 4 - PROGRESS: at 84.64% examples, 1317721 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:49:39,266 EPOCH 4 - PROGRESS: at 92.61% examples, 1322997 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:40,045 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:49:40,050 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:49:40,060 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:49:40,064 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:49:40,074 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:49:40,080 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:49:40,082 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:49:40,083 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:49:40,084 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:49:40,088 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:49:40,093 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:49:40,104 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:49:40,105 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:49:40,108 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:49:40,113 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:49:40,118 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:49:40,124 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:49:40,128 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:49:40,131 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:49:40,134 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:49:40,135 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:49:40,139 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:49:40,149 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:49:40,154 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:49:40,166 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:49:40,167 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:49:40,173 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:49:40,177 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:49:40,178 EPOCH - 4 : training on 17427200 raw words (17417946 effective words) took 13.1s, 1329109 effective words/s
+2021-08-30 10:49:41,218 EPOCH 5 - PROGRESS: at 6.31% examples, 1065393 words/s, in_qsize 56, out_qsize 4
+2021-08-30 10:49:42,223 EPOCH 5 - PROGRESS: at 14.35% examples, 1226668 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:49:43,229 EPOCH 5 - PROGRESS: at 22.38% examples, 1280961 words/s, in_qsize 53, out_qsize 1
+2021-08-30 10:49:44,236 EPOCH 5 - PROGRESS: at 30.47% examples, 1310544 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:45,243 EPOCH 5 - PROGRESS: at 38.45% examples, 1324252 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:49:46,246 EPOCH 5 - PROGRESS: at 46.25% examples, 1329423 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:49:47,250 EPOCH 5 - PROGRESS: at 53.88% examples, 1328690 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:49:48,254 EPOCH 5 - PROGRESS: at 61.80% examples, 1334203 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:49,271 EPOCH 5 - PROGRESS: at 69.78% examples, 1337813 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:49:50,279 EPOCH 5 - PROGRESS: at 77.58% examples, 1338850 words/s, in_qsize 52, out_qsize 2
+2021-08-30 10:49:51,306 EPOCH 5 - PROGRESS: at 85.50% examples, 1339235 words/s, in_qsize 54, out_qsize 4
+2021-08-30 10:49:52,308 EPOCH 5 - PROGRESS: at 93.47% examples, 1343125 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:49:52,949 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:49:52,949 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:49:52,956 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:49:52,958 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:49:52,965 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:49:52,966 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:49:52,972 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:49:52,973 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:49:52,973 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:49:52,987 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:49:52,988 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:49:52,989 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:49:52,996 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:49:52,999 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:49:53,004 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:49:53,007 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:49:53,015 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:49:53,020 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:49:53,020 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:49:53,022 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:49:53,029 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:49:53,031 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:49:53,033 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:49:53,047 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:49:53,053 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:49:53,054 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:49:53,058 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:49:53,071 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:49:53,071 EPOCH - 5 : training on 17427200 raw words (17417925 effective words) took 12.9s, 1351851 effective words/s
+2021-08-30 10:49:53,071 Word2Vec lifecycle event {'msg': 'training on 87136000 raw words (87089578 effective words) took 70.7s, 1232447 effective words/s', 'datetime': '2021-08-30T10:49:53.071788', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:49:53,072 Word2Vec lifecycle event {'params': 'Word2Vec(vocab=10892, vector_size=128, alpha=0.025)', 'datetime': '2021-08-30T10:49:53.072022', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'created'}
+2021-08-30 10:49:54,081 fairwalk: embed
+2021-08-30 10:51:17,522 fairwalk: result
+2021-08-30 10:51:42,446 fairwalk: initialize
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+rm -f *.o walk
+make -C unit_tests clean
+make[1]: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+rm -f *.o Graph HelperFunctions WeightedGraph
+make[1]: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk/unit_tests'
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+make: Entering directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+g++ -Wall -std=c++11 -g -O2  -c Graph.cpp
+g++ -Wall -std=c++11 -g -O2  -c HelperFunctions.cpp
+g++ -Wall -std=c++11 -g -O2  -c walk.cpp
+g++ -Wall -std=c++11 -g -O2  -c WeightedGraph.cpp
+echo "Sources: " Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+Sources:  Graph.cpp HelperFunctions.cpp walk.cpp WeightedGraph.cpp
+echo Graph.o HelperFunctions.o walk.o WeightedGraph.o
+Graph.o HelperFunctions.o walk.o WeightedGraph.o
+g++ -Wall -std=c++11 -g -O2 -o walk Graph.o HelperFunctions.o walk.o WeightedGraph.o
+make: Leaving directory `/home/he.1773/workplace/FairGraphs/baselines/FairWalk/fast-random-walk'
+2021-08-30 10:51:55,947 collecting all words and their counts
+2021-08-30 10:51:55,948 PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2021-08-30 10:51:56,095 PROGRESS: at sentence #10000, processed 800000 words, keeping 10912 word types
+2021-08-30 10:51:56,246 PROGRESS: at sentence #20000, processed 1600000 words, keeping 10913 word types
+2021-08-30 10:51:56,398 PROGRESS: at sentence #30000, processed 2400000 words, keeping 10913 word types
+2021-08-30 10:51:56,550 PROGRESS: at sentence #40000, processed 3200000 words, keeping 10913 word types
+2021-08-30 10:51:56,704 PROGRESS: at sentence #50000, processed 4000000 words, keeping 10913 word types
+2021-08-30 10:51:56,857 PROGRESS: at sentence #60000, processed 4800000 words, keeping 10913 word types
+2021-08-30 10:51:57,012 PROGRESS: at sentence #70000, processed 5600000 words, keeping 10913 word types
+2021-08-30 10:51:57,170 PROGRESS: at sentence #80000, processed 6400000 words, keeping 10913 word types
+2021-08-30 10:51:57,328 PROGRESS: at sentence #90000, processed 7200000 words, keeping 10913 word types
+2021-08-30 10:51:57,485 PROGRESS: at sentence #100000, processed 8000000 words, keeping 10913 word types
+2021-08-30 10:51:57,642 PROGRESS: at sentence #110000, processed 8800000 words, keeping 10913 word types
+2021-08-30 10:51:57,800 PROGRESS: at sentence #120000, processed 9600000 words, keeping 10913 word types
+2021-08-30 10:51:57,956 PROGRESS: at sentence #130000, processed 10400000 words, keeping 10913 word types
+2021-08-30 10:51:58,111 PROGRESS: at sentence #140000, processed 11200000 words, keeping 10913 word types
+2021-08-30 10:51:58,267 PROGRESS: at sentence #150000, processed 12000000 words, keeping 10913 word types
+2021-08-30 10:51:58,422 PROGRESS: at sentence #160000, processed 12800000 words, keeping 10913 word types
+2021-08-30 10:51:58,578 PROGRESS: at sentence #170000, processed 13600000 words, keeping 10913 word types
+2021-08-30 10:51:58,733 PROGRESS: at sentence #180000, processed 14400000 words, keeping 10913 word types
+2021-08-30 10:51:58,888 PROGRESS: at sentence #190000, processed 15200000 words, keeping 10913 word types
+2021-08-30 10:51:59,043 PROGRESS: at sentence #200000, processed 16000000 words, keeping 10913 word types
+2021-08-30 10:51:59,198 PROGRESS: at sentence #210000, processed 16800000 words, keeping 10913 word types
+2021-08-30 10:51:59,327 collected 10913 word types from a corpus of 17460800 raw words and 218260 sentences
+2021-08-30 10:51:59,327 Creating a fresh vocabulary
+2021-08-30 10:51:59,356 Word2Vec lifecycle event {'msg': 'effective_min_count=10 retains 10913 unique words (100.0%% of original 10913, drops 0)', 'datetime': '2021-08-30T10:51:59.356497', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:51:59,356 Word2Vec lifecycle event {'msg': 'effective_min_count=10 leaves 17460800 word corpus (100.0%% of original 17460800, drops 0)', 'datetime': '2021-08-30T10:51:59.356622', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:51:59,403 deleting the raw counts dictionary of 10913 items
+2021-08-30 10:51:59,404 sample=0.001 downsamples 2 most-common words
+2021-08-30 10:51:59,404 Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 17426561.85917206 word corpus (99.8%% of prior 17460800)', 'datetime': '2021-08-30T10:51:59.404108', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'prepare_vocab'}
+2021-08-30 10:51:59,499 estimated required memory for 10913 words and 128 dimensions: 16631412 bytes
+2021-08-30 10:51:59,499 resetting layer weights
+2021-08-30 10:51:59,507 Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2021-08-30T10:51:59.507885', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'build_vocab'}
+2021-08-30 10:51:59,508 Word2Vec lifecycle event {'msg': 'training model with 28 workers on 10913 vocabulary and 128 features, using sg=1 hs=0 sample=0.001 negative=5 window=10', 'datetime': '2021-08-30T10:51:59.507988', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:52:00,528 EPOCH 1 - PROGRESS: at 4.24% examples, 729747 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:52:01,569 EPOCH 1 - PROGRESS: at 10.54% examples, 894381 words/s, in_qsize 53, out_qsize 2
+2021-08-30 10:52:02,624 EPOCH 1 - PROGRESS: at 17.35% examples, 973099 words/s, in_qsize 56, out_qsize 7
+2021-08-30 10:52:03,628 EPOCH 1 - PROGRESS: at 24.57% examples, 1041211 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:52:04,641 EPOCH 1 - PROGRESS: at 33.33% examples, 1133560 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:52:05,648 EPOCH 1 - PROGRESS: at 42.38% examples, 1204378 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:06,653 EPOCH 1 - PROGRESS: at 51.54% examples, 1258651 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:07,661 EPOCH 1 - PROGRESS: at 61.11% examples, 1307518 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:52:08,664 EPOCH 1 - PROGRESS: at 70.79% examples, 1348398 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:52:09,666 EPOCH 1 - PROGRESS: at 80.81% examples, 1387412 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:10,692 EPOCH 1 - PROGRESS: at 90.37% examples, 1409191 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:52:11,484 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:52:11,484 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:52:11,485 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:52:11,485 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:52:11,490 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:52:11,500 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:52:11,504 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:52:11,513 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:52:11,517 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:52:11,519 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:52:11,519 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:52:11,526 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:52:11,529 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:52:11,539 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:52:11,540 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:52:11,547 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:52:11,551 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:52:11,557 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:52:11,566 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:52:11,574 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:52:11,575 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:52:11,576 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:52:11,583 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:52:11,584 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:52:11,586 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:52:11,594 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:52:11,600 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:52:11,602 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:52:11,602 EPOCH - 1 : training on 17460800 raw words (17426332 effective words) took 12.1s, 1441870 effective words/s
+2021-08-30 10:52:12,612 EPOCH 2 - PROGRESS: at 8.19% examples, 1425402 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:52:13,615 EPOCH 2 - PROGRESS: at 18.38% examples, 1599080 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:52:14,627 EPOCH 2 - PROGRESS: at 28.29% examples, 1634720 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:52:15,656 EPOCH 2 - PROGRESS: at 38.66% examples, 1665424 words/s, in_qsize 51, out_qsize 4
+2021-08-30 10:52:16,661 EPOCH 2 - PROGRESS: at 49.14% examples, 1695748 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:52:17,685 EPOCH 2 - PROGRESS: at 59.45% examples, 1705537 words/s, in_qsize 52, out_qsize 3
+2021-08-30 10:52:18,691 EPOCH 2 - PROGRESS: at 70.16% examples, 1726849 words/s, in_qsize 56, out_qsize 0
+2021-08-30 10:52:19,699 EPOCH 2 - PROGRESS: at 80.07% examples, 1725069 words/s, in_qsize 47, out_qsize 5
+2021-08-30 10:52:20,704 EPOCH 2 - PROGRESS: at 90.83% examples, 1740714 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:21,458 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:52:21,459 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:52:21,473 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:52:21,481 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:52:21,482 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:52:21,484 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:52:21,489 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:52:21,495 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:52:21,498 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:52:21,510 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:52:21,515 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:52:21,518 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:52:21,520 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:52:21,526 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:52:21,528 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:52:21,533 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:52:21,534 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:52:21,538 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:52:21,546 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:52:21,550 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:52:21,553 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:52:21,555 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:52:21,559 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:52:21,563 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:52:21,564 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:52:21,569 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:52:21,573 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:52:21,577 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:52:21,577 EPOCH - 2 : training on 17460800 raw words (17426586 effective words) took 10.0s, 1748628 effective words/s
+2021-08-30 10:52:22,596 EPOCH 3 - PROGRESS: at 7.85% examples, 1353569 words/s, in_qsize 52, out_qsize 2
+2021-08-30 10:52:23,598 EPOCH 3 - PROGRESS: at 18.10% examples, 1567550 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:24,598 EPOCH 3 - PROGRESS: at 27.95% examples, 1616945 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:52:25,618 EPOCH 3 - PROGRESS: at 38.49% examples, 1663323 words/s, in_qsize 52, out_qsize 2
+2021-08-30 10:52:26,640 EPOCH 3 - PROGRESS: at 48.68% examples, 1678456 words/s, in_qsize 52, out_qsize 7
+2021-08-30 10:52:27,652 EPOCH 3 - PROGRESS: at 59.39% examples, 1706281 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:52:28,674 EPOCH 3 - PROGRESS: at 69.47% examples, 1707877 words/s, in_qsize 55, out_qsize 7
+2021-08-30 10:52:29,708 EPOCH 3 - PROGRESS: at 80.01% examples, 1716718 words/s, in_qsize 54, out_qsize 6
+2021-08-30 10:52:30,711 EPOCH 3 - PROGRESS: at 90.77% examples, 1733553 words/s, in_qsize 54, out_qsize 1
+2021-08-30 10:52:31,463 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:52:31,474 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:52:31,474 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:52:31,477 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:52:31,480 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:52:31,487 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:52:31,492 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:52:31,495 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:52:31,499 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:52:31,499 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:52:31,506 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:52:31,514 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:52:31,516 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:52:31,521 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:52:31,525 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:52:31,525 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:52:31,531 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:52:31,538 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:52:31,541 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:52:31,545 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:52:31,548 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:52:31,551 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:52:31,562 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:52:31,566 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:52:31,570 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:52:31,575 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:52:31,579 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:52:31,583 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:52:31,583 EPOCH - 3 : training on 17460800 raw words (17426529 effective words) took 10.0s, 1743201 effective words/s
+2021-08-30 10:52:32,595 EPOCH 4 - PROGRESS: at 8.13% examples, 1413944 words/s, in_qsize 53, out_qsize 1
+2021-08-30 10:52:33,599 EPOCH 4 - PROGRESS: at 18.38% examples, 1596472 words/s, in_qsize 56, out_qsize 2
+2021-08-30 10:52:34,601 EPOCH 4 - PROGRESS: at 28.92% examples, 1675130 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:35,630 EPOCH 4 - PROGRESS: at 39.35% examples, 1697851 words/s, in_qsize 56, out_qsize 3
+2021-08-30 10:52:36,634 EPOCH 4 - PROGRESS: at 49.88% examples, 1724005 words/s, in_qsize 53, out_qsize 0
+2021-08-30 10:52:37,645 EPOCH 4 - PROGRESS: at 60.36% examples, 1737820 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:38,648 EPOCH 4 - PROGRESS: at 70.21% examples, 1734162 words/s, in_qsize 55, out_qsize 1
+2021-08-30 10:52:39,670 EPOCH 4 - PROGRESS: at 80.58% examples, 1738472 words/s, in_qsize 56, out_qsize 4
+2021-08-30 10:52:40,678 EPOCH 4 - PROGRESS: at 91.06% examples, 1746401 words/s, in_qsize 50, out_qsize 4
+2021-08-30 10:52:41,389 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:52:41,389 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:52:41,389 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:52:41,400 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:52:41,411 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:52:41,411 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:52:41,411 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:52:41,422 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:52:41,422 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:52:41,432 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:52:41,432 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:52:41,432 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:52:41,435 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:52:41,439 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:52:41,443 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:52:41,445 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:52:41,449 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:52:41,456 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:52:41,458 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:52:41,460 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:52:41,464 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:52:41,469 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:52:41,472 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:52:41,484 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:52:41,487 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:52:41,491 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:52:41,493 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:52:41,504 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:52:41,504 EPOCH - 4 : training on 17460800 raw words (17426547 effective words) took 9.9s, 1758130 effective words/s
+2021-08-30 10:52:42,522 EPOCH 5 - PROGRESS: at 8.25% examples, 1425415 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:43,523 EPOCH 5 - PROGRESS: at 18.27% examples, 1584654 words/s, in_qsize 56, out_qsize 1
+2021-08-30 10:52:44,528 EPOCH 5 - PROGRESS: at 28.35% examples, 1638960 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:45,534 EPOCH 5 - PROGRESS: at 38.20% examples, 1655682 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:52:46,554 EPOCH 5 - PROGRESS: at 48.74% examples, 1684904 words/s, in_qsize 54, out_qsize 3
+2021-08-30 10:52:47,580 EPOCH 5 - PROGRESS: at 59.10% examples, 1697763 words/s, in_qsize 56, out_qsize 5
+2021-08-30 10:52:48,609 EPOCH 5 - PROGRESS: at 69.47% examples, 1706153 words/s, in_qsize 50, out_qsize 6
+2021-08-30 10:52:49,616 EPOCH 5 - PROGRESS: at 80.18% examples, 1724408 words/s, in_qsize 55, out_qsize 0
+2021-08-30 10:52:50,631 EPOCH 5 - PROGRESS: at 90.37% examples, 1727386 words/s, in_qsize 55, out_qsize 2
+2021-08-30 10:52:51,417 worker thread finished; awaiting finish of 27 more threads
+2021-08-30 10:52:51,418 worker thread finished; awaiting finish of 26 more threads
+2021-08-30 10:52:51,421 worker thread finished; awaiting finish of 25 more threads
+2021-08-30 10:52:51,425 worker thread finished; awaiting finish of 24 more threads
+2021-08-30 10:52:51,427 worker thread finished; awaiting finish of 23 more threads
+2021-08-30 10:52:51,430 worker thread finished; awaiting finish of 22 more threads
+2021-08-30 10:52:51,438 worker thread finished; awaiting finish of 21 more threads
+2021-08-30 10:52:51,443 worker thread finished; awaiting finish of 20 more threads
+2021-08-30 10:52:51,444 worker thread finished; awaiting finish of 19 more threads
+2021-08-30 10:52:51,450 worker thread finished; awaiting finish of 18 more threads
+2021-08-30 10:52:51,456 worker thread finished; awaiting finish of 17 more threads
+2021-08-30 10:52:51,467 worker thread finished; awaiting finish of 16 more threads
+2021-08-30 10:52:51,468 worker thread finished; awaiting finish of 15 more threads
+2021-08-30 10:52:51,474 worker thread finished; awaiting finish of 14 more threads
+2021-08-30 10:52:51,485 worker thread finished; awaiting finish of 13 more threads
+2021-08-30 10:52:51,490 worker thread finished; awaiting finish of 12 more threads
+2021-08-30 10:52:51,491 worker thread finished; awaiting finish of 11 more threads
+2021-08-30 10:52:51,493 worker thread finished; awaiting finish of 10 more threads
+2021-08-30 10:52:51,495 worker thread finished; awaiting finish of 9 more threads
+2021-08-30 10:52:51,498 worker thread finished; awaiting finish of 8 more threads
+2021-08-30 10:52:51,506 worker thread finished; awaiting finish of 7 more threads
+2021-08-30 10:52:51,510 worker thread finished; awaiting finish of 6 more threads
+2021-08-30 10:52:51,510 worker thread finished; awaiting finish of 5 more threads
+2021-08-30 10:52:51,511 worker thread finished; awaiting finish of 4 more threads
+2021-08-30 10:52:51,518 worker thread finished; awaiting finish of 3 more threads
+2021-08-30 10:52:51,523 worker thread finished; awaiting finish of 2 more threads
+2021-08-30 10:52:51,539 worker thread finished; awaiting finish of 1 more threads
+2021-08-30 10:52:51,543 worker thread finished; awaiting finish of 0 more threads
+2021-08-30 10:52:51,543 EPOCH - 5 : training on 17460800 raw words (17426432 effective words) took 10.0s, 1737448 effective words/s
+2021-08-30 10:52:51,544 Word2Vec lifecycle event {'msg': 'training on 87304000 raw words (87132426 effective words) took 52.0s, 1674462 effective words/s', 'datetime': '2021-08-30T10:52:51.544194', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'train'}
+2021-08-30 10:52:51,544 Word2Vec lifecycle event {'params': 'Word2Vec(vocab=10913, vector_size=128, alpha=0.025)', 'datetime': '2021-08-30T10:52:51.544356', 'gensim': '4.0.1', 'python': '3.8.10 | packaged by conda-forge | (default, May 11 2021, 07:01:05) \n[GCC 9.3.0]', 'platform': 'Linux-3.10.0-1127.19.1.el7.x86_64-x86_64-with-glibc2.10', 'event': 'created'}
+2021-08-30 10:52:52,501 fairwalk: embed
+2021-08-30 10:54:28,406 fairwalk: result
+2021-08-30 10:54:28,719 embed_baselines
+Epoch: 0001 train_loss= 31.71826 train_acc= 0.00028 time= 1.75339
+Epoch: 0002 train_loss= 269.68658 train_acc= 0.00028 time= 1.64420
+Epoch: 0003 train_loss= 21.39609 train_acc= 0.00028 time= 1.67685
+Epoch: 0004 train_loss= 0.69315 train_acc= 0.00028 time= 1.64461
+Epoch: 0005 train_loss= 0.69315 train_acc= 0.00028 time= 1.69275
+Epoch: 0006 train_loss= 0.69315 train_acc= 0.00028 time= 1.67088
+Epoch: 0007 train_loss= 0.69315 train_acc= 0.00028 time= 1.65678
+Epoch: 0008 train_loss= 0.69315 train_acc= 0.00028 time= 1.66538
+Epoch: 0009 train_loss= 0.69315 train_acc= 0.00028 time= 1.66396
+Epoch: 0010 train_loss= 0.69315 train_acc= 0.00028 time= 1.65194
+Epoch: 0011 train_loss= 0.69315 train_acc= 0.00028 time= 1.67127
+Epoch: 0012 train_loss= 0.69315 train_acc= 0.00028 time= 1.66324
+Epoch: 0013 train_loss= 0.69315 train_acc= 0.00028 time= 1.65533
+Epoch: 0014 train_loss= 0.69315 train_acc= 0.00028 time= 1.64809
+Epoch: 0015 train_loss= 0.69315 train_acc= 0.00028 time= 1.63165
+Epoch: 0016 train_loss= 0.69315 train_acc= 0.00028 time= 1.62484
+Epoch: 0017 train_loss= 0.69315 train_acc= 0.00028 time= 1.64681
+Epoch: 0018 train_loss= 0.69315 train_acc= 0.00028 time= 1.65931
+Epoch: 0019 train_loss= 0.69315 train_acc= 0.00028 time= 1.66117
+Epoch: 0020 train_loss= 0.69315 train_acc= 0.00028 time= 1.63649
+Epoch: 0021 train_loss= 0.69315 train_acc= 0.00028 time= 1.64169
+Epoch: 0022 train_loss= 0.69315 train_acc= 0.00028 time= 1.63078
+Epoch: 0023 train_loss= 0.69315 train_acc= 0.00028 time= 1.63897
+Epoch: 0024 train_loss= 0.69315 train_acc= 0.00028 time= 1.64841
+Epoch: 0025 train_loss= 0.69315 train_acc= 0.00028 time= 1.65391
+Epoch: 0026 train_loss= 0.69315 train_acc= 0.00028 time= 1.62835
+Epoch: 0027 train_loss= 0.69315 train_acc= 0.00028 time= 1.62504
+Epoch: 0028 train_loss= 0.69315 train_acc= 0.00028 time= 1.65295
+Epoch: 0029 train_loss= 0.69315 train_acc= 0.00028 time= 1.63532
+Epoch: 0030 train_loss= 0.69315 train_acc= 0.00028 time= 1.64653
+Epoch: 0031 train_loss= 0.69315 train_acc= 0.00028 time= 1.65242
+Epoch: 0032 train_loss= 0.69315 train_acc= 0.00028 time= 1.65244
+Epoch: 0033 train_loss= 0.69315 train_acc= 0.00028 time= 1.62093
+Epoch: 0034 train_loss= 0.69315 train_acc= 0.00028 time= 1.64361
+Epoch: 0035 train_loss= 0.69315 train_acc= 0.00028 time= 1.65850
+Epoch: 0036 train_loss= 0.69315 train_acc= 0.00028 time= 1.64923
+Epoch: 0037 train_loss= 0.69315 train_acc= 0.00028 time= 1.64261
+Epoch: 0038 train_loss= 0.69315 train_acc= 0.00028 time= 1.65748
+Epoch: 0039 train_loss= 0.69315 train_acc= 0.00028 time= 1.66917
+Epoch: 0040 train_loss= 0.69315 train_acc= 0.00028 time= 1.67173
+Epoch: 0041 train_loss= 0.69315 train_acc= 0.00028 time= 1.63846
+Epoch: 0042 train_loss= 0.69315 train_acc= 0.00028 time= 1.63818
+Epoch: 0043 train_loss= 0.69315 train_acc= 0.00028 time= 1.62878
+Epoch: 0044 train_loss= 0.69315 train_acc= 0.00028 time= 1.64976
+Epoch: 0045 train_loss= 0.69315 train_acc= 0.00028 time= 1.66237
+Epoch: 0046 train_loss= 0.69315 train_acc= 0.00028 time= 1.68300
+Epoch: 0047 train_loss= 0.69315 train_acc= 0.00028 time= 1.63768
+Epoch: 0048 train_loss= 0.69315 train_acc= 0.00028 time= 1.62894
+Epoch: 0049 train_loss= 0.69315 train_acc= 0.00028 time= 1.63824
+Epoch: 0050 train_loss= 0.69315 train_acc= 0.00028 time= 1.64603
+Epoch: 0051 train_loss= 0.69315 train_acc= 0.00028 time= 1.65003
+Epoch: 0052 train_loss= 0.69315 train_acc= 0.00028 time= 1.62391
+Epoch: 0053 train_loss= 0.69315 train_acc= 0.00028 time= 1.63178
+Epoch: 0054 train_loss= 0.69315 train_acc= 0.00028 time= 1.63976
+Epoch: 0055 train_loss= 0.69315 train_acc= 0.00028 time= 1.64991
+Epoch: 0056 train_loss= 0.69315 train_acc= 0.00028 time= 1.65616
+Epoch: 0057 train_loss= 0.69315 train_acc= 0.00028 time= 1.66452
+Epoch: 0058 train_loss= 0.69315 train_acc= 0.00028 time= 1.64356
+Epoch: 0059 train_loss= 0.69315 train_acc= 0.00028 time= 1.63406
+Epoch: 0060 train_loss= 0.69315 train_acc= 0.00028 time= 1.65158
+Epoch: 0061 train_loss= 0.69315 train_acc= 0.00028 time= 1.65162
+Epoch: 0062 train_loss= 0.69315 train_acc= 0.00028 time= 1.63621
+Epoch: 0063 train_loss= 0.69315 train_acc= 0.00028 time= 1.62510
+Epoch: 0064 train_loss= 0.69315 train_acc= 0.00028 time= 1.63012
+Epoch: 0065 train_loss= 0.69315 train_acc= 0.00028 time= 1.63434
+Epoch: 0066 train_loss= 0.69315 train_acc= 0.00028 time= 1.63604
+Epoch: 0067 train_loss= 0.69315 train_acc= 0.00028 time= 1.63334
+Epoch: 0068 train_loss= 0.69315 train_acc= 0.00028 time= 1.63169
+Epoch: 0069 train_loss= 0.69315 train_acc= 0.00028 time= 1.64391
+Epoch: 0070 train_loss= 0.69315 train_acc= 0.00028 time= 1.65481
+Epoch: 0071 train_loss= 0.69315 train_acc= 0.00028 time= 1.64784
+Epoch: 0072 train_loss= 0.69315 train_acc= 0.00028 time= 1.64190
+Epoch: 0073 train_loss= 0.69315 train_acc= 0.00028 time= 1.64296
+Epoch: 0074 train_loss= 0.69315 train_acc= 0.00028 time= 1.63279
+Epoch: 0075 train_loss= 0.69315 train_acc= 0.00028 time= 1.63234
+Epoch: 0076 train_loss= 0.69315 train_acc= 0.00028 time= 1.65044
+Epoch: 0077 train_loss= 0.69315 train_acc= 0.00028 time= 1.62947
+Epoch: 0078 train_loss= 0.69315 train_acc= 0.00028 time= 1.63970
+Epoch: 0079 train_loss= 0.69315 train_acc= 0.00028 time= 1.64010
+Epoch: 0080 train_loss= 0.69315 train_acc= 0.00028 time= 1.62622
+Epoch: 0081 train_loss= 0.69315 train_acc= 0.00028 time= 1.63197
+Epoch: 0082 train_loss= 0.69315 train_acc= 0.00028 time= 1.65661
+Epoch: 0083 train_loss= 0.69315 train_acc= 0.00028 time= 1.66640
+Epoch: 0084 train_loss= 0.69315 train_acc= 0.00028 time= 1.63586
+Epoch: 0085 train_loss= 0.69315 train_acc= 0.00028 time= 1.65506
+Epoch: 0086 train_loss= 0.69315 train_acc= 0.00028 time= 1.65465
+Epoch: 0087 train_loss= 0.69315 train_acc= 0.00028 time= 1.63142
+Epoch: 0088 train_loss= 0.69315 train_acc= 0.00028 time= 1.63514
+Epoch: 0089 train_loss= 0.69315 train_acc= 0.00028 time= 1.63209
+Epoch: 0090 train_loss= 0.69315 train_acc= 0.00028 time= 1.64559
+Epoch: 0091 train_loss= 0.69315 train_acc= 0.00028 time= 1.63542
+Epoch: 0092 train_loss= 0.69315 train_acc= 0.00028 time= 1.62641
+Epoch: 0093 train_loss= 0.69315 train_acc= 0.00028 time= 1.65693
+Epoch: 0094 train_loss= 0.69315 train_acc= 0.00028 time= 1.65851
+Epoch: 0095 train_loss= 0.69315 train_acc= 0.00028 time= 1.64916
+Epoch: 0096 train_loss= 0.69315 train_acc= 0.00028 time= 1.64543
+Epoch: 0097 train_loss= 0.69315 train_acc= 0.00028 time= 1.62197
+Epoch: 0098 train_loss= 0.69315 train_acc= 0.00028 time= 1.64019
+Epoch: 0099 train_loss= 0.69315 train_acc= 0.00028 time= 1.63016
+Epoch: 0100 train_loss= 0.69315 train_acc= 0.00028 time= 1.64627
+Optimization Finished!
+Model: [1.4477420070054103,2.0050627824730065e-13]
+Epoch: 0001 train_loss= 49.85147 train_acc= 0.00028 time= 1.71989
+Epoch: 0002 train_loss= 408.49500 train_acc= 0.00028 time= 1.64542
+Epoch: 0003 train_loss= 27.41771 train_acc= 0.00028 time= 1.64958
+Epoch: 0004 train_loss= 0.69315 train_acc= 0.00028 time= 1.63914
+Epoch: 0005 train_loss= 0.69315 train_acc= 0.00028 time= 1.64592
+Epoch: 0006 train_loss= 0.69315 train_acc= 0.00028 time= 1.64211
+Epoch: 0007 train_loss= 0.69315 train_acc= 0.00028 time= 1.64655
+Epoch: 0008 train_loss= 0.69315 train_acc= 0.00028 time= 1.65291
+Epoch: 0009 train_loss= 0.69315 train_acc= 0.00028 time= 1.68877
+Epoch: 0010 train_loss= 0.69315 train_acc= 0.00028 time= 1.65132
+Epoch: 0011 train_loss= 0.69315 train_acc= 0.00028 time= 1.64911
+Epoch: 0012 train_loss= 0.69315 train_acc= 0.00028 time= 1.64917
+Epoch: 0013 train_loss= 0.69315 train_acc= 0.00028 time= 1.63932
+Epoch: 0014 train_loss= 0.69315 train_acc= 0.00028 time= 1.63831
+Epoch: 0015 train_loss= 0.69315 train_acc= 0.00028 time= 1.67829
+Epoch: 0016 train_loss= 0.69315 train_acc= 0.00028 time= 1.64248
+Epoch: 0017 train_loss= 0.69315 train_acc= 0.00028 time= 1.64668
+Epoch: 0018 train_loss= 0.69315 train_acc= 0.00028 time= 1.63859
+Epoch: 0019 train_loss= 0.69315 train_acc= 0.00028 time= 1.64237
+Epoch: 0020 train_loss= 0.69315 train_acc= 0.00028 time= 1.64001
+Epoch: 0021 train_loss= 0.69315 train_acc= 0.00028 time= 1.65584
+Epoch: 0022 train_loss= 0.69315 train_acc= 0.00028 time= 1.64434
+Epoch: 0023 train_loss= 0.69315 train_acc= 0.00028 time= 1.64505
+Epoch: 0024 train_loss= 0.69315 train_acc= 0.00028 time= 1.63373
+Epoch: 0025 train_loss= 0.69315 train_acc= 0.00028 time= 1.71278
+Epoch: 0026 train_loss= 0.69315 train_acc= 0.00028 time= 1.64308
+Epoch: 0027 train_loss= 0.69315 train_acc= 0.00028 time= 1.64281
+Epoch: 0028 train_loss= 0.69315 train_acc= 0.00028 time= 1.66102
+Epoch: 0029 train_loss= 0.69315 train_acc= 0.00028 time= 1.64834
+Epoch: 0030 train_loss= 0.69315 train_acc= 0.00028 time= 1.65761
+Epoch: 0031 train_loss= 0.69315 train_acc= 0.00028 time= 1.62877
+Epoch: 0032 train_loss= 0.69315 train_acc= 0.00028 time= 1.66593
+Epoch: 0033 train_loss= 0.69315 train_acc= 0.00028 time= 1.65412
+Epoch: 0034 train_loss= 0.69315 train_acc= 0.00028 time= 1.64842
+Epoch: 0035 train_loss= 0.69315 train_acc= 0.00028 time= 1.63030
+Epoch: 0036 train_loss= 0.69315 train_acc= 0.00028 time= 1.64858
+Epoch: 0037 train_loss= 0.69315 train_acc= 0.00028 time= 1.64724
+Epoch: 0038 train_loss= 0.69315 train_acc= 0.00028 time= 1.64104
+Epoch: 0039 train_loss= 0.69315 train_acc= 0.00028 time= 1.65654
+Epoch: 0040 train_loss= 0.69315 train_acc= 0.00028 time= 1.65782
+Epoch: 0041 train_loss= 0.69315 train_acc= 0.00028 time= 1.63063
+Epoch: 0042 train_loss= 0.69315 train_acc= 0.00028 time= 1.66168
+Epoch: 0043 train_loss= 0.69315 train_acc= 0.00028 time= 1.65473
+Epoch: 0044 train_loss= 0.69315 train_acc= 0.00028 time= 1.70711
+Epoch: 0045 train_loss= 0.69315 train_acc= 0.00028 time= 1.64119
+Epoch: 0046 train_loss= 0.69315 train_acc= 0.00028 time= 1.63764
+Epoch: 0047 train_loss= 0.69315 train_acc= 0.00028 time= 1.64664
+Epoch: 0048 train_loss= 0.69315 train_acc= 0.00028 time= 1.64712
+Epoch: 0049 train_loss= 0.69315 train_acc= 0.00028 time= 1.66528
+Epoch: 0050 train_loss= 0.69315 train_acc= 0.00028 time= 1.64126
+Epoch: 0051 train_loss= 0.69315 train_acc= 0.00028 time= 1.67578
+Epoch: 0052 train_loss= 0.69315 train_acc= 0.00028 time= 1.63931
+Epoch: 0053 train_loss= 0.69315 train_acc= 0.00028 time= 1.64028
+Epoch: 0054 train_loss= 0.69315 train_acc= 0.00028 time= 1.63071
+Epoch: 0055 train_loss= 0.69315 train_acc= 0.00028 time= 1.64308
+Epoch: 0056 train_loss= 0.69315 train_acc= 0.00028 time= 1.64698
+Epoch: 0057 train_loss= 0.69315 train_acc= 0.00028 time= 1.64479
+Epoch: 0058 train_loss= 0.69315 train_acc= 0.00028 time= 1.64971
+Epoch: 0059 train_loss= 0.69315 train_acc= 0.00028 time= 1.66827
+Epoch: 0060 train_loss= 0.69315 train_acc= 0.00028 time= 1.63210
+Epoch: 0061 train_loss= 0.69315 train_acc= 0.00028 time= 1.65168
+Epoch: 0062 train_loss= 0.69315 train_acc= 0.00028 time= 1.64644
+Epoch: 0063 train_loss= 0.69315 train_acc= 0.00028 time= 1.64094
+Epoch: 0064 train_loss= 0.69315 train_acc= 0.00028 time= 1.65603
+Epoch: 0065 train_loss= 0.69315 train_acc= 0.00028 time= 1.64383
+Epoch: 0066 train_loss= 0.69315 train_acc= 0.00028 time= 1.64416
+Epoch: 0067 train_loss= 0.69315 train_acc= 0.00028 time= 1.63933
+Epoch: 0068 train_loss= 0.69315 train_acc= 0.00028 time= 1.64770
+Epoch: 0069 train_loss= 0.69315 train_acc= 0.00028 time= 1.66236
+Epoch: 0070 train_loss= 0.69315 train_acc= 0.00028 time= 1.63199
+Epoch: 0071 train_loss= 0.69315 train_acc= 0.00028 time= 1.67756
+Epoch: 0072 train_loss= 0.69315 train_acc= 0.00028 time= 1.67610
+Epoch: 0073 train_loss= 0.69315 train_acc= 0.00028 time= 1.65452
+Epoch: 0074 train_loss= 0.69315 train_acc= 0.00028 time= 1.65127
+Epoch: 0075 train_loss= 0.69315 train_acc= 0.00028 time= 1.65844
+Epoch: 0076 train_loss= 0.69315 train_acc= 0.00028 time= 1.64019
+Epoch: 0077 train_loss= 0.69315 train_acc= 0.00028 time= 1.64448
+Epoch: 0078 train_loss= 0.69315 train_acc= 0.00028 time= 1.64071
+Epoch: 0079 train_loss= 0.69315 train_acc= 0.00028 time= 1.64973
+Epoch: 0080 train_loss= 0.69315 train_acc= 0.00028 time= 1.64983
+Epoch: 0081 train_loss= 0.69315 train_acc= 0.00028 time= 1.64276
+Epoch: 0082 train_loss= 0.69315 train_acc= 0.00028 time= 1.64804
+Epoch: 0083 train_loss= 0.69315 train_acc= 0.00028 time= 1.64108
+Epoch: 0084 train_loss= 0.69315 train_acc= 0.00028 time= 1.68148
+Epoch: 0085 train_loss= 0.69315 train_acc= 0.00028 time= 1.65582
+Epoch: 0086 train_loss= 0.69315 train_acc= 0.00028 time= 1.64031
+Epoch: 0087 train_loss= 0.69315 train_acc= 0.00028 time= 1.67679
+Epoch: 0088 train_loss= 0.69315 train_acc= 0.00028 time= 1.66843
+Epoch: 0089 train_loss= 0.69315 train_acc= 0.00028 time= 1.66716
+Epoch: 0090 train_loss= 0.69315 train_acc= 0.00028 time= 1.65920
+Epoch: 0091 train_loss= 0.69315 train_acc= 0.00028 time= 1.66684
+Epoch: 0092 train_loss= 0.69315 train_acc= 0.00028 time= 1.62896
+Epoch: 0093 train_loss= 0.69315 train_acc= 0.00028 time= 1.65011
+Epoch: 0094 train_loss= 0.69315 train_acc= 0.00028 time= 1.65525
+Epoch: 0095 train_loss= 0.69315 train_acc= 0.00028 time= 1.64323
+Epoch: 0096 train_loss= 0.69315 train_acc= 0.00028 time= 1.65499
+Epoch: 0097 train_loss= 0.69315 train_acc= 0.00028 time= 1.66012
+Epoch: 0098 train_loss= 0.69315 train_acc= 0.00028 time= 1.66006
+Epoch: 0099 train_loss= 0.69315 train_acc= 0.00028 time= 1.67086
+Epoch: 0100 train_loss= 0.69315 train_acc= 0.00028 time= 1.66462
+Optimization Finished!
+Model: [1.4477459470881067,5.86567831343688e-14]
+Epoch: 0001 train_loss= 36.34826 train_acc= 0.00028 time= 1.69038
+Epoch: 0002 train_loss= 335.82935 train_acc= 0.00028 time= 1.62463
+Epoch: 0003 train_loss= 16.17393 train_acc= 0.00028 time= 1.62894
+Epoch: 0004 train_loss= 0.69315 train_acc= 0.00028 time= 1.63706
+Epoch: 0005 train_loss= 0.69315 train_acc= 0.00028 time= 1.62392
+Epoch: 0006 train_loss= 0.69315 train_acc= 0.00028 time= 1.62671
+Epoch: 0007 train_loss= 0.69315 train_acc= 0.00028 time= 1.62909
+Epoch: 0008 train_loss= 0.69315 train_acc= 0.00028 time= 1.62907
+Epoch: 0009 train_loss= 0.69315 train_acc= 0.00028 time= 1.64855
+Epoch: 0010 train_loss= 0.69315 train_acc= 0.00028 time= 1.64672
+Epoch: 0011 train_loss= 0.69315 train_acc= 0.00028 time= 1.64712
+Epoch: 0012 train_loss= 0.69315 train_acc= 0.00028 time= 1.64703
+Epoch: 0013 train_loss= 0.69315 train_acc= 0.00028 time= 1.63193
+Epoch: 0014 train_loss= 0.69315 train_acc= 0.00028 time= 1.63922
+Epoch: 0015 train_loss= 0.69315 train_acc= 0.00028 time= 1.63007
+Epoch: 0016 train_loss= 0.69315 train_acc= 0.00028 time= 1.62183
+Epoch: 0017 train_loss= 0.69315 train_acc= 0.00028 time= 1.63330
+Epoch: 0018 train_loss= 0.69315 train_acc= 0.00028 time= 1.62899
+Epoch: 0019 train_loss= 0.69315 train_acc= 0.00028 time= 1.64263
+Epoch: 0020 train_loss= 0.69315 train_acc= 0.00028 time= 1.65743
+Epoch: 0021 train_loss= 0.69315 train_acc= 0.00028 time= 1.62615
+Epoch: 0022 train_loss= 0.69315 train_acc= 0.00028 time= 1.64364
+Epoch: 0023 train_loss= 0.69315 train_acc= 0.00028 time= 1.63185
+Epoch: 0024 train_loss= 0.69315 train_acc= 0.00028 time= 1.65540
+Epoch: 0025 train_loss= 0.69315 train_acc= 0.00028 time= 1.62486
+Epoch: 0026 train_loss= 0.69315 train_acc= 0.00028 time= 1.64131
+Epoch: 0027 train_loss= 0.69315 train_acc= 0.00028 time= 1.62710
+Epoch: 0028 train_loss= 0.69315 train_acc= 0.00028 time= 1.62467
+Epoch: 0029 train_loss= 0.69315 train_acc= 0.00028 time= 1.62279
+Epoch: 0030 train_loss= 0.69315 train_acc= 0.00028 time= 1.65411
+Epoch: 0031 train_loss= 0.69315 train_acc= 0.00028 time= 1.62021
+Epoch: 0032 train_loss= 0.69315 train_acc= 0.00028 time= 1.65648
+Epoch: 0033 train_loss= 0.69315 train_acc= 0.00028 time= 1.63761
+Epoch: 0034 train_loss= 0.69315 train_acc= 0.00028 time= 1.63791
+Epoch: 0035 train_loss= 0.69315 train_acc= 0.00028 time= 1.65990
+Epoch: 0036 train_loss= 0.69315 train_acc= 0.00028 time= 1.63298
+Epoch: 0037 train_loss= 0.69315 train_acc= 0.00028 time= 1.62270
+Epoch: 0038 train_loss= 0.69315 train_acc= 0.00028 time= 1.64822
+Epoch: 0039 train_loss= 0.69315 train_acc= 0.00028 time= 1.64033
+Epoch: 0040 train_loss= 0.69315 train_acc= 0.00028 time= 1.63527
+Epoch: 0041 train_loss= 0.69315 train_acc= 0.00028 time= 1.64013
+Epoch: 0042 train_loss= 0.69315 train_acc= 0.00028 time= 1.64679
+Epoch: 0043 train_loss= 0.69315 train_acc= 0.00028 time= 1.62338
+Epoch: 0044 train_loss= 0.69315 train_acc= 0.00028 time= 1.62414
+Epoch: 0045 train_loss= 0.69315 train_acc= 0.00028 time= 1.63443
+Epoch: 0046 train_loss= 0.69315 train_acc= 0.00028 time= 1.64235
+Epoch: 0047 train_loss= 0.69315 train_acc= 0.00028 time= 1.64955
+Epoch: 0048 train_loss= 0.69315 train_acc= 0.00028 time= 1.62851
+Epoch: 0049 train_loss= 0.69315 train_acc= 0.00028 time= 1.63253
+Epoch: 0050 train_loss= 0.69315 train_acc= 0.00028 time= 1.62790
+Epoch: 0051 train_loss= 0.69315 train_acc= 0.00028 time= 1.61697
+Epoch: 0052 train_loss= 0.69315 train_acc= 0.00028 time= 1.63145
+Epoch: 0053 train_loss= 0.69315 train_acc= 0.00028 time= 1.63003
+Epoch: 0054 train_loss= 0.69315 train_acc= 0.00028 time= 1.63044
+Epoch: 0055 train_loss= 0.69315 train_acc= 0.00028 time= 1.62550
+Epoch: 0056 train_loss= 0.69315 train_acc= 0.00028 time= 1.62984
+Epoch: 0057 train_loss= 0.69315 train_acc= 0.00028 time= 1.63389
+Epoch: 0058 train_loss= 0.69315 train_acc= 0.00028 time= 1.63727
+Epoch: 0059 train_loss= 0.69315 train_acc= 0.00028 time= 1.63858
+Epoch: 0060 train_loss= 0.69315 train_acc= 0.00028 time= 1.64092
+Epoch: 0061 train_loss= 0.69315 train_acc= 0.00028 time= 1.63692
+Epoch: 0062 train_loss= 0.69315 train_acc= 0.00028 time= 1.63390
+Epoch: 0063 train_loss= 0.69315 train_acc= 0.00028 time= 1.63405
+Epoch: 0064 train_loss= 0.69315 train_acc= 0.00028 time= 1.63901
+Epoch: 0065 train_loss= 0.69315 train_acc= 0.00028 time= 1.62158
+Epoch: 0066 train_loss= 0.69315 train_acc= 0.00028 time= 1.62982
+Epoch: 0067 train_loss= 0.69315 train_acc= 0.00028 time= 1.64125
+Epoch: 0068 train_loss= 0.69315 train_acc= 0.00028 time= 1.64175
+Epoch: 0069 train_loss= 0.69315 train_acc= 0.00028 time= 1.62357
+Epoch: 0070 train_loss= 0.69315 train_acc= 0.00028 time= 1.64597
+Epoch: 0071 train_loss= 0.69315 train_acc= 0.00028 time= 1.63004
+Epoch: 0072 train_loss= 0.69315 train_acc= 0.00028 time= 1.62897
+Epoch: 0073 train_loss= 0.69315 train_acc= 0.00028 time= 1.63842
+Epoch: 0074 train_loss= 0.69315 train_acc= 0.00028 time= 1.62770
+Epoch: 0075 train_loss= 0.69315 train_acc= 0.00028 time= 1.61862
+Epoch: 0076 train_loss= 0.69315 train_acc= 0.00028 time= 1.63043
+Epoch: 0077 train_loss= 0.69315 train_acc= 0.00028 time= 1.63218
+Epoch: 0078 train_loss= 0.69315 train_acc= 0.00028 time= 1.64302
+Epoch: 0079 train_loss= 0.69315 train_acc= 0.00028 time= 1.61864
+Epoch: 0080 train_loss= 0.69315 train_acc= 0.00028 time= 1.62025
+Epoch: 0081 train_loss= 0.69315 train_acc= 0.00028 time= 1.63334
+Epoch: 0082 train_loss= 0.69315 train_acc= 0.00028 time= 1.62202
+Epoch: 0083 train_loss= 0.69315 train_acc= 0.00028 time= 1.62377
+Epoch: 0084 train_loss= 0.69315 train_acc= 0.00028 time= 1.64645
+Epoch: 0085 train_loss= 0.69315 train_acc= 0.00028 time= 1.65036
+Epoch: 0086 train_loss= 0.69315 train_acc= 0.00028 time= 1.66428
+Epoch: 0087 train_loss= 0.69315 train_acc= 0.00028 time= 1.64116
+Epoch: 0088 train_loss= 0.69315 train_acc= 0.00028 time= 1.63768
+Epoch: 0089 train_loss= 0.69315 train_acc= 0.00028 time= 1.62537
+Epoch: 0090 train_loss= 0.69315 train_acc= 0.00028 time= 1.65116
+Epoch: 0091 train_loss= 0.69315 train_acc= 0.00028 time= 1.64037
+Epoch: 0092 train_loss= 0.69315 train_acc= 0.00028 time= 1.62101
+Epoch: 0093 train_loss= 0.69315 train_acc= 0.00028 time= 1.63349
+Epoch: 0094 train_loss= 0.69315 train_acc= 0.00028 time= 1.64685
+Epoch: 0095 train_loss= 0.69315 train_acc= 0.00028 time= 1.64756
+Epoch: 0096 train_loss= 0.69315 train_acc= 0.00028 time= 1.62742
+Epoch: 0097 train_loss= 0.69315 train_acc= 0.00028 time= 1.62532
+Epoch: 0098 train_loss= 0.69315 train_acc= 0.00028 time= 1.63271
+Epoch: 0099 train_loss= 0.69315 train_acc= 0.00028 time= 1.64840
+Epoch: 0100 train_loss= 0.69315 train_acc= 0.00028 time= 1.63543
+Optimization Finished!
+Model: [1.4477414172684122,-7.135033304926538e-14]
+Epoch: 0001 train_loss= 38.51907 train_acc= 0.00028 time= 1.70590
+Epoch: 0002 train_loss= 268.71402 train_acc= 0.00028 time= 1.62741
+Epoch: 0003 train_loss= 21.63023 train_acc= 0.00028 time= 1.62827
+Epoch: 0004 train_loss= 0.68845 train_acc= 0.00028 time= 1.64029
+Epoch: 0005 train_loss= 0.69315 train_acc= 0.00028 time= 1.64763
+Epoch: 0006 train_loss= 0.69315 train_acc= 0.00028 time= 1.63758
+Epoch: 0007 train_loss= 0.69315 train_acc= 0.00028 time= 1.63880
+Epoch: 0008 train_loss= 0.69315 train_acc= 0.00028 time= 1.65149
+Epoch: 0009 train_loss= 0.69315 train_acc= 0.00028 time= 1.66579
+Epoch: 0010 train_loss= 0.69315 train_acc= 0.00028 time= 1.65210
+Epoch: 0011 train_loss= 0.69315 train_acc= 0.00028 time= 1.62424
+Epoch: 0012 train_loss= 0.69315 train_acc= 0.00028 time= 1.63006
+Epoch: 0013 train_loss= 0.69315 train_acc= 0.00028 time= 1.62927
+Epoch: 0014 train_loss= 0.69315 train_acc= 0.00028 time= 1.63466
+Epoch: 0015 train_loss= 0.69315 train_acc= 0.00028 time= 1.62478
+Epoch: 0016 train_loss= 0.69315 train_acc= 0.00028 time= 1.62201
+Epoch: 0017 train_loss= 0.69315 train_acc= 0.00028 time= 1.65697
+Epoch: 0018 train_loss= 0.69315 train_acc= 0.00028 time= 1.65810
+Epoch: 0019 train_loss= 0.69315 train_acc= 0.00028 time= 1.64860
+Epoch: 0020 train_loss= 0.69315 train_acc= 0.00028 time= 1.63860
+Epoch: 0021 train_loss= 0.69315 train_acc= 0.00028 time= 1.64131
+Epoch: 0022 train_loss= 0.69315 train_acc= 0.00028 time= 1.65174
+Epoch: 0023 train_loss= 0.69315 train_acc= 0.00028 time= 1.65954
+Epoch: 0024 train_loss= 0.69315 train_acc= 0.00028 time= 1.64644
+Epoch: 0025 train_loss= 0.69315 train_acc= 0.00028 time= 1.63058
+Epoch: 0026 train_loss= 0.69315 train_acc= 0.00028 time= 1.63312
+Epoch: 0027 train_loss= 0.69315 train_acc= 0.00028 time= 1.62872
+Epoch: 0028 train_loss= 0.69315 train_acc= 0.00028 time= 1.64918
+Epoch: 0029 train_loss= 0.69315 train_acc= 0.00028 time= 1.63540
+Epoch: 0030 train_loss= 0.69315 train_acc= 0.00028 time= 1.64724
+Epoch: 0031 train_loss= 0.69315 train_acc= 0.00028 time= 1.63427
+Epoch: 0032 train_loss= 0.69315 train_acc= 0.00028 time= 1.64505
+Epoch: 0033 train_loss= 0.69315 train_acc= 0.00028 time= 1.63878
+Epoch: 0034 train_loss= 0.69315 train_acc= 0.00028 time= 1.66812
+Epoch: 0035 train_loss= 0.69315 train_acc= 0.00028 time= 1.63328
+Epoch: 0036 train_loss= 0.69315 train_acc= 0.00028 time= 1.63600
+Epoch: 0037 train_loss= 0.69315 train_acc= 0.00028 time= 1.64446
+Epoch: 0038 train_loss= 0.69315 train_acc= 0.00028 time= 1.64135
+Epoch: 0039 train_loss= 0.69315 train_acc= 0.00028 time= 1.63586
+Epoch: 0040 train_loss= 0.69315 train_acc= 0.00028 time= 1.64974
+Epoch: 0041 train_loss= 0.69315 train_acc= 0.00028 time= 1.63377
+Epoch: 0042 train_loss= 0.69315 train_acc= 0.00028 time= 1.62287
+Epoch: 0043 train_loss= 0.69315 train_acc= 0.00028 time= 1.63092
+Epoch: 0044 train_loss= 0.69315 train_acc= 0.00028 time= 1.63479
+Epoch: 0045 train_loss= 0.69315 train_acc= 0.00028 time= 1.63824
+Epoch: 0046 train_loss= 0.69315 train_acc= 0.00028 time= 1.65680
+Epoch: 0047 train_loss= 0.69315 train_acc= 0.00028 time= 1.65357
+Epoch: 0048 train_loss= 0.69315 train_acc= 0.00028 time= 1.65049
+Epoch: 0049 train_loss= 0.69315 train_acc= 0.00028 time= 1.65649
+Epoch: 0050 train_loss= 0.69315 train_acc= 0.00028 time= 1.64470
+Epoch: 0051 train_loss= 0.69315 train_acc= 0.00028 time= 1.63301
+Epoch: 0052 train_loss= 0.69315 train_acc= 0.00028 time= 1.63228
+Epoch: 0053 train_loss= 0.69315 train_acc= 0.00028 time= 1.63372
+Epoch: 0054 train_loss= 0.69315 train_acc= 0.00028 time= 1.65563
+Epoch: 0055 train_loss= 0.69315 train_acc= 0.00028 time= 1.63857
+Epoch: 0056 train_loss= 0.69315 train_acc= 0.00028 time= 1.65097
+Epoch: 0057 train_loss= 0.69315 train_acc= 0.00028 time= 1.63063
+Epoch: 0058 train_loss= 0.69315 train_acc= 0.00028 time= 1.62675
+Epoch: 0059 train_loss= 0.69315 train_acc= 0.00028 time= 1.63002
+Epoch: 0060 train_loss= 0.69315 train_acc= 0.00028 time= 1.64805
+Epoch: 0061 train_loss= 0.69315 train_acc= 0.00028 time= 1.63482
+Epoch: 0062 train_loss= 0.69315 train_acc= 0.00028 time= 1.65378
+Epoch: 0063 train_loss= 0.69315 train_acc= 0.00028 time= 1.62450
+Epoch: 0064 train_loss= 0.69315 train_acc= 0.00028 time= 1.61660
+Epoch: 0065 train_loss= 0.69315 train_acc= 0.00028 time= 1.63854
+Epoch: 0066 train_loss= 0.69315 train_acc= 0.00028 time= 1.64116
+Epoch: 0067 train_loss= 0.69315 train_acc= 0.00028 time= 1.64612
+Epoch: 0068 train_loss= 0.69315 train_acc= 0.00028 time= 1.64455
+Epoch: 0069 train_loss= 0.69315 train_acc= 0.00028 time= 1.62346
+Epoch: 0070 train_loss= 0.69315 train_acc= 0.00028 time= 1.69225
+Epoch: 0071 train_loss= 0.69315 train_acc= 0.00028 time= 1.64292
+Epoch: 0072 train_loss= 0.69315 train_acc= 0.00028 time= 1.63714
+Epoch: 0073 train_loss= 0.69315 train_acc= 0.00028 time= 1.65179
+Epoch: 0074 train_loss= 0.69315 train_acc= 0.00028 time= 1.62401
+Epoch: 0075 train_loss= 0.69315 train_acc= 0.00028 time= 1.63639
+Epoch: 0076 train_loss= 0.69315 train_acc= 0.00028 time= 1.64143
+Epoch: 0077 train_loss= 0.69315 train_acc= 0.00028 time= 1.64231
+Epoch: 0078 train_loss= 0.69315 train_acc= 0.00028 time= 1.66547
+Epoch: 0079 train_loss= 0.69315 train_acc= 0.00028 time= 1.65388
+Epoch: 0080 train_loss= 0.69315 train_acc= 0.00028 time= 1.64196
+Epoch: 0081 train_loss= 0.69315 train_acc= 0.00028 time= 1.64329
+Epoch: 0082 train_loss= 0.69315 train_acc= 0.00028 time= 1.65869
+Epoch: 0083 train_loss= 0.69315 train_acc= 0.00028 time= 1.65150
+Epoch: 0084 train_loss= 0.69315 train_acc= 0.00028 time= 1.63513
+Epoch: 0085 train_loss= 0.69315 train_acc= 0.00028 time= 1.69244
+Epoch: 0086 train_loss= 0.69315 train_acc= 0.00028 time= 1.65523
+Epoch: 0087 train_loss= 0.69315 train_acc= 0.00028 time= 1.66738
+Epoch: 0088 train_loss= 0.69315 train_acc= 0.00028 time= 1.63094
+Epoch: 0089 train_loss= 0.69315 train_acc= 0.00028 time= 1.62697
+Epoch: 0090 train_loss= 0.69315 train_acc= 0.00028 time= 1.64431
+Epoch: 0091 train_loss= 0.69315 train_acc= 0.00028 time= 1.63986
+Epoch: 0092 train_loss= 0.69315 train_acc= 0.00028 time= 1.63313
+Epoch: 0093 train_loss= 0.69315 train_acc= 0.00028 time= 1.63981
+Epoch: 0094 train_loss= 0.69315 train_acc= 0.00028 time= 1.63704
+Epoch: 0095 train_loss= 0.69315 train_acc= 0.00028 time= 1.62340
+Epoch: 0096 train_loss= 0.69315 train_acc= 0.00028 time= 1.65191
+Epoch: 0097 train_loss= 0.69315 train_acc= 0.00028 time= 1.64667
+Epoch: 0098 train_loss= 0.69315 train_acc= 0.00028 time= 1.67471
+Epoch: 0099 train_loss= 0.69315 train_acc= 0.00028 time= 1.62797
+Epoch: 0100 train_loss= 0.69315 train_acc= 0.00028 time= 1.63589
+Optimization Finished!
+Model: [1.4477413585241923,-8.200847408562162e-14]
+Epoch: 0001 train_loss= 38.42290 train_acc= 0.00028 time= 1.70852
+Epoch: 0002 train_loss= 284.73346 train_acc= 0.00028 time= 1.63005
+Epoch: 0003 train_loss= 19.76268 train_acc= 0.00028 time= 1.65063
+Epoch: 0004 train_loss= 0.69315 train_acc= 0.00028 time= 1.62357
+Epoch: 0005 train_loss= 0.69315 train_acc= 0.00028 time= 1.64635
+Epoch: 0006 train_loss= 0.69315 train_acc= 0.00028 time= 1.65108
+Epoch: 0007 train_loss= 0.69315 train_acc= 0.00028 time= 1.64521
+Epoch: 0008 train_loss= 0.69315 train_acc= 0.00028 time= 1.64473
+Epoch: 0009 train_loss= 0.69315 train_acc= 0.00028 time= 1.65767
+Epoch: 0010 train_loss= 0.69315 train_acc= 0.00028 time= 1.66298
+Epoch: 0011 train_loss= 0.69315 train_acc= 0.00028 time= 1.63542
+Epoch: 0012 train_loss= 0.69315 train_acc= 0.00028 time= 1.64319
+Epoch: 0013 train_loss= 0.69315 train_acc= 0.00028 time= 1.64452
+Epoch: 0014 train_loss= 0.69315 train_acc= 0.00028 time= 1.65441
+Epoch: 0015 train_loss= 0.69315 train_acc= 0.00028 time= 1.64040
+Epoch: 0016 train_loss= 0.69315 train_acc= 0.00028 time= 1.64804
+Epoch: 0017 train_loss= 0.69315 train_acc= 0.00028 time= 1.66852
+Epoch: 0018 train_loss= 0.69315 train_acc= 0.00028 time= 1.62920
+Epoch: 0019 train_loss= 0.69315 train_acc= 0.00028 time= 1.63690
+Epoch: 0020 train_loss= 0.69315 train_acc= 0.00028 time= 1.64294
+Epoch: 0021 train_loss= 0.69315 train_acc= 0.00028 time= 1.63081
+Epoch: 0022 train_loss= 0.69315 train_acc= 0.00028 time= 1.63916
+Epoch: 0023 train_loss= 0.69315 train_acc= 0.00028 time= 1.64276
+Epoch: 0024 train_loss= 0.69315 train_acc= 0.00028 time= 1.65124
+Epoch: 0025 train_loss= 0.69315 train_acc= 0.00028 time= 1.64457
+Epoch: 0026 train_loss= 0.69315 train_acc= 0.00028 time= 1.64492
+Epoch: 0027 train_loss= 0.69315 train_acc= 0.00028 time= 1.65666
+Epoch: 0028 train_loss= 0.69315 train_acc= 0.00028 time= 1.63551
+Epoch: 0029 train_loss= 0.69315 train_acc= 0.00028 time= 1.63878
+Epoch: 0030 train_loss= 0.69315 train_acc= 0.00028 time= 1.63170
+Epoch: 0031 train_loss= 0.69315 train_acc= 0.00028 time= 1.63742
+Epoch: 0032 train_loss= 0.69315 train_acc= 0.00028 time= 1.65179
+Epoch: 0033 train_loss= 0.69315 train_acc= 0.00028 time= 1.67647
+Epoch: 0034 train_loss= 0.69315 train_acc= 0.00028 time= 1.64659
+Epoch: 0035 train_loss= 0.69315 train_acc= 0.00028 time= 1.64356
+Epoch: 0036 train_loss= 0.69315 train_acc= 0.00028 time= 1.66769
+Epoch: 0037 train_loss= 0.69315 train_acc= 0.00028 time= 1.65380
+Epoch: 0038 train_loss= 0.69315 train_acc= 0.00028 time= 1.63261
+Epoch: 0039 train_loss= 0.69315 train_acc= 0.00028 time= 1.66124
+Epoch: 0040 train_loss= 0.69315 train_acc= 0.00028 time= 1.65547
+Epoch: 0041 train_loss= 0.69315 train_acc= 0.00028 time= 1.66391
+Epoch: 0042 train_loss= 0.69315 train_acc= 0.00028 time= 1.64118
+Epoch: 0043 train_loss= 0.69315 train_acc= 0.00028 time= 1.64674
+Epoch: 0044 train_loss= 0.69315 train_acc= 0.00028 time= 1.65623
+Epoch: 0045 train_loss= 0.69315 train_acc= 0.00028 time= 1.64142
+Epoch: 0046 train_loss= 0.69315 train_acc= 0.00028 time= 1.65584
+Epoch: 0047 train_loss= 0.69315 train_acc= 0.00028 time= 1.65272
+Epoch: 0048 train_loss= 0.69315 train_acc= 0.00028 time= 1.64192
+Epoch: 0049 train_loss= 0.69315 train_acc= 0.00028 time= 1.63699
+Epoch: 0050 train_loss= 0.69315 train_acc= 0.00028 time= 1.66313
+Epoch: 0051 train_loss= 0.69315 train_acc= 0.00028 time= 1.66039
+Epoch: 0052 train_loss= 0.69315 train_acc= 0.00028 time= 1.66935
+Epoch: 0053 train_loss= 0.69315 train_acc= 0.00028 time= 1.64362
+Epoch: 0054 train_loss= 0.69315 train_acc= 0.00028 time= 1.62880
+Epoch: 0055 train_loss= 0.69315 train_acc= 0.00028 time= 1.66872
+Epoch: 0056 train_loss= 0.69315 train_acc= 0.00028 time= 1.64527
+Epoch: 0057 train_loss= 0.69315 train_acc= 0.00028 time= 1.65383
+Epoch: 0058 train_loss= 0.69315 train_acc= 0.00028 time= 1.65836
+Epoch: 0059 train_loss= 0.69315 train_acc= 0.00028 time= 1.68562
+Epoch: 0060 train_loss= 0.69315 train_acc= 0.00028 time= 1.63920
+Epoch: 0061 train_loss= 0.69315 train_acc= 0.00028 time= 1.66009
+Epoch: 0062 train_loss= 0.69315 train_acc= 0.00028 time= 1.65202
+Epoch: 0063 train_loss= 0.69315 train_acc= 0.00028 time= 1.65176
+Epoch: 0064 train_loss= 0.69315 train_acc= 0.00028 time= 1.64848
+Epoch: 0065 train_loss= 0.69315 train_acc= 0.00028 time= 1.65929
+Epoch: 0066 train_loss= 0.69315 train_acc= 0.00028 time= 1.64548
+Epoch: 0067 train_loss= 0.69315 train_acc= 0.00028 time= 1.66245
+Epoch: 0068 train_loss= 0.69315 train_acc= 0.00028 time= 1.67514
+Epoch: 0069 train_loss= 0.69315 train_acc= 0.00028 time= 1.65242
+Epoch: 0070 train_loss= 0.69315 train_acc= 0.00028 time= 1.65008
+Epoch: 0071 train_loss= 0.69315 train_acc= 0.00028 time= 1.64759
+Epoch: 0072 train_loss= 0.69315 train_acc= 0.00028 time= 1.64332
+Epoch: 0073 train_loss= 0.69315 train_acc= 0.00028 time= 1.64149
+Epoch: 0074 train_loss= 0.69315 train_acc= 0.00028 time= 1.64599
+Epoch: 0075 train_loss= 0.69315 train_acc= 0.00028 time= 1.64068
+Epoch: 0076 train_loss= 0.69315 train_acc= 0.00028 time= 1.64853
+Epoch: 0077 train_loss= 0.69315 train_acc= 0.00028 time= 1.66634
+Epoch: 0078 train_loss= 0.69315 train_acc= 0.00028 time= 1.63376
+Epoch: 0079 train_loss= 0.69315 train_acc= 0.00028 time= 1.64049
+Epoch: 0080 train_loss= 0.69315 train_acc= 0.00028 time= 1.65108
+Epoch: 0081 train_loss= 0.69315 train_acc= 0.00028 time= 1.66986
+Epoch: 0082 train_loss= 0.69315 train_acc= 0.00028 time= 1.69080
+Epoch: 0083 train_loss= 0.69315 train_acc= 0.00028 time= 1.64571
+Epoch: 0084 train_loss= 0.69315 train_acc= 0.00028 time= 1.64451
+Epoch: 0085 train_loss= 0.69315 train_acc= 0.00028 time= 1.65245
+Epoch: 0086 train_loss= 0.69315 train_acc= 0.00028 time= 1.67316
+Epoch: 0087 train_loss= 0.69315 train_acc= 0.00028 time= 1.63680
+Epoch: 0088 train_loss= 0.69315 train_acc= 0.00028 time= 1.64111
+Epoch: 0089 train_loss= 0.69315 train_acc= 0.00028 time= 1.66643
+Epoch: 0090 train_loss= 0.69315 train_acc= 0.00028 time= 1.63438
+Epoch: 0091 train_loss= 0.69315 train_acc= 0.00028 time= 1.68544
+Epoch: 0092 train_loss= 0.69315 train_acc= 0.00028 time= 1.64207
+Epoch: 0093 train_loss= 0.69315 train_acc= 0.00028 time= 1.64819
+Epoch: 0094 train_loss= 0.69315 train_acc= 0.00028 time= 1.66549
+Epoch: 0095 train_loss= 0.69315 train_acc= 0.00028 time= 1.67694
+Epoch: 0096 train_loss= 0.69315 train_acc= 0.00028 time= 1.64523
+Epoch: 0097 train_loss= 0.69315 train_acc= 0.00028 time= 1.65989
+Epoch: 0098 train_loss= 0.69315 train_acc= 0.00028 time= 1.65214
+Epoch: 0099 train_loss= 0.69315 train_acc= 0.00028 time= 1.64927
+Epoch: 0100 train_loss= 0.69315 train_acc= 0.00028 time= 1.64806
+Optimization Finished!
+Model: [1.447743137943939,-3.767356796894785e-14]
+Epoch: 0001 train_loss= 1154.82629 train_acc= 0.26165 time= 4.22531
+Epoch: 0002 train_loss= 121633283299626613951430656.00000 train_acc= 0.49913 time= 2.04942
+Epoch: 0003 train_loss= nan train_acc= 0.99972 time= 2.08650
+Epoch: 0004 train_loss= nan train_acc= 0.99972 time= 2.05079
+Epoch: 0005 train_loss= nan train_acc= 0.99972 time= 2.06905
+Epoch: 0006 train_loss= nan train_acc= 0.99972 time= 2.06124
+Epoch: 0007 train_loss= nan train_acc= 0.99972 time= 2.16357
+Epoch: 0008 train_loss= nan train_acc= 0.99972 time= 2.12978
+Epoch: 0009 train_loss= nan train_acc= 0.99972 time= 2.11404
+Epoch: 0010 train_loss= nan train_acc= 0.99972 time= 2.08901
+Epoch: 0011 train_loss= nan train_acc= 0.99972 time= 2.03159
+Epoch: 0012 train_loss= nan train_acc= 0.99972 time= 2.05248
+Epoch: 0013 train_loss= nan train_acc= 0.99972 time= 2.11004
+Epoch: 0014 train_loss= nan train_acc= 0.99972 time= 2.12363
+Epoch: 0015 train_loss= nan train_acc= 0.99972 time= 2.13558
+Epoch: 0016 train_loss= nan train_acc= 0.99972 time= 2.12369
+Epoch: 0017 train_loss= nan train_acc= 0.99972 time= 2.15837
+Epoch: 0018 train_loss= nan train_acc= 0.99972 time= 2.03672
+Epoch: 0019 train_loss= nan train_acc= 0.99972 time= 2.07607
+Epoch: 0020 train_loss= nan train_acc= 0.99972 time= 2.06156
+Epoch: 0021 train_loss= nan train_acc= 0.99972 time= 2.26984
+Epoch: 0022 train_loss= nan train_acc= 0.99972 time= 2.12404
+Epoch: 0023 train_loss= nan train_acc= 0.99972 time= 2.07646
+Epoch: 0024 train_loss= nan train_acc= 0.99972 time= 2.12622
+Epoch: 0025 train_loss= nan train_acc= 0.99972 time= 2.12880
+Epoch: 0026 train_loss= nan train_acc= 0.99972 time= 2.11591
+Epoch: 0027 train_loss= nan train_acc= 0.99972 time= 2.17051
+Epoch: 0028 train_loss= nan train_acc= 0.99972 time= 2.08916
+Epoch: 0029 train_loss= nan train_acc= 0.99972 time= 2.09052
+Epoch: 0030 train_loss= nan train_acc= 0.99972 time= 2.06198
+Epoch: 0031 train_loss= nan train_acc= 0.99972 time= 2.06064
+Epoch: 0032 train_loss= nan train_acc= 0.99972 time= 2.07451
+Epoch: 0033 train_loss= nan train_acc= 0.99972 time= 2.08690
+Epoch: 0034 train_loss= nan train_acc= 0.99972 time= 2.12762
+Epoch: 0035 train_loss= nan train_acc= 0.99972 time= 2.05871
+Epoch: 0036 train_loss= nan train_acc= 0.99972 time= 2.14299
+Epoch: 0037 train_loss= nan train_acc= 0.99972 time= 2.10568
+Epoch: 0038 train_loss= nan train_acc= 0.99972 time= 2.16255
+Epoch: 0039 train_loss= nan train_acc= 0.99972 time= 2.08536
+Epoch: 0040 train_loss= nan train_acc= 0.99972 time= 2.14116
+Epoch: 0041 train_loss= nan train_acc= 0.99972 time= 2.08401
+Epoch: 0042 train_loss= nan train_acc= 0.99972 time= 2.16308
+Epoch: 0043 train_loss= nan train_acc= 0.99972 time= 2.10194
+Epoch: 0044 train_loss= nan train_acc= 0.99972 time= 2.07833
+Epoch: 0045 train_loss= nan train_acc= 0.99972 time= 2.12686
+Epoch: 0046 train_loss= nan train_acc= 0.99972 time= 2.08836
+Epoch: 0047 train_loss= nan train_acc= 0.99972 time= 2.06750
+Epoch: 0048 train_loss= nan train_acc= 0.99972 time= 2.13801
+Epoch: 0049 train_loss= nan train_acc= 0.99972 time= 2.11113
+Epoch: 0050 train_loss= nan train_acc= 0.99972 time= 2.01336
+Epoch: 0051 train_loss= nan train_acc= 0.99972 time= 2.18007
+Epoch: 0052 train_loss= nan train_acc= 0.99972 time= 2.06137
+Epoch: 0053 train_loss= nan train_acc= 0.99972 time= 2.08995
+Epoch: 0054 train_loss= nan train_acc= 0.99972 time= 2.07869
+Epoch: 0055 train_loss= nan train_acc= 0.99972 time= 2.09329
+Epoch: 0056 train_loss= nan train_acc= 0.99972 time= 2.00453
+Epoch: 0057 train_loss= nan train_acc= 0.99972 time= 2.08227
+Epoch: 0058 train_loss= nan train_acc= 0.99972 time= 2.11761
+Epoch: 0059 train_loss= nan train_acc= 0.99972 time= 2.10502
+Epoch: 0060 train_loss= nan train_acc= 0.99972 time= 2.04866
+Epoch: 0061 train_loss= nan train_acc= 0.99972 time= 2.12217
+Epoch: 0062 train_loss= nan train_acc= 0.99972 time= 2.04296
+Epoch: 0063 train_loss= nan train_acc= 0.99972 time= 2.08661
+Epoch: 0064 train_loss= nan train_acc= 0.99972 time= 2.13578
+Epoch: 0065 train_loss= nan train_acc= 0.99972 time= 2.10016
+Epoch: 0066 train_loss= nan train_acc= 0.99972 time= 2.16167
+Epoch: 0067 train_loss= nan train_acc= 0.99972 time= 2.06351
+Epoch: 0068 train_loss= nan train_acc= 0.99972 time= 1.98897
+Epoch: 0069 train_loss= nan train_acc= 0.99972 time= 2.21123
+Epoch: 0070 train_loss= nan train_acc= 0.99972 time= 2.08384
+Epoch: 0071 train_loss= nan train_acc= 0.99972 time= 2.19302
+Epoch: 0072 train_loss= nan train_acc= 0.99972 time= 2.05366
+Epoch: 0073 train_loss= nan train_acc= 0.99972 time= 2.09837
+Epoch: 0074 train_loss= nan train_acc= 0.99972 time= 2.05638
+Epoch: 0075 train_loss= nan train_acc= 0.99972 time= 2.07879
+Epoch: 0076 train_loss= nan train_acc= 0.99972 time= 2.12435
+Epoch: 0077 train_loss= nan train_acc= 0.99972 time= 2.01270
+Epoch: 0078 train_loss= nan train_acc= 0.99972 time= 2.06741
+Epoch: 0079 train_loss= nan train_acc= 0.99972 time= 2.14047
+Epoch: 0080 train_loss= nan train_acc= 0.99972 time= 1.98605
+Epoch: 0081 train_loss= nan train_acc= 0.99972 time= 2.06632
+Epoch: 0082 train_loss= nan train_acc= 0.99972 time= 2.17614
+Epoch: 0083 train_loss= nan train_acc= 0.99972 time= 2.07720
+Epoch: 0084 train_loss= nan train_acc= 0.99972 time= 2.02125
+Epoch: 0085 train_loss= nan train_acc= 0.99972 time= 2.09127
+Epoch: 0086 train_loss= nan train_acc= 0.99972 time= 2.05173
+Epoch: 0087 train_loss= nan train_acc= 0.99972 time= 1.97932
+Epoch: 0088 train_loss= nan train_acc= 0.99972 time= 2.04680
+Epoch: 0089 train_loss= nan train_acc= 0.99972 time= 2.08801
+Epoch: 0090 train_loss= nan train_acc= 0.99972 time= 2.07250
+Epoch: 0091 train_loss= nan train_acc= 0.99972 time= 2.16506
+Epoch: 0092 train_loss= nan train_acc= 0.99972 time= 2.09009
+Epoch: 0093 train_loss= nan train_acc= 0.99972 time= 2.07623
+Epoch: 0094 train_loss= nan train_acc= 0.99972 time= 2.09999
+Epoch: 0095 train_loss= nan train_acc= 0.99972 time= 2.06138
+Epoch: 0096 train_loss= nan train_acc= 0.99972 time= 2.11513
+Epoch: 0097 train_loss= nan train_acc= 0.99972 time= 2.14327
+Epoch: 0098 train_loss= nan train_acc= 0.99972 time= 2.02885
+Epoch: 0099 train_loss= nan train_acc= 0.99972 time= 2.12912
+Epoch: 0100 train_loss= nan train_acc= 0.99972 time= 2.04302
+Optimization Finished!
+Model: [nan,nan]
+Epoch: 0001 train_loss= 467.99130 train_acc= 0.17279 time= 4.24929
+Epoch: 0002 train_loss= 55154741654585344.00000 train_acc= 0.49368 time= 2.22961
+Epoch: 0003 train_loss= 31262113464844288.00000 train_acc= 0.48549 time= 2.02975
+Epoch: 0004 train_loss= 1365082505216.00000 train_acc= 0.40940 time= 2.08954
+Epoch: 0005 train_loss= 51967836160.00000 train_acc= 0.33396 time= 2.02488
+Epoch: 0006 train_loss= 3347942912.00000 train_acc= 0.23171 time= 2.11248
+Epoch: 0007 train_loss= 1441915904.00000 train_acc= 0.22552 time= 2.11675
+Epoch: 0008 train_loss= 12075862016.00000 train_acc= 0.23823 time= 2.11334
+Epoch: 0009 train_loss= 114926051328.00000 train_acc= 0.23527 time= 2.09790
+Epoch: 0010 train_loss= 466103894016.00000 train_acc= 0.22420 time= 2.27881
+Epoch: 0011 train_loss= 141561282560.00000 train_acc= 0.19950 time= 2.06471
+Epoch: 0012 train_loss= 61698158592.00000 train_acc= 0.16222 time= 2.15901
+Epoch: 0013 train_loss= 37066792960.00000 train_acc= 0.11873 time= 2.03330
+Epoch: 0014 train_loss= 1927524352.00000 train_acc= 0.07802 time= 2.13501
+Epoch: 0015 train_loss= 200617328.00000 train_acc= 0.05118 time= 2.15387
+Epoch: 0016 train_loss= 10011678.00000 train_acc= 0.03479 time= 2.08246
+Epoch: 0017 train_loss= 11497672.00000 train_acc= 0.02261 time= 2.08808
+Epoch: 0018 train_loss= 1226445.87500 train_acc= 0.01835 time= 2.15989
+Epoch: 0019 train_loss= 1296233.00000 train_acc= 0.01616 time= 2.10423
+Epoch: 0020 train_loss= 559748.18750 train_acc= 0.01605 time= 2.12350
+Epoch: 0021 train_loss= 488501.09375 train_acc= 0.01749 time= 2.06065
+Epoch: 0022 train_loss= 447351.84375 train_acc= 0.01764 time= 2.13659
+Epoch: 0023 train_loss= 315620.43750 train_acc= 0.01975 time= 2.11885
+Epoch: 0024 train_loss= 420080.03125 train_acc= 0.03063 time= 2.16727
+Epoch: 0025 train_loss= 300950.12500 train_acc= 0.02510 time= 2.10185
+Epoch: 0026 train_loss= 975439.68750 train_acc= 0.02615 time= 2.09714
+Epoch: 0027 train_loss= 106847.94531 train_acc= 0.02838 time= 2.16208
+Epoch: 0028 train_loss= 885904.31250 train_acc= 0.02946 time= 2.13409
+Epoch: 0029 train_loss= 391968.71875 train_acc= 0.02981 time= 2.09327
+Epoch: 0030 train_loss= 890757.25000 train_acc= 0.02765 time= 2.14111
+Epoch: 0031 train_loss= 860561.93750 train_acc= 0.02726 time= 2.15925
+Epoch: 0032 train_loss= 232826.54688 train_acc= 0.02627 time= 2.12996
+Epoch: 0033 train_loss= 267007.96875 train_acc= 0.02539 time= 2.03331
+Epoch: 0034 train_loss= 72674.56250 train_acc= 0.02568 time= 2.04227
+Epoch: 0035 train_loss= 460889.81250 train_acc= 0.02389 time= 2.09107
+Epoch: 0036 train_loss= 338046.46875 train_acc= 0.02476 time= 2.05019
+Epoch: 0037 train_loss= 219303.09375 train_acc= 0.02496 time= 2.13149
+Epoch: 0038 train_loss= 926282.12500 train_acc= 0.02525 time= 2.12413
+Epoch: 0039 train_loss= 722686.87500 train_acc= 0.02610 time= 2.15343
+Epoch: 0040 train_loss= 412908.18750 train_acc= 0.02509 time= 2.09811
+Epoch: 0041 train_loss= 255982.46875 train_acc= 0.02632 time= 2.13152
+Epoch: 0042 train_loss= 778737.56250 train_acc= 0.02661 time= 2.06099
+Epoch: 0043 train_loss= 82750.93750 train_acc= 0.02781 time= 2.25482
+Epoch: 0044 train_loss= 241182.53125 train_acc= 0.02706 time= 2.15300
+Epoch: 0045 train_loss= 120248.63281 train_acc= 0.02768 time= 2.10339
+Epoch: 0046 train_loss= 187312.59375 train_acc= 0.02797 time= 2.17107
+Epoch: 0047 train_loss= 263736.09375 train_acc= 0.02852 time= 2.11668
+Epoch: 0048 train_loss= 507856.40625 train_acc= 0.02966 time= 2.09827
+Epoch: 0049 train_loss= 737849.68750 train_acc= 0.03071 time= 2.01647
+Epoch: 0050 train_loss= 155712.00000 train_acc= 0.02996 time= 2.12683
+Epoch: 0051 train_loss= 210672.65625 train_acc= 0.03085 time= 2.15801
+Epoch: 0052 train_loss= 96531.32031 train_acc= 0.03111 time= 2.13882
+Epoch: 0053 train_loss= 397120.21875 train_acc= 0.03135 time= 2.25072
+Epoch: 0054 train_loss= 205879.17188 train_acc= 0.03170 time= 2.09889
+Epoch: 0055 train_loss= 190554.65625 train_acc= 0.03065 time= 2.14307
+Epoch: 0056 train_loss= 861388.87500 train_acc= 0.03001 time= 2.11010
+Epoch: 0057 train_loss= 579460.93750 train_acc= 0.03145 time= 2.08884
+Epoch: 0058 train_loss= 332996.28125 train_acc= 0.03095 time= 2.12013
+Epoch: 0059 train_loss= 85747.84375 train_acc= 0.03075 time= 2.14242
+Epoch: 0060 train_loss= 481191.53125 train_acc= 0.03056 time= 2.19129
+Epoch: 0061 train_loss= 81952.44531 train_acc= 0.03125 time= 2.10353
+Epoch: 0062 train_loss= 345993.59375 train_acc= 0.03197 time= 2.22708
+Epoch: 0063 train_loss= 150630.48438 train_acc= 0.03182 time= 2.09642
+Epoch: 0064 train_loss= 32627.28906 train_acc= 0.03132 time= 2.10962
+Epoch: 0065 train_loss= 161520.73438 train_acc= 0.03310 time= 2.10885
+Epoch: 0066 train_loss= 379751.50000 train_acc= 0.03092 time= 2.15815
+Epoch: 0067 train_loss= 377230.87500 train_acc= 0.02984 time= 2.15394
+Epoch: 0068 train_loss= 309892.68750 train_acc= 0.03175 time= 2.21463
+Epoch: 0069 train_loss= 365394.25000 train_acc= 0.03269 time= 2.17278
+Epoch: 0070 train_loss= 600326.75000 train_acc= 0.03239 time= 2.23895
+Epoch: 0071 train_loss= 259498.82812 train_acc= 0.03242 time= 2.10208
+Epoch: 0072 train_loss= 522591.53125 train_acc= 0.03177 time= 2.07884
+Epoch: 0073 train_loss= 238366.68750 train_acc= 0.03176 time= 2.11016
+Epoch: 0074 train_loss= 55836.12109 train_acc= 0.03282 time= 2.08127
+Epoch: 0075 train_loss= 289795.00000 train_acc= 0.03100 time= 2.07381
+Epoch: 0076 train_loss= 154443.90625 train_acc= 0.03145 time= 2.07147
+Epoch: 0077 train_loss= 365096.28125 train_acc= 0.03363 time= 2.04133
+Epoch: 0078 train_loss= 362708.93750 train_acc= 0.03230 time= 2.09954
+Epoch: 0079 train_loss= 350537.81250 train_acc= 0.03104 time= 2.06860
+Epoch: 0080 train_loss= 210713.34375 train_acc= 0.03128 time= 2.10268
+Epoch: 0081 train_loss= 192563.29688 train_acc= 0.03118 time= 2.02568
+Epoch: 0082 train_loss= 271245.71875 train_acc= 0.03204 time= 2.16039
+Epoch: 0083 train_loss= 273286.50000 train_acc= 0.03159 time= 2.06767
+Epoch: 0084 train_loss= 146590.75000 train_acc= 0.03272 time= 2.12719
+Epoch: 0085 train_loss= 665241.12500 train_acc= 0.03186 time= 2.06681
+Epoch: 0086 train_loss= 731497.93750 train_acc= 0.03295 time= 2.00013
+Epoch: 0087 train_loss= 383431.90625 train_acc= 0.03199 time= 2.14555
+Epoch: 0088 train_loss= 232161.78125 train_acc= 0.03237 time= 2.07021
+Epoch: 0089 train_loss= 191165.98438 train_acc= 0.03056 time= 2.11529
+Epoch: 0090 train_loss= 107733.02344 train_acc= 0.03213 time= 2.04426
+Epoch: 0091 train_loss= 720433.81250 train_acc= 0.03131 time= 2.01024
+Epoch: 0092 train_loss= 439568.21875 train_acc= 0.03342 time= 2.09281
+Epoch: 0093 train_loss= 119710.92188 train_acc= 0.03078 time= 1.97798
+Epoch: 0094 train_loss= 433898.93750 train_acc= 0.03068 time= 2.02825
+Epoch: 0095 train_loss= 274888.21875 train_acc= 0.03210 time= 2.06677
+Epoch: 0096 train_loss= 245102.18750 train_acc= 0.03153 time= 2.05640
+Epoch: 0097 train_loss= 74309.14844 train_acc= 0.03253 time= 2.12934
+Epoch: 0098 train_loss= 204844.96875 train_acc= 0.03137 time= 2.00233
+Epoch: 0099 train_loss= 838424.93750 train_acc= 0.03304 time= 2.04067
+Epoch: 0100 train_loss= 348772.68750 train_acc= 0.03254 time= 2.05048
+Optimization Finished!
+Model: [1.6260650851777636,8.178642948093106e-15]
+Epoch: 0001 train_loss= 9797.07324 train_acc= 0.25692 time= 3.26691
+Epoch: 0002 train_loss= 58182872780727520329728.00000 train_acc= 0.49751 time= 1.80346
+Epoch: 0003 train_loss= nan train_acc= 0.99972 time= 1.87590
+Epoch: 0004 train_loss= nan train_acc= 0.99972 time= 1.86159
+Epoch: 0005 train_loss= nan train_acc= 0.99972 time= 1.84371
+Epoch: 0006 train_loss= nan train_acc= 0.99972 time= 1.88581
+Epoch: 0007 train_loss= nan train_acc= 0.99972 time= 1.89643
+Epoch: 0008 train_loss= nan train_acc= 0.99972 time= 1.87436
+Epoch: 0009 train_loss= nan train_acc= 0.99972 time= 1.92147
+Epoch: 0010 train_loss= nan train_acc= 0.99972 time= 1.86904
+Epoch: 0011 train_loss= nan train_acc= 0.99972 time= 1.88210
+Epoch: 0012 train_loss= nan train_acc= 0.99972 time= 1.85178
+Epoch: 0013 train_loss= nan train_acc= 0.99972 time= 1.94354
+Epoch: 0014 train_loss= nan train_acc= 0.99972 time= 1.87314
+Epoch: 0015 train_loss= nan train_acc= 0.99972 time= 1.95616
+Epoch: 0016 train_loss= nan train_acc= 0.99972 time= 1.91466
+Epoch: 0017 train_loss= nan train_acc= 0.99972 time= 1.87707
+Epoch: 0018 train_loss= nan train_acc= 0.99972 time= 1.94097
+Epoch: 0019 train_loss= nan train_acc= 0.99972 time= 1.91860
+Epoch: 0020 train_loss= nan train_acc= 0.99972 time= 1.96839
+Epoch: 0021 train_loss= nan train_acc= 0.99972 time= 1.90116
+Epoch: 0022 train_loss= nan train_acc= 0.99972 time= 1.89144
+Epoch: 0023 train_loss= nan train_acc= 0.99972 time= 1.92014
+Epoch: 0024 train_loss= nan train_acc= 0.99972 time= 1.92261
+Epoch: 0025 train_loss= nan train_acc= 0.99972 time= 1.89405
+Epoch: 0026 train_loss= nan train_acc= 0.99972 time= 1.87090
+Epoch: 0027 train_loss= nan train_acc= 0.99972 time= 2.00196
+Epoch: 0028 train_loss= nan train_acc= 0.99972 time= 1.81992
+Epoch: 0029 train_loss= nan train_acc= 0.99972 time= 1.91999
+Epoch: 0030 train_loss= nan train_acc= 0.99972 time= 1.90385
+Epoch: 0031 train_loss= nan train_acc= 0.99972 time= 1.89194
+Epoch: 0032 train_loss= nan train_acc= 0.99972 time= 1.94444
+Epoch: 0033 train_loss= nan train_acc= 0.99972 time= 1.91454
+Epoch: 0034 train_loss= nan train_acc= 0.99972 time= 1.83159
+Epoch: 0035 train_loss= nan train_acc= 0.99972 time= 1.86789
+Epoch: 0036 train_loss= nan train_acc= 0.99972 time= 1.89649
+Epoch: 0037 train_loss= nan train_acc= 0.99972 time= 1.92481
+Epoch: 0038 train_loss= nan train_acc= 0.99972 time= 1.92191
+Epoch: 0039 train_loss= nan train_acc= 0.99972 time= 1.87004
+Epoch: 0040 train_loss= nan train_acc= 0.99972 time= 1.80661
+Epoch: 0041 train_loss= nan train_acc= 0.99972 time= 1.88835
+Epoch: 0042 train_loss= nan train_acc= 0.99972 time= 1.91210
+Epoch: 0043 train_loss= nan train_acc= 0.99972 time= 1.87529
+Epoch: 0044 train_loss= nan train_acc= 0.99972 time= 1.85340
+Epoch: 0045 train_loss= nan train_acc= 0.99972 time= 1.92253
+Epoch: 0046 train_loss= nan train_acc= 0.99972 time= 1.88574
+Epoch: 0047 train_loss= nan train_acc= 0.99972 time= 1.89250
+Epoch: 0048 train_loss= nan train_acc= 0.99972 time= 1.93022
+Epoch: 0049 train_loss= nan train_acc= 0.99972 time= 1.86734
+Epoch: 0050 train_loss= nan train_acc= 0.99972 time= 1.93577
+Epoch: 0051 train_loss= nan train_acc= 0.99972 time= 1.92868
+Epoch: 0052 train_loss= nan train_acc= 0.99972 time= 1.92731
+Epoch: 0053 train_loss= nan train_acc= 0.99972 time= 1.91940
+Epoch: 0054 train_loss= nan train_acc= 0.99972 time= 1.93344
+Epoch: 0055 train_loss= nan train_acc= 0.99972 time= 1.93457
+Epoch: 0056 train_loss= nan train_acc= 0.99972 time= 1.88478
+Epoch: 0057 train_loss= nan train_acc= 0.99972 time= 1.97481
+Epoch: 0058 train_loss= nan train_acc= 0.99972 time= 1.84553
+Epoch: 0059 train_loss= nan train_acc= 0.99972 time= 1.93901
+Epoch: 0060 train_loss= nan train_acc= 0.99972 time= 1.91380
+Epoch: 0061 train_loss= nan train_acc= 0.99972 time= 1.89129
+Epoch: 0062 train_loss= nan train_acc= 0.99972 time= 1.85636
+Epoch: 0063 train_loss= nan train_acc= 0.99972 time= 1.93491
+Epoch: 0064 train_loss= nan train_acc= 0.99972 time= 1.90512
+Epoch: 0065 train_loss= nan train_acc= 0.99972 time= 1.93044
+Epoch: 0066 train_loss= nan train_acc= 0.99972 time= 1.97823
+Epoch: 0067 train_loss= nan train_acc= 0.99972 time= 1.85442
+Epoch: 0068 train_loss= nan train_acc= 0.99972 time= 1.96376
+Epoch: 0069 train_loss= nan train_acc= 0.99972 time= 1.96202
+Epoch: 0070 train_loss= nan train_acc= 0.99972 time= 1.97888
+Epoch: 0071 train_loss= nan train_acc= 0.99972 time= 1.83639
+Epoch: 0072 train_loss= nan train_acc= 0.99972 time= 1.94579
+Epoch: 0073 train_loss= nan train_acc= 0.99972 time= 1.93666
+Epoch: 0074 train_loss= nan train_acc= 0.99972 time= 1.92378
+Epoch: 0075 train_loss= nan train_acc= 0.99972 time= 1.89498
+Epoch: 0076 train_loss= nan train_acc= 0.99972 time= 1.93788
+Epoch: 0077 train_loss= nan train_acc= 0.99972 time= 1.89200
+Epoch: 0078 train_loss= nan train_acc= 0.99972 time= 1.89210
+Epoch: 0079 train_loss= nan train_acc= 0.99972 time= 1.90864
+Epoch: 0080 train_loss= nan train_acc= 0.99972 time= 1.91616
+Epoch: 0081 train_loss= nan train_acc= 0.99972 time= 1.89630
+Epoch: 0082 train_loss= nan train_acc= 0.99972 time= 1.91080
+Epoch: 0083 train_loss= nan train_acc= 0.99972 time= 1.84240
+Epoch: 0084 train_loss= nan train_acc= 0.99972 time= 1.84494
+Epoch: 0085 train_loss= nan train_acc= 0.99972 time= 1.88201
+Epoch: 0086 train_loss= nan train_acc= 0.99972 time= 1.88233
+Epoch: 0087 train_loss= nan train_acc= 0.99972 time= 1.83054
+Epoch: 0088 train_loss= nan train_acc= 0.99972 time= 1.90942
+Epoch: 0089 train_loss= nan train_acc= 0.99972 time= 1.94186
+Epoch: 0090 train_loss= nan train_acc= 0.99972 time= 1.86910
+Epoch: 0091 train_loss= nan train_acc= 0.99972 time= 1.90198
+Epoch: 0092 train_loss= nan train_acc= 0.99972 time= 1.93422
+Epoch: 0093 train_loss= nan train_acc= 0.99972 time= 1.90692
+Epoch: 0094 train_loss= nan train_acc= 0.99972 time= 1.88448
+Epoch: 0095 train_loss= nan train_acc= 0.99972 time= 1.93033
+Epoch: 0096 train_loss= nan train_acc= 0.99972 time= 1.92247
+Epoch: 0097 train_loss= nan train_acc= 0.99972 time= 1.89681
+Epoch: 0098 train_loss= nan train_acc= 0.99972 time= 1.90584
+Epoch: 0099 train_loss= nan train_acc= 0.99972 time= 1.86988
+Epoch: 0100 train_loss= nan train_acc= 0.99972 time= 1.95705
+Optimization Finished!
+Model: [nan,nan]
+Epoch: 0001 train_loss= 671.54810 train_acc= 0.16062 time= 3.21883
+Epoch: 0002 train_loss= 991331614720.00000 train_acc= 0.44641 time= 1.88485
+Epoch: 0003 train_loss= 9810064965632.00000 train_acc= 0.42097 time= 1.83794
+Epoch: 0004 train_loss= 60108357632.00000 train_acc= 0.30978 time= 1.89037
+Epoch: 0005 train_loss= 9115434745856.00000 train_acc= 0.32697 time= 1.82762
+Epoch: 0006 train_loss= 321301248.00000 train_acc= 0.07890 time= 1.87934
+Epoch: 0007 train_loss= 21183166.00000 train_acc= 0.07174 time= 1.89064
+Epoch: 0008 train_loss= 22206596.00000 train_acc= 0.07593 time= 1.82017
+Epoch: 0009 train_loss= 56427384.00000 train_acc= 0.07455 time= 1.79314
+Epoch: 0010 train_loss= 1706214.00000 train_acc= 0.05679 time= 1.93014
+Epoch: 0011 train_loss= 2681261.50000 train_acc= 0.03694 time= 1.85477
+Epoch: 0012 train_loss= 226595.62500 train_acc= 0.02237 time= 1.88405
+Epoch: 0013 train_loss= 90674.03125 train_acc= 0.01594 time= 1.85168
+Epoch: 0014 train_loss= 82630.75000 train_acc= 0.00693 time= 1.89773
+Epoch: 0015 train_loss= 10738.69238 train_acc= 0.00341 time= 1.91071
+Epoch: 0016 train_loss= 3564.91577 train_acc= 0.00200 time= 1.83656
+Epoch: 0017 train_loss= 2932.11694 train_acc= 0.00159 time= 1.86091
+Epoch: 0018 train_loss= 1888.85388 train_acc= 0.00091 time= 1.86715
+Epoch: 0019 train_loss= 1327.87988 train_acc= 0.00049 time= 1.88958
+Epoch: 0020 train_loss= 1155.89417 train_acc= 0.00042 time= 1.89542
+Epoch: 0021 train_loss= 1328.63513 train_acc= 0.00035 time= 1.84892
+Epoch: 0022 train_loss= 1785.04285 train_acc= 0.00043 time= 1.86339
+Epoch: 0023 train_loss= 1268.54944 train_acc= 0.00035 time= 1.87123
+Epoch: 0024 train_loss= 1269.13403 train_acc= 0.00029 time= 1.82319
+Epoch: 0025 train_loss= 1296.39124 train_acc= 0.00032 time= 1.83247
+Epoch: 0026 train_loss= 1305.20984 train_acc= 0.00029 time= 1.83787
+Epoch: 0027 train_loss= 1317.16455 train_acc= 0.00029 time= 1.90761
+Epoch: 0028 train_loss= 1367.02441 train_acc= 0.00039 time= 1.94198
+Epoch: 0029 train_loss= 1353.62683 train_acc= 0.00028 time= 1.89568
+Epoch: 0030 train_loss= 1856.41663 train_acc= 0.00040 time= 1.85931
+Epoch: 0031 train_loss= 1458.44067 train_acc= 0.00037 time= 1.86020
+Epoch: 0032 train_loss= 1393.59412 train_acc= 0.00028 time= 1.88330
+Epoch: 0033 train_loss= 1404.13806 train_acc= 0.00028 time= 1.87167
+Epoch: 0034 train_loss= 1417.57629 train_acc= 0.00030 time= 1.87271
+Epoch: 0035 train_loss= 1433.89319 train_acc= 0.00029 time= 1.84595
+Epoch: 0036 train_loss= 1427.36108 train_acc= 0.00028 time= 1.85731
+Epoch: 0037 train_loss= 1429.91528 train_acc= 0.00028 time= 1.91151
+Epoch: 0038 train_loss= 1430.13965 train_acc= 0.00028 time= 1.90255
+Epoch: 0039 train_loss= 1427.86523 train_acc= 0.00028 time= 1.91749
+Epoch: 0040 train_loss= 1424.33484 train_acc= 0.00028 time= 1.88235
+Epoch: 0041 train_loss= 1421.13171 train_acc= 0.00028 time= 1.97198
+Epoch: 0042 train_loss= 1475.25220 train_acc= 0.00034 time= 1.92426
+Epoch: 0043 train_loss= 1412.77979 train_acc= 0.00028 time= 1.91734
+Epoch: 0044 train_loss= 1409.18127 train_acc= 0.00028 time= 1.88997
+Epoch: 0045 train_loss= 1404.78015 train_acc= 0.00028 time= 1.87956
+Epoch: 0046 train_loss= 1700.31189 train_acc= 0.00037 time= 1.92508
+Epoch: 0047 train_loss= 43387.98047 train_acc= 0.00177 time= 1.95379
+Epoch: 0048 train_loss= 1416.74255 train_acc= 0.00034 time= 1.90769
+Epoch: 0049 train_loss= 1391.68420 train_acc= 0.00028 time= 1.80652
+Epoch: 0050 train_loss= 5353.94727 train_acc= 0.00074 time= 1.91033
+Epoch: 0051 train_loss= 1389.29407 train_acc= 0.00028 time= 1.90486
+Epoch: 0052 train_loss= 1388.91382 train_acc= 0.00028 time= 1.83982
+Epoch: 0053 train_loss= 2775.41040 train_acc= 0.00041 time= 1.93176
+Epoch: 0054 train_loss= 1388.90967 train_acc= 0.00028 time= 1.93800
+Epoch: 0055 train_loss= 1389.45215 train_acc= 0.00028 time= 1.87770
+Epoch: 0056 train_loss= 1389.74109 train_acc= 0.00028 time= 1.89508
+Epoch: 0057 train_loss= 1390.47144 train_acc= 0.00028 time= 1.88728
+Epoch: 0058 train_loss= 1390.51868 train_acc= 0.00028 time= 1.88931
+Epoch: 0059 train_loss= 1389.71240 train_acc= 0.00028 time= 1.91645
+Epoch: 0060 train_loss= 1388.54407 train_acc= 0.00028 time= 1.89335
+Epoch: 0061 train_loss= 1386.93506 train_acc= 0.00028 time= 1.85745
+Epoch: 0062 train_loss= 1383.76990 train_acc= 0.00028 time= 1.88980
+Epoch: 0063 train_loss= 1380.68994 train_acc= 0.00028 time= 1.90453
+Epoch: 0064 train_loss= 1376.90234 train_acc= 0.00028 time= 1.82906
+Epoch: 0065 train_loss= 1372.39453 train_acc= 0.00028 time= 1.81571
+Epoch: 0066 train_loss= 1367.01672 train_acc= 0.00028 time= 1.92306
+Epoch: 0067 train_loss= 1361.40979 train_acc= 0.00028 time= 1.95193
+Epoch: 0068 train_loss= 1355.46484 train_acc= 0.00028 time= 1.89573
+Epoch: 0069 train_loss= 1348.49841 train_acc= 0.00028 time= 1.84561
+Epoch: 0070 train_loss= 1341.62671 train_acc= 0.00028 time= 1.86698
+Epoch: 0071 train_loss= 1334.83228 train_acc= 0.00028 time= 1.82353
+Epoch: 0072 train_loss= 1868.87244 train_acc= 0.00041 time= 1.84097
+Epoch: 0073 train_loss= 1320.20398 train_acc= 0.00028 time= 1.87421
+Epoch: 0074 train_loss= 1314.31360 train_acc= 0.00028 time= 1.95123
+Epoch: 0075 train_loss= 1309.14099 train_acc= 0.00028 time= 1.85859
+Epoch: 0076 train_loss= 1303.55737 train_acc= 0.00028 time= 1.81589
+Epoch: 0077 train_loss= 1297.62488 train_acc= 0.00028 time= 1.82380
+Epoch: 0078 train_loss= 1291.89478 train_acc= 0.00028 time= 1.83235
+Epoch: 0079 train_loss= 1286.00732 train_acc= 0.00028 time= 1.79227
+Epoch: 0080 train_loss= 1278.97290 train_acc= 0.00028 time= 1.91517
+Epoch: 0081 train_loss= 1272.08887 train_acc= 0.00028 time= 1.86189
+Epoch: 0082 train_loss= 1265.40479 train_acc= 0.00028 time= 1.87894
+Epoch: 0083 train_loss= 1258.04968 train_acc= 0.00028 time= 1.86810
+Epoch: 0084 train_loss= 1250.55481 train_acc= 0.00028 time= 1.92952
+Epoch: 0085 train_loss= 1243.60803 train_acc= 0.00028 time= 1.85925
+Epoch: 0086 train_loss= 1236.34290 train_acc= 0.00028 time= 1.79889
+Epoch: 0087 train_loss= 1230.43359 train_acc= 0.00028 time= 1.93615
+Epoch: 0088 train_loss= 1224.50391 train_acc= 0.00028 time= 1.86565
+Epoch: 0089 train_loss= 1217.85510 train_acc= 0.00028 time= 1.82324
+Epoch: 0090 train_loss= 1212.80505 train_acc= 0.00028 time= 1.90920
+Epoch: 0091 train_loss= 1208.50439 train_acc= 0.00028 time= 1.84114
+Epoch: 0092 train_loss= 1202.96558 train_acc= 0.00028 time= 1.88361
+Epoch: 0093 train_loss= 1198.28088 train_acc= 0.00028 time= 1.84521
+Epoch: 0094 train_loss= 1193.70142 train_acc= 0.00028 time= 1.92989
+Epoch: 0095 train_loss= 1189.69397 train_acc= 0.00028 time= 1.82925
+Epoch: 0096 train_loss= 1185.52393 train_acc= 0.00028 time= 1.91137
+Epoch: 0097 train_loss= 1180.81897 train_acc= 0.00028 time= 1.80580
+Epoch: 0098 train_loss= 1176.00732 train_acc= 0.00028 time= 1.84985
+Epoch: 0099 train_loss= 1171.35767 train_acc= 0.00028 time= 1.86080
+Epoch: 0100 train_loss= 1167.02686 train_acc= 0.00028 time= 1.88821
+Optimization Finished!
+Model: [1.6260599314397641,-1.2160642863064263e-13]
+Epoch: 0001 train_loss= 182.31538 train_acc= 0.09767 time= 3.13087
+Epoch: 0002 train_loss= 27801507750083559424.00000 train_acc= 0.49470 time= 1.77255
+Epoch: 0003 train_loss= nan train_acc= 0.99972 time= 1.83524
+Epoch: 0004 train_loss= nan train_acc= 0.99972 time= 1.78644
+Epoch: 0005 train_loss= nan train_acc= 0.99972 time= 1.75721
+Epoch: 0006 train_loss= nan train_acc= 0.99972 time= 1.76785
+Epoch: 0007 train_loss= nan train_acc= 0.99972 time= 1.84467
+Epoch: 0008 train_loss= nan train_acc= 0.99972 time= 1.77332
+Epoch: 0009 train_loss= nan train_acc= 0.99972 time= 1.80201
+Epoch: 0010 train_loss= nan train_acc= 0.99972 time= 1.77846
+Epoch: 0011 train_loss= nan train_acc= 0.99972 time= 1.80312
+Epoch: 0012 train_loss= nan train_acc= 0.99972 time= 1.76823
+Epoch: 0013 train_loss= nan train_acc= 0.99972 time= 1.72790
+Epoch: 0014 train_loss= nan train_acc= 0.99972 time= 1.80247
+Epoch: 0015 train_loss= nan train_acc= 0.99972 time= 1.78630
+Epoch: 0016 train_loss= nan train_acc= 0.99972 time= 1.80926
+Epoch: 0017 train_loss= nan train_acc= 0.99972 time= 1.79917
+Epoch: 0018 train_loss= nan train_acc= 0.99972 time= 1.80445
+Epoch: 0019 train_loss= nan train_acc= 0.99972 time= 1.76135
+Epoch: 0020 train_loss= nan train_acc= 0.99972 time= 1.79044
+Epoch: 0021 train_loss= nan train_acc= 0.99972 time= 1.76833
+Epoch: 0022 train_loss= nan train_acc= 0.99972 time= 1.82652
+Epoch: 0023 train_loss= nan train_acc= 0.99972 time= 1.77907
+Epoch: 0024 train_loss= nan train_acc= 0.99972 time= 1.78986
+Epoch: 0025 train_loss= nan train_acc= 0.99972 time= 1.82577
+Epoch: 0026 train_loss= nan train_acc= 0.99972 time= 1.76963
+Epoch: 0027 train_loss= nan train_acc= 0.99972 time= 1.77747
+Epoch: 0028 train_loss= nan train_acc= 0.99972 time= 1.80050
+Epoch: 0029 train_loss= nan train_acc= 0.99972 time= 1.78131
+Epoch: 0030 train_loss= nan train_acc= 0.99972 time= 1.80985
+Epoch: 0031 train_loss= nan train_acc= 0.99972 time= 1.75892
+Epoch: 0032 train_loss= nan train_acc= 0.99972 time= 1.78520
+Epoch: 0033 train_loss= nan train_acc= 0.99972 time= 1.76480
+Epoch: 0034 train_loss= nan train_acc= 0.99972 time= 1.77036
+Epoch: 0035 train_loss= nan train_acc= 0.99972 time= 1.82600
+Epoch: 0036 train_loss= nan train_acc= 0.99972 time= 1.79351
+Epoch: 0037 train_loss= nan train_acc= 0.99972 time= 1.84429
+Epoch: 0038 train_loss= nan train_acc= 0.99972 time= 1.79935
+Epoch: 0039 train_loss= nan train_acc= 0.99972 time= 1.77683
+Epoch: 0040 train_loss= nan train_acc= 0.99972 time= 1.80820
+Epoch: 0041 train_loss= nan train_acc= 0.99972 time= 1.78573
+Epoch: 0042 train_loss= nan train_acc= 0.99972 time= 1.74051
+Epoch: 0043 train_loss= nan train_acc= 0.99972 time= 1.78047
+Epoch: 0044 train_loss= nan train_acc= 0.99972 time= 1.77353
+Epoch: 0045 train_loss= nan train_acc= 0.99972 time= 1.83103
+Epoch: 0046 train_loss= nan train_acc= 0.99972 time= 1.76464
+Epoch: 0047 train_loss= nan train_acc= 0.99972 time= 1.81904
+Epoch: 0048 train_loss= nan train_acc= 0.99972 time= 1.79534
+Epoch: 0049 train_loss= nan train_acc= 0.99972 time= 1.77874
+Epoch: 0050 train_loss= nan train_acc= 0.99972 time= 1.85245
+Epoch: 0051 train_loss= nan train_acc= 0.99972 time= 1.73684
+Epoch: 0052 train_loss= nan train_acc= 0.99972 time= 1.73690
+Epoch: 0053 train_loss= nan train_acc= 0.99972 time= 1.85681
+Epoch: 0054 train_loss= nan train_acc= 0.99972 time= 1.75566
+Epoch: 0055 train_loss= nan train_acc= 0.99972 time= 1.80098
+Epoch: 0056 train_loss= nan train_acc= 0.99972 time= 1.77343
+Epoch: 0057 train_loss= nan train_acc= 0.99972 time= 1.81274
+Epoch: 0058 train_loss= nan train_acc= 0.99972 time= 1.84227
+Epoch: 0059 train_loss= nan train_acc= 0.99972 time= 1.87506
+Epoch: 0060 train_loss= nan train_acc= 0.99972 time= 1.76053
+Epoch: 0061 train_loss= nan train_acc= 0.99972 time= 1.75599
+Epoch: 0062 train_loss= nan train_acc= 0.99972 time= 1.82692
+Epoch: 0063 train_loss= nan train_acc= 0.99972 time= 1.79946
+Epoch: 0064 train_loss= nan train_acc= 0.99972 time= 1.78699
+Epoch: 0065 train_loss= nan train_acc= 0.99972 time= 1.78971
+Epoch: 0066 train_loss= nan train_acc= 0.99972 time= 1.76656
+Epoch: 0067 train_loss= nan train_acc= 0.99972 time= 1.77365
+Epoch: 0068 train_loss= nan train_acc= 0.99972 time= 1.77768
+Epoch: 0069 train_loss= nan train_acc= 0.99972 time= 1.82293
+Epoch: 0070 train_loss= nan train_acc= 0.99972 time= 1.83011
+Epoch: 0071 train_loss= nan train_acc= 0.99972 time= 1.82851
+Epoch: 0072 train_loss= nan train_acc= 0.99972 time= 1.82977
+Epoch: 0073 train_loss= nan train_acc= 0.99972 time= 1.82652
+Epoch: 0074 train_loss= nan train_acc= 0.99972 time= 1.81357
+Epoch: 0075 train_loss= nan train_acc= 0.99972 time= 1.81794
+Epoch: 0076 train_loss= nan train_acc= 0.99972 time= 1.74192
+Epoch: 0077 train_loss= nan train_acc= 0.99972 time= 1.78890
+Epoch: 0078 train_loss= nan train_acc= 0.99972 time= 1.79600
+Epoch: 0079 train_loss= nan train_acc= 0.99972 time= 1.79055
+Epoch: 0080 train_loss= nan train_acc= 0.99972 time= 1.78145
+Epoch: 0081 train_loss= nan train_acc= 0.99972 time= 1.81590
+Epoch: 0082 train_loss= nan train_acc= 0.99972 time= 1.86463
+Epoch: 0083 train_loss= nan train_acc= 0.99972 time= 1.83223
+Epoch: 0084 train_loss= nan train_acc= 0.99972 time= 1.80839
+Epoch: 0085 train_loss= nan train_acc= 0.99972 time= 1.80160
+Epoch: 0086 train_loss= nan train_acc= 0.99972 time= 1.81368
+Epoch: 0087 train_loss= nan train_acc= 0.99972 time= 1.78064
+Epoch: 0088 train_loss= nan train_acc= 0.99972 time= 1.83470
+Epoch: 0089 train_loss= nan train_acc= 0.99972 time= 1.81925
+Epoch: 0090 train_loss= nan train_acc= 0.99972 time= 1.80220
+Epoch: 0091 train_loss= nan train_acc= 0.99972 time= 1.81915
+Epoch: 0092 train_loss= nan train_acc= 0.99972 time= 1.81736
+Epoch: 0093 train_loss= nan train_acc= 0.99972 time= 1.84422
+Epoch: 0094 train_loss= nan train_acc= 0.99972 time= 1.82555
+Epoch: 0095 train_loss= nan train_acc= 0.99972 time= 1.80263
+Epoch: 0096 train_loss= nan train_acc= 0.99972 time= 1.79230
+Epoch: 0097 train_loss= nan train_acc= 0.99972 time= 1.83579
+Epoch: 0098 train_loss= nan train_acc= 0.99972 time= 1.84315
+Epoch: 0099 train_loss= nan train_acc= 0.99972 time= 1.82142
+Epoch: 0100 train_loss= nan train_acc= 0.99972 time= 1.81398
+Optimization Finished!
+Model: [nan,nan]
+10908
+walk_path ./baselines/FairWalk/tmp/10908_0_6443_0.walk
+training done
+Model: [1.615878615156739,3.327540263876649e-06]
+10958
+walk_path ./baselines/FairWalk/tmp/10958_1_369_0.walk
+training done
+Model: [1.6163987189684903,3.155878440853772e-06]
+10886
+walk_path ./baselines/FairWalk/tmp/10886_2_7714_0.walk
+training done
+Model: [1.615672762543818,3.542306750898824e-06]
+10892
+walk_path ./baselines/FairWalk/tmp/10892_3_2218_0.walk
+training done
+Model: [1.616493836559726,2.846677615982369e-06]
+10913
+walk_path ./baselines/FairWalk/tmp/10913_4_1684_0.walk
+training done
+Model: [1.6162067371520847,3.0763127206766833e-06]

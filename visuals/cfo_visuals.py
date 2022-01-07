@@ -41,8 +41,8 @@ def main():
     x = [1, 2, 4, 8, 16] + list(range(30, 360, 10))
     labels = [('reconstruction loss', 'Reconstruction Loss'),
               ('link divergence', 'Link Divergence'),
-              ('recall@10', 'Recall@10'),
-              ('dp@10', 'DP@10'),
+              ('recall@40', 'Recall@40'),
+              ('dp@40', 'DP@40'),
               ('time', 'Time')]
     fig, axes = plt.subplots(3, 2, figsize=(10,6))
     
