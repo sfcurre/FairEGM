@@ -115,9 +115,9 @@ def main():
 
     mod_list = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
     specs = ['d_32_16', 'd_32_32', 'd_64_64', 'd_128_128', 'd_256_256']
-    # specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
-    # specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
-    # specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
+    specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
+    specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
+    specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
     specs += ['d-32_d2-16_i-glorot_normal_i2-glorot_normal']
     mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
 
@@ -129,7 +129,7 @@ def main():
             fold_names_ = fold_names_r
         else:
             fold_names_ = fold_names
-            continue
+            
         for i, (train_edges, test_edges) in enumerate(fold_names_):
         
             fname = f'./results/{args.dataset}/embeddings/{model}_{i}.npy'
@@ -137,25 +137,25 @@ def main():
             if f_res is not None:
                 results[model].append(f_res)
             
-    all_adj = os.listdir(f'./results/baselines/results/Results/{args.dataset}/tune_fairadj_final') 
-    all_walk = os.listdir(f'./results/baselines/results/Results/{args.dataset}/tune_fairwalk_final')
+    all_adj = os.listdir(f'./results/baselines/results/{args.dataset}/tune_fairadj_final') 
+    all_walk = os.listdir(f'./results/baselines/results/{args.dataset}/tune_fairwalk_final')
 
-    # mod_list2 = set()
-    # for filelist, folder in [(all_adj, 'tune_fairadj_final'), (all_walk, 'tune_fairwalk_final')]:
-    #     for fname in filelist:
-    #         mod_list2.add(folder + '/' + '_'.join(fname.split('_')[:-1]))
+    mod_list2 = set()
+    for filelist, folder in [(all_adj, 'tune_fairadj_final'), (all_walk, 'tune_fairwalk_final')]:
+        for fname in filelist:
+            mod_list2.add(folder + '/' + '_'.join(fname.split('_')[:-1]))
 
-    # for model in tqdm(mod_list2):
-    #     np.random.seed(5429)
-    #     for i, (train_edges, test_edges) in enumerate(fold_names):
+    for model in tqdm(mod_list2):
+        np.random.seed(5429)
+        for i, (train_edges, test_edges) in enumerate(fold_names):
         
-    #         fname = f'./results/baselines/results/Results/{args.dataset}/{model}_fold-{i}.npy'
-    #         f_res = run_metrics(fname, train_edges, test_edges, all_features, all_attributes)
-    #         if f_res is not None:
-    #             results[model].append(f_res)
+            fname = f'./results/baselines/results/{args.dataset}/{model}_fold-{i}.npy'
+            f_res = run_metrics(fname, train_edges, test_edges, all_features, all_attributes)
+            if f_res is not None:
+                results[model].append(f_res)
    
-    final_adj = os.listdir(f'./results/baselines/results/Results/{args.dataset}/fairadj_20runs') 
-    final_walk = os.listdir(f'./results/baselines/results/Results/{args.dataset}/fairwalk_20runs')
+    final_adj = os.listdir(f'./results/baselines/results/{args.dataset}/fairadj_20runs') 
+    final_walk = os.listdir(f'./results/baselines/results/{args.dataset}/fairwalk_20runs')
 
     mod_list3 = set()
     for filelist, folder in [(final_adj, 'fairadj_20runs'), (final_walk, 'fairwalk_20runs')]:
@@ -166,7 +166,7 @@ def main():
         np.random.seed(5429)
         for i, (train_edges, test_edges) in enumerate(fold_names_r):
         
-            fname = f'./results/baselines/results/Results/{args.dataset}/{model}_fold-{i}.npy'
+            fname = f'./results/baselines/results/{args.dataset}/{model}_fold-{i}.npy'
             f_res = run_metrics(fname, train_edges, test_edges, all_features, all_attributes)
             if f_res is not None:
                 results[model].append(f_res)
