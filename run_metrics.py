@@ -119,7 +119,7 @@ def main():
     specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
     specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
     specs += ['d-32_d2-16_i-glorot_normal_i2-glorot_normal']
-    mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs]
+    mod_list = mod_list + [f'{m}_{s}' for m in mod_list for s in specs] + ['augmented_d-32_d2-16_i-glorot_normal_i2-glorot_normal']
 
     final = 'd-32_d2-16_i-glorot_normal_i2-glorot_normal'
 
