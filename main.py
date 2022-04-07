@@ -118,7 +118,7 @@ def base_model_variational(num_nodes, num_features, embedding_dim1, embedding_di
 
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [z, conv_edges])
 
-def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file=''):
+def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file='', augment_loss=False):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_names):
         rdict = {}
@@ -143,7 +143,15 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
             base, base_embedding = base_model_variational(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
             base.compile(tf.keras.optimizers.Adam(args.learning_rate),
                          build_reconstruction_loss_vgae(pos_weight, norm, features.shape[1], args.embedding_dim2), [dp_metric])
-        else:    
+        elif args.augment_loss:
+            def dp_metric(y_true, y_pred):
+                return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
+            recon_metric = build_reconstruction_loss(pos_weight)
+            def augmented_loss(y_true, y_pred):
+                return recon_metric(y_true + y_pred) + dp_metric(y_true, y_pred)
+            base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
+            base.compile(tf.keras.optimizers.Adam(args.learning_rate), augmented_loss, [recon_metric, dp_metric])
+        else:
             def dp_metric(y_true, y_pred):
                 return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
             base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
@@ -161,7 +169,11 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
         fair_nodes = fair_nodes[0]
         if embedding_file:
             np.save(embedding_file + f'_{i}.npy', fair_nodes)
-        recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
+        if augment_loss:
+            augmented_loss, recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
+            rdict['augmented loss'] = augmented_loss
+        else:    
+            recon_loss, dp_loss = base.evaluate([features, norm_edges], train_edges)
         rdict['reconstruction loss'] = recon_loss
         rdict['link divergence'] = dp_loss
         for k in args.top_k:
@@ -260,6 +272,7 @@ def main():
 
     results = {}
     results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base_{addon}')
+    results['augmented'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented_{addon}', augment_loss=True)
     results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo_{addon}')
     results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10_{addon}')
     results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100_{addon}')
