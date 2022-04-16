@@ -47,17 +47,19 @@ def main():
                   'facebook': "fairwalk_20runs/dim-16_num-walk-20_walk-len-80_lr-0.1_epoch-1",
                   'pubmed': "fairwalk_20runs/dim-16_num-walk-20_walk-len-80_lr-0.1_epoch-1"}
 
-    final_names = ['FairWalk', 'FairAdj', 'Base', 'Augmented', 'GFO', 'CFO$_{10}$', 'CFO$_{100}$', 'FEW']
+    final_names = ['FairWalk', 'FairAdj', 'Base', 'GFO', 'CFO$_{10}$', 'CFO$_{100}$', 'FEW',
+    'AUG$_{1}$', 'AUG$_{10}$', 'AUG$_{100}$', 'AUG$_{1000}$', 'AUG$_{10000}$', 'AUG$_{100000}$']
     
     for dataset in ['citeseer', 'cora', 'facebook', 'pubmed']:
     
-        mod_list_base = ['base', 'augmented', 'gfo', 'cfo10', 'cfo100', 'few']
+        mod_list_base = ['base', 'gfo', 'cfo10', 'cfo100', 'few']
         specs = ['d_32_16', 'd_32_32', 'd_64_64', 'd_128_128', 'd_256_256']
         # specs += ['d-32_d2-32_i-ones', 'd-32_d2-32_i-zeros', 'd-32_d2-32_i-glorot_normal', 'd-32_d2-32_i-glorot_uniform']
         # specs += ['d-32_d2-32_i-glorot_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-ones', 'd-32_d2-32_i-random_normal_i2-glorot_normal', 'd-32_d2-32_i-random_normal_i2-glorot_uniform']
         # specs += ['d-32_d2-32_i-glorot_normal_i2-glorot_normal_c-non_neg', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-2', 'd-32_d2-32_i-glorot_normal_i2-glorot_normal_Le-3']
-        mod_list = mod_list_base + [f'{m}_{s}' for m in mod_list_base for s in specs if m != 'augmented']
+        mod_list = mod_list_base + [f'{m}_{s}' for m in mod_list_base for s in specs]
         mod_list_final = [final_walk[dataset], final_adj[dataset]] + [f'{m}_{final}' for m in mod_list_base]
+        mod_list_final += [f'augmented{num}_{final}' for num in ['', '10', '100', '1000', '10000', '100000']]
         
         all_adj = os.listdir(f'./results/baselines/results/{dataset}/tune_fairadj_final') 
         all_walk = os.listdir(f'./results/baselines/results/{dataset}/tune_fairwalk_final')
@@ -71,7 +73,7 @@ def main():
         mod_list += sorted(mod_list2)
 
         task_metrics = ['reconstruction_loss', 'link_divergence', 'test_auc', 'test_f1']
-        fair_metrics = ['recall@10', 'recall@20', 'recall@40', 'dp@10', 'dp@20', 'dp@40', 'dyf10%', 'dyf20%']
+        fair_metrics = ['recall@10', 'recall@20', 'recall@40', 'dp@10', 'dp@20', 'dp@40']#, 'dyf10%', 'dyf20%']
 
         # if dataset != 'pubmed':
         #     main_table = make_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list, task_metrics)
@@ -80,14 +82,15 @@ def main():
         #     main2_table = make_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list, fair_metrics)
         #     with open(f'./results/tables/fair_metrics_{dataset}.txt', 'w') as fp:
         #         fp.write(main2_table)
-        
-        final_table = make_final_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list_final, final_names, task_metrics)
-        with open(f'./results/tables/task_metrics_{dataset}_final.txt', 'w') as fp:
-            fp.write(final_table)
-        final2_table = make_final_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list_final, final_names, fair_metrics[3:])
-        with open(f'./results/tables/fair_metrics_{dataset}_final.txt', 'w') as fp:
-            fp.write(final2_table)
-
+        try:
+            final_table = make_final_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list_final, final_names, task_metrics)
+            with open(f'./results/tables/task_metrics_{dataset}_final.txt', 'w') as fp:
+                fp.write(final_table)
+            final2_table = make_final_table_from_file(f'./results/{dataset}/results_all.json', dataset, mod_list_final, final_names, fair_metrics[3:])
+            with open(f'./results/tables/fair_metrics_{dataset}_final.txt', 'w') as fp:
+                fp.write(final2_table)
+        except KeyError:
+            continue
 
 
 if __name__ == '__main__':

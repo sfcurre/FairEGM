@@ -143,12 +143,12 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
             base, base_embedding = base_model_variational(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
             base.compile(tf.keras.optimizers.Adam(args.learning_rate),
                          build_reconstruction_loss_vgae(pos_weight, norm, features.shape[1], args.embedding_dim2), [dp_metric])
-        elif args.augment_loss:
+        elif augment_loss:
             def dp_metric(y_true, y_pred):
                 return dp_link_divergence_loss(attributes.astype(np.float32), y_pred)
             recon_metric = build_reconstruction_loss(pos_weight)
             def augmented_loss(y_true, y_pred):
-                return recon_metric(y_true + y_pred) + dp_metric(y_true, y_pred)
+                return recon_metric(y_true, y_pred) + augment_loss * dp_metric(y_true, y_pred)
             base, base_embedding = base_model(*features.shape[-2:], args.embedding_dim, args.embedding_dim2)
             base.compile(tf.keras.optimizers.Adam(args.learning_rate), augmented_loss, [recon_metric, dp_metric])
         else:
@@ -273,6 +273,11 @@ def main():
     results = {}
     results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base_{addon}')
     results['augmented'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented_{addon}', augment_loss=True)
+    results['augmented10'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented10_{addon}', augment_loss=10)
+    results['augmented100'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented100_{addon}', augment_loss=100)
+    results['augmented1000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented1000_{addon}', augment_loss=1000)
+    results['augmented10000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented10000_{addon}', augment_loss=10000)
+    results['augmented1000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented100000_{addon}', augment_loss=100000)
     results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo_{addon}')
     results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10_{addon}')
     results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100_{addon}')
