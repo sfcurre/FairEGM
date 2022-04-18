@@ -9,11 +9,17 @@ from layers.gfo_graph_conv import GFOGraphConv
 from layers.link_prediction import LinkPrediction
 from layers.link_reconstruction import LinkReconstruction
 from models.fair_model import FairModel
-from models.losses import dp_link_divergence_loss, dp_link_entropy_loss, build_reconstruction_loss
-from models.metrics import dp_link_divergence, recall_at_k, dp_at_k
-from preprocess.split_data import split_train_and_test
 from preprocess.read_data import read_data
-from main import kfold_fair_model, reconstruction_model
+from main import kfold_base_model, kfold_fair_model, reconstruction_model
+
+from scipy.spatial import distance_matrix
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+from matplotlib.colors import TwoSlopeNorm
+import seaborn as sns
+
+sns.set_theme()
 
 import tensorflow as tf
 
@@ -51,23 +57,71 @@ def parse_args():
 def main():
 
     args = parse_args()
+    
+    features, edge_gen, attributes = read_data(args.dataset, args.folds)
+    
+    fold_names = []
+    for i, (train, test) in enumerate(edge_gen):
+        np.save(f'./data/{args.dataset}/folds/fold{i}_train.npy', train)
+        np.save(f'./data/{args.dataset}/folds/fold{i}_test.npy', test)
+        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
+                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
+    
     if args.embedding_dim2 == 0:
         args.embedding_dim2 = args.embedding_dim
-    features, _, attributes = read_data(args.dataset, args.folds)
  
     results = defaultdict(dict)
 
-    fold_names = []
-    for i in range(args.folds):
-        fold_names.append((f'./data/{args.dataset}/folds/fold{i}_train.npy',
-                           f'./data/{args.dataset}/folds/fold{i}_test.npy'))
+    args.d = 32
+    args.d2 = 16
+    args.learning_rate = 1e-4
+    args.lambda_param = 1
+    args.vgae=False
+    TARGETED_FAIRNESS = lambda: GFOGraphConv()
+    results = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args,
+    embedding_file=f'./results/{args.dataset}/embeddings/gfo_temp', return_weights=True)
+    w = results['fair_weights'][0]
+    a = results['attributes']
+    f = results['features']
+    e = results['edges']
+    n = results['norm_edges']
+    phi = results['embedding']
 
-    for l in [0, 0.001, 0.01, 0.1, 1, 10, 100, 1000]:
-        
-        print(f'Model gfo_lambda{l}: START')
-        args.lambda_param = l
-        results[f'gfo_lambda{l}']= kfold_fair_model(features, fold_names, attributes, GFOGraphConv, args)
-        print(f'Model gfo_lambda{l}: FINISHED')
+    results = kfold_base_model(features, fold_names, attributes, args,
+    embedding_file=f'./results/{args.dataset}/embeddings/base_temp', return_weights=True)
+    ab = results['attributes']
+    fb = results['features']
+    eb = results['edges']
+    nb = results['norm_edges']
+    phib = results['embedding']
+
+    fig, axes = plt.subplots(1, 3, figsize=(10, 3))
+
+    #pca = PCA()
+    pca = TSNE(2)
+    data_pca = pca.fit_transform(w)
+    norm = TwoSlopeNorm(0)
+
+    axes[0].scatter(data_pca[:, 0], data_pca[:, 1], marker='o', c=a.argmax(axis=1), cmap='tab10', vmax=10)
+    axes[0].set_title("GFO bias", fontsize=14)
+    #pca = PCA()
+    pca = TSNE(2)
+
+    # data_pca = pca.fit_transform(n @ f)
+    data_pca = pca.fit_transform(phib)
+
+    axes[1].scatter(data_pca[:, 0], data_pca[:, 1], marker='o', c=a.argmax(axis=1), cmap='tab10', vmax=10)
+    axes[1].set_title("Base GAE Embeddings", fontsize=14)
+    #pca = PCA()
+    pca = TSNE(2)
+
+    data_pca = pca.fit_transform(phi)
+
+    axes[2].scatter(data_pca[:, 0], data_pca[:, 1], marker='o', c=a.argmax(axis=1), cmap='tab10', vmax=10)
+    axes[2].set_title("GFO embeddings", fontsize=14)
+
+    fig.suptitle("TSNE visualizations of the GFO bias, Base GAE embeddings, and GFO embeddings for the Cora dataset.", fontsize=16)
+    plt.show()
 
     with open(f'results/{args.dataset}/lambda_results.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)

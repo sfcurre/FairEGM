@@ -27,7 +27,6 @@ def make_final_table_from_file(filepath, dataset, mod_list, mod_names, metrics):
                 addition += ' & ' + f'{float(f"{np.mean([fold[metric] for fold in results[model]]):.3g}"):g}'.ljust(10)
                 addition += ' $\pm$ ' + f'{float(f"{np.std([fold[metric] for fold in results[model]]):.3g}"):g}'.ljust(10)
             except:
-                raise
                 addition += ' & ' + '--'
         addition += ' \\\\\n'
         latex_str += addition
@@ -90,7 +89,7 @@ def main():
             with open(f'./results/tables/fair_metrics_{dataset}_final.txt', 'w') as fp:
                 fp.write(final2_table)
         except KeyError:
-            continue
+            raise
 
 
 if __name__ == '__main__':

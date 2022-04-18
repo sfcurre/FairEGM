@@ -118,7 +118,7 @@ def base_model_variational(num_nodes, num_features, embedding_dim1, embedding_di
 
     return tf.keras.models.Model([nodes, edges], output), tf.keras.models.Model([nodes, edges], [z, conv_edges])
 
-def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file='', augment_loss=False):
+def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_file='', augment_loss=False, return_weights=False):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_names):
         rdict = {}
@@ -179,10 +179,18 @@ def kfold_base_model(all_features, fold_names, all_attributes, args, embedding_f
         for k in args.top_k:
             rdict[f'recall@{k}'] = recall_at_k(fair_nodes, test_edges, k=k)
             rdict[f'dp@{k}'] = dp_at_k(fair_nodes, attributes[0], k=k)
+        if return_weights:
+            rdict['fair_weights'] = None
+            rdict['attributes'] = attributes[0]
+            rdict['features'] = features[0]
+            rdict['edges'] = train_edges[0]
+            rdict['norm_edges'] = norm_edges[0]
+            rdict['embedding'] = fair_nodes
+            return rdict
         results.append(rdict)
     return results
 
-def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor, args, embedding_file=''):
+def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor, args, embedding_file='', return_weights=False):
     results = []
     for i, (train_edges, test_edges) in enumerate(fold_names):
         rdict = {}
@@ -231,7 +239,16 @@ def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor
             rdict[f'recall@{k}'] = recall_at_k(fair_nodes, test_edges, k=k)
             rdict[f'dp@{k}'] = dp_at_k(fair_nodes, attributes[0], k=k)
         print(f'Model {i+1}: [{rdict["reconstruction loss"]},{rdict["link divergence"]}]')
+        if return_weights:
+            rdict['fair_weights'] = model.fair_layer.get_weights()
+            rdict['attributes'] = attributes[0]
+            rdict['features'] = features[0]
+            rdict['edges'] = train_edges[0]
+            rdict['norm_edges'] = norm_edges[0]
+            rdict['embedding'] = fair_nodes
+            return rdict
         results.append(rdict)
+        
     return results
 
 def main():
@@ -272,16 +289,16 @@ def main():
 
     results = {}
     results['base'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/base_{addon}')
+    results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo_{addon}')
+    results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10_{addon}')
+    results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100_{addon}')
+    results['few'] = kfold_fair_model(features, fold_names, attributes, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few_{addon}')
     results['augmented'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented_{addon}', augment_loss=True)
     results['augmented10'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented10_{addon}', augment_loss=10)
     results['augmented100'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented100_{addon}', augment_loss=100)
     results['augmented1000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented1000_{addon}', augment_loss=1000)
     results['augmented10000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented10000_{addon}', augment_loss=10000)
     results['augmented1000'] = kfold_base_model(features, fold_names, attributes, args, embedding_file=f'./results/{args.dataset}/embeddings/augmented100000_{addon}', augment_loss=100000)
-    results['gfo'] = kfold_fair_model(features, fold_names, attributes, TARGETED_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/gfo_{addon}')
-    results['cfo_10'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_10, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo10_{addon}')
-    results['cfo_100'] = kfold_fair_model(features, fold_names, attributes, COMMUNITY_FAIRNESS_100, args, embedding_file=f'./results/{args.dataset}/embeddings/cfo100_{addon}')
-    results['few'] = kfold_fair_model(features, fold_names, attributes, SPARSE_FAIRNESS, args, embedding_file=f'./results/{args.dataset}/embeddings/few_{addon}')
 
     with open(f'./results/{args.dataset}/results_{addon}.json', 'w') as fp:
         json.dump(results, fp, indent=True, default=to_serializable)
