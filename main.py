@@ -215,12 +215,12 @@ def kfold_fair_model(all_features, fold_names, all_attributes, layer_constructor
             model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'),
                                reconstruction_model_variational(features.shape[-2], args.embedding_dim, args.embedding_dim2))
         
-            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param),
+            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate),
                           task_loss, fair_loss)
         else:
             model = FairModel(*features.shape[-2:], layer_constructor(), tf.keras.layers.Dense(args.embedding_dim, activation='relu'),
                                reconstruction_model(features.shape[-2], args.embedding_dim, args.embedding_dim2))
-            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate * args.lambda_param),
+            model.compile(tf.keras.optimizers.Adam(args.learning_rate), tf.keras.optimizers.Adam(args.learning_rate),
                           build_reconstruction_loss(pos_weight), dp_link_divergence_loss)        
         
         start_time = time.time()

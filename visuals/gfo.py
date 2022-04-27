@@ -25,6 +25,7 @@ import tensorflow as tf
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 np.random.seed(5429)
+# tf.random.set_seed(5429)
 
 @singledispatch
 def to_serializable(val):
@@ -103,7 +104,7 @@ def main():
     norm = TwoSlopeNorm(0)
 
     axes[0].scatter(data_pca[:, 0], data_pca[:, 1], marker='o', c=a.argmax(axis=1), cmap='tab10', vmax=10)
-    axes[0].set_title("GFO bias", fontsize=14)
+    axes[0].set_title("GFO Weights", fontsize=14)
     #pca = PCA()
     pca = TSNE(2)
 
@@ -118,9 +119,9 @@ def main():
     data_pca = pca.fit_transform(phi)
 
     axes[2].scatter(data_pca[:, 0], data_pca[:, 1], marker='o', c=a.argmax(axis=1), cmap='tab10', vmax=10)
-    axes[2].set_title("GFO embeddings", fontsize=14)
+    axes[2].set_title("GFO Embeddings", fontsize=14)
 
-    fig.suptitle("TSNE visualizations of the GFO bias, Base GAE embeddings, and GFO embeddings for the Cora dataset.", fontsize=16)
+    fig.suptitle("TSNE visualizations of the GFO fairness weights, Base GAE embeddings, and GFO embeddings for the Cora dataset.", fontsize=16)
     plt.show()
 
     with open(f'results/{args.dataset}/lambda_results.json', 'w') as fp:

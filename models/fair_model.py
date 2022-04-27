@@ -30,7 +30,7 @@ class FairModel:
         self.compiled = True
 
     @tf.function
-    def train_step(self, nodes, edges, target, sensitive_attributes, lambda_epochs):
+    def train_step(self, nodes, edges, target, sensitive_attributes, lambda_epochs, lambda_param):
 
         with tf.GradientTape() as task_tape:
 
@@ -52,7 +52,7 @@ class FairModel:
                 self.model.trainable = False
                 self.fair_layer.trainable = True
 
-                fair_gradients = fair_tape.gradient(fair_loss, self.fair_layer.trainable_variables)
+                fair_gradients = lambda_param * fair_tape.gradient(fair_loss, self.fair_layer.trainable_variables)
                 self.fair_optimizer.apply_gradients(zip(fair_gradients, self.fair_layer.trainable_variables))
 
         tl = tf.reduce_mean(task_loss, axis = None)
@@ -71,7 +71,7 @@ class FairModel:
         
         return tl.numpy(), fl.numpy()
 
-    def fit(self, nodes, edges, target, sensitive_attributes, epochs, lambda_epochs = 1, verbose = 1):
+    def fit(self, nodes, edges, target, sensitive_attributes, epochs, lambda_epochs = 1, lambda_param = 1, verbose = 1):
         assert self.compiled, "Model must be compiled before use"
 
         nodes = tf.constant(nodes, dtype = tf.float32)
@@ -87,7 +87,7 @@ class FairModel:
             if verbose and print_con(i):
                 print(f'Epoch {i+1}/{epochs}:')
             
-            tl, fl = self.train_step(nodes, edges, target, sensitive_attributes, lambda_epochs)
+            tl, fl = self.train_step(nodes, edges, target, sensitive_attributes, lambda_epochs, lambda_param)
             
             tl = tl.numpy()
             fl = fl.numpy()

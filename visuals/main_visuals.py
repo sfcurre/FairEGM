@@ -53,7 +53,7 @@ def main():
     g = sns.lineplot(data=task_loss, legend = False, ax=axes[0])
     g.set_xlabel('Epoch', fontsize=16)
     g.set_ylabel('Reconstruction Loss', fontsize=16)
-    axes[0].legend(['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], loc='upper right')
+    axes[0].legend(['Base', 'GFO', 'CFO$_{10}$', 'CFO$_{100}$', 'FEW'], loc='upper right')
     g.set_xlim(1, EPOCHS)
     g.set_ylim(1.2, 1.6)
 
@@ -63,7 +63,7 @@ def main():
     fl.append(np.array([results['cfo_10'][i]['history']['fair loss'] for i in range(len(results['cfo_10']))]).mean(axis=0)[:EPOCHS])
     fl.append(np.array([results['cfo_100'][i]['history']['fair loss'] for i in range(len(results['cfo_100']))]).mean(axis=0)[:EPOCHS])
     fl.append(np.array([results['few'][i]['history']['fair loss'] for i in range(len(results['few']))]).mean(axis=0)[:EPOCHS])
-    fair_loss = pd.DataFrame(fl, index = ['GCN', 'GFO + GCN', 'CFO$_{10}$ + GCN', 'CFO$_{100}$ + GCN', 'FEW + GCN'], columns = 1 + np.arange(EPOCHS)).transpose()
+    fair_loss = pd.DataFrame(fl, index = ['Base', 'GFO', 'CFO$_{10}$', 'CFO$_{100}$', 'FEW'], columns = 1 + np.arange(EPOCHS)).transpose()
 
     g = sns.lineplot(data=fair_loss, legend = False, ax = axes[1])
     g.set_xlabel('Epoch', fontsize=16)
