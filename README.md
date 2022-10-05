@@ -1,7 +1,7 @@
 # FairEGM: Fair Link Prediction and Reccomendation via Emulated Graph Modification
 A repository for implementing and testing code from the paper FairEGM: Fair Link Prediction and Reccomendation via Emulated Graph Modification.
 
-Sean Current, Yuntian He, Saket Gurukar, and Srinivasan Parthasarathy. "[FairEGM: Fair Link Prediction and Reccomendation via Emulated Graph Modification.](https://arxiv.org/abs/2201.11596)" Arxiv preprint.
+Sean Current, Yuntian He, Saket Gurukar, and Srinivasan Parthasarathy. "[FairEGM: Fair Link Prediction and Reccomendation via Emulated Graph Modification.](https://eaamo.org/papers/current-3.pdf)" In ACM Conference on Equity and Access in Algorithms, Mechanisms, and Optimization. 2022.
 
 ## Setup
 FairEGM uses Tensorflow >2.5.0 and Scikit-Learn >1.0.0.
